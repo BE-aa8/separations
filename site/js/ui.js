@@ -2,7 +2,7 @@
 import { DATA } from './data.js';
 import { simulate, DEFAULT_INPUTS, RANGES, solubility, phiSat, bpe, hfg, F_LI } from './model.js';
 import { EQ, THEORY_GROUPS } from './content.js';
-import { renderAll } from './charts.js';
+import { renderAll, setChartTheme } from './charts.js';
 import { mountPFD, updatePFD } from './pfd.js';
 
 // ---------- formatting (never shows NaN) ----------
@@ -234,6 +234,10 @@ function updateCards(o) {
       if (c.v2) txt += ` <span class="u">${c.units}</span> · ${fmt(c.v2(o), c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d)}`;
     } catch { txt = '—'; }
     const num = card.querySelector('.num');
+    if (num.dataset.prev !== undefined && num.dataset.prev !== txt) {   // cause -> effect flash (CSS)
+      num.classList.remove('changed'); void num.offsetWidth; num.classList.add('changed');
+    }
+    num.dataset.prev = txt;
     num.innerHTML = txt;
     card.querySelector('.val .u:last-child').textContent = c.v2 ? (c.units2 || c.units) : c.units;
     let say = '';
@@ -390,7 +394,37 @@ function initSubtabs() {
   }));
 }
 
+// ---------- light/dark theme (presentation only) ----------
+function currentTheme() { return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'; }
+function applyThemeUI() {
+  const t = currentTheme();
+  setChartTheme(t);
+  const b = document.getElementById('theme-toggle');
+  if (b) {
+    b.setAttribute('aria-pressed', String(t === 'dark'));
+    b.setAttribute('aria-label', t === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+  }
+}
+function setTheme(t, remember) {
+  document.documentElement.setAttribute('data-theme', t);
+  if (remember) { try { localStorage.setItem('theme', t); } catch { /* storage unavailable: still works this visit */ } }
+  applyThemeUI();
+  schedule();                               // re-render charts in the new palette
+}
+function initTheme() {
+  applyThemeUI();
+  const b = document.getElementById('theme-toggle');
+  if (b) b.addEventListener('click', () => setTheme(currentTheme() === 'dark' ? 'light' : 'dark', true));
+  const mq = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  if (mq && mq.addEventListener) mq.addEventListener('change', (e) => {
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch { saved = null; }
+    if (!saved) setTheme(e.matches ? 'dark' : 'light', false);
+  });
+}
+
 function init() {
+  initTheme();
   renderTheory();
   renderReferences();
   initSubtabs();

@@ -342,3 +342,108 @@ p.small { font-size: 0.85rem; color: var(--muted); }
   .hero-tag { font-size: 1.1rem; }
   .hero-hint { right: var(--s4); }
 }
+
+/* =====================================================================
+   Dark theme (toggle in the header; default follows the device setting)
+   ===================================================================== */
+:root {
+  /* stream colors (light) */
+  --st-feed: #B7791F; --st-slurry: #9A7A3E; --st-vapor: #2F86B5; --st-hot: #D9561F; --st-circ: #A68A55;
+  --st-cond: #1E8C8C; --st-xtal: #6E8A12; --st-purge: #A5432C;
+  --pfd-unit: #F4F6F1; --pfd-line: #2D332F; --pfd-text: #171B19; --pfd-muted: #5B635E; --pfd-liquor: rgba(183, 121, 31, 0.10);
+  --heat-0: #FFF1E6; --heat-1: #FFE0CC;
+  color-scheme: light;
+}
+[data-theme="dark"] {
+  --bg: #0E1311; --surface: #141A17; --surface-2: #19201C; --text: #F0F1EB; --muted: #A0AAA2;
+  --border: #2B332E; --border-strong: #3B453F;
+  --olive: #B9CC5A; --olive-strong: #CFE07A; --accent-soft: #232B19; --lime-soft: #232B19;
+  --warn-bg: #2E2410; --warn-border: #A7792A; --warn-text: #F2CF8D;
+  --flag-bg: #3A1A17; --flag-text: #FFB4A8; --ok: #5CC28F;
+  --shadow: none; --focus: 0 0 0 2px var(--bg), 0 0 0 4px var(--olive);
+  --st-feed: #E0A43A; --st-slurry: #C9A86A; --st-vapor: #6FB8E0; --st-hot: #FF8A4C; --st-circ: #C9AE78;
+  --st-cond: #4CC3BE; --st-xtal: #B5CC4E; --st-purge: #E07A5F;
+  --pfd-unit: #19201C; --pfd-line: #C9CFC6; --pfd-text: #F0F1EB; --pfd-muted: #A0AAA2; --pfd-liquor: rgba(224, 164, 58, 0.12);
+  --heat-0: #2A1D14; --heat-1: #3A2416;
+  color-scheme: dark;
+}
+[data-theme="dark"] .lead, [data-theme="dark"] .rcard .short, [data-theme="dark"] .glossary dd, [data-theme="dark"] .rcard .eq { color: #D3D8D0; }
+[data-theme="dark"] code { background: #222A25; }
+[data-theme="dark"] .card { border-top-color: var(--lime); }
+[data-theme="dark"] .eq-card .eq, [data-theme="dark"] .rcard .eq { border-color: #262E29; }
+[data-theme="dark"] .data-table th { background: #1D2420; border-bottom-color: var(--border); }
+[data-theme="dark"] .flag { border-color: #6A2E27; }
+[data-theme="dark"] .ai-banner { background: #19201C; }
+[data-theme="dark"] .placeholder { background: repeating-linear-gradient(-45deg, #171D1A 0 10px, #141A17 10px 20px); }
+[data-theme="dark"] .pfd-panel .phead { background: #0A0E0D; }
+[data-theme="dark"] button.active { background: var(--lime); color: var(--ink); border-color: var(--lime); box-shadow: none; }
+[data-theme="dark"] .hero-cta { color: var(--ink); }
+
+/* theme toggle */
+.theme-toggle {
+  margin-left: auto; align-self: center; flex: 0 0 auto; width: 34px; height: 34px; padding: 0; display: grid; place-items: center;
+  background: transparent; border: 1px solid var(--ink-border); color: var(--ink-muted); border-radius: var(--radius);
+}
+.theme-toggle:hover { background: var(--ink-2); color: var(--lime); border-color: var(--lime); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle .moon { display: none; }
+[data-theme="dark"] .theme-toggle .sun { display: none; }
+[data-theme="dark"] .theme-toggle .moon { display: block; }
+
+/* =====================================================================
+   Live PFD (js/pfd.js)
+   ===================================================================== */
+#pfd svg .u { fill: var(--pfd-unit); stroke: var(--pfd-line); stroke-width: 1.6; }
+#pfd svg .u.heater { fill: url(#heat-grad); }
+#pfd svg .hg0 { stop-color: var(--heat-0); } #pfd svg .hg1 { stop-color: var(--heat-1); }
+#pfd svg .coil { fill: none; stroke: var(--st-hot); stroke-width: 1.2; opacity: 0.55; stroke-dasharray: 6 4; }
+#pfd svg .liquor { fill: var(--pfd-liquor); }
+#pfd svg .l { fill: var(--pfd-text); } #pfd svg .n { fill: var(--pfd-muted); font-size: 11px; } #pfd svg .k { font-weight: 700; }
+#pfd svg .s { fill: none; stroke-width: 2.2; opacity: 0.55; }
+#pfd svg .flow { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 10; animation: pfd-flow 1s linear infinite; }
+#pfd svg .mk { stroke: none; }
+@keyframes pfd-flow { to { stroke-dashoffset: -12; } }
+#pfd svg .st-feed, #pfd svg .fl-feed { stroke: var(--st-feed); } #pfd svg .mk-feed { fill: var(--st-feed); } #pfd svg .fl-feed { animation-duration: var(--d-feed, 1.2s); } .pfd-legend .sw-feed { background: var(--st-feed); }
+#pfd svg .st-slurry, #pfd svg .fl-slurry { stroke: var(--st-slurry); } #pfd svg .mk-slurry { fill: var(--st-slurry); } #pfd svg .fl-slurry { animation-duration: var(--d-slurry, 1.2s); } .pfd-legend .sw-slurry { background: var(--st-slurry); }
+#pfd svg .st-vapor, #pfd svg .fl-vapor { stroke: var(--st-vapor); } #pfd svg .mk-vapor { fill: var(--st-vapor); } #pfd svg .fl-vapor { animation-duration: var(--d-vapor, 1.2s); } .pfd-legend .sw-vapor { background: var(--st-vapor); }
+#pfd svg .st-hot, #pfd svg .fl-hot { stroke: var(--st-hot); } #pfd svg .mk-hot { fill: var(--st-hot); } #pfd svg .fl-hot { animation-duration: var(--d-hot, 1.2s); } .pfd-legend .sw-hot { background: var(--st-hot); }
+#pfd svg .st-circ, #pfd svg .fl-circ { stroke: var(--st-circ); } #pfd svg .mk-circ { fill: var(--st-circ); } #pfd svg .fl-circ { animation-duration: var(--d-circ, 1.2s); } .pfd-legend .sw-circ { background: var(--st-circ); }
+#pfd svg .st-cond, #pfd svg .fl-cond { stroke: var(--st-cond); } #pfd svg .mk-cond { fill: var(--st-cond); } #pfd svg .fl-cond { animation-duration: var(--d-cond, 1.2s); } .pfd-legend .sw-cond { background: var(--st-cond); }
+#pfd svg .st-xtal, #pfd svg .fl-xtal { stroke: var(--st-xtal); } #pfd svg .mk-xtal { fill: var(--st-xtal); } #pfd svg .fl-xtal { animation-duration: var(--d-xtal, 1.2s); } .pfd-legend .sw-xtal { background: var(--st-xtal); }
+#pfd svg .st-purge, #pfd svg .fl-purge { stroke: var(--st-purge); } #pfd svg .mk-purge { fill: var(--st-purge); } #pfd svg .fl-purge { animation-duration: var(--d-purge, 1.2s); } .pfd-legend .sw-purge { background: var(--st-purge); }
+#pfd svg .impeller .spin { animation: pfd-spin var(--d-imp, 0.8s) linear infinite; transform-box: fill-box; transform-origin: center; }
+#pfd svg .imp-ring { fill: none; stroke: var(--st-hot); stroke-width: 1.5; } #pfd svg .imp-blade { stroke: var(--st-hot); stroke-width: 1.5; }
+@keyframes pfd-spin { to { transform: rotate(360deg); } }
+#pfd svg .xtal { fill: var(--st-xtal); animation: pfd-settle var(--d-xtal, 2.4s) linear infinite; }
+#pfd svg .xtal:nth-child(2) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.15); } #pfd svg .xtal:nth-child(3) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.3); }
+#pfd svg .xtal:nth-child(4) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.45); } #pfd svg .xtal:nth-child(5) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.6); }
+#pfd svg .xtal:nth-child(6) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.75); } #pfd svg .xtal:nth-child(7) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.9); }
+#pfd svg .xtal:nth-child(8) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.52); }
+@keyframes pfd-settle { 0% { transform: translateY(0); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(62px); opacity: 0; } }
+#pfd svg.stopped .flow, #pfd svg.stopped .spin, #pfd svg.stopped .xtal { animation-play-state: paused; }
+#pfd svg.stopped .flow, #pfd svg.stopped .s { stroke: var(--muted) !important; }
+#pfd svg .unit { cursor: pointer; outline: none; }
+#pfd svg .unit .hit { fill: transparent; }
+#pfd svg .unit:hover .u, #pfd svg .unit:focus .u { stroke-width: 2.6; stroke: var(--olive); }
+#pfd svg .unit:hover .hit, #pfd svg .unit:focus .hit { fill: rgba(166, 187, 67, 0.12); }
+#pfd svg .unit.sel .u { stroke: var(--olive); stroke-width: 2.8; }
+#pfd svg .unit.sel .hit { fill: rgba(166, 187, 67, 0.18); }
+.pfd-legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin: var(--s2) 0 0; font-size: var(--fs-xs); color: var(--muted); }
+.pfd-legend .lg { display: inline-flex; align-items: center; gap: 6px; }
+.pfd-legend .sw { display: inline-block; width: 18px; height: 3px; border-radius: 2px; }
+.pfd-legend .lg-note { font-family: var(--mono); }
+
+/* cause -> effect: a card value that just changed flashes */
+.rcard .num.changed { animation: val-flash 0.7s ease-out; }
+@keyframes val-flash { 0% { background: var(--lime-soft); box-shadow: inset 0 -3px 0 var(--lime); } 100% { background: transparent; box-shadow: inset 0 -3px 0 transparent; } }
+.rcard .num { border-radius: 2px; }
+
+/* tab content entrance */
+section.tab:not([hidden]) { animation: tab-in 0.22s ease-out; }
+@keyframes tab-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  #pfd svg .flow, #pfd svg .spin, #pfd svg .xtal { animation: none !important; }
+  #pfd svg .xtal { opacity: 0.8; }
+  section.tab:not([hidden]), .rcard .num.changed { animation: none !important; }
+}

@@ -8,6 +8,7 @@ const { chromium } = createRequire(import.meta.url)('playwright');
 const args = Object.fromEntries(process.argv.slice(2).reduce((a, x, i, arr) => (x.startsWith('--') && a.push([x.slice(2), arr[i + 1]]), a), []));
 const BASE = (args.base || 'http://localhost:8000').replace(/\/$/, '');
 const OUT = args.out || 'docs/screenshots/verification/phase2';
+const SCHEME = args.scheme === 'dark' ? 'dark' : 'light';   // --scheme dark: device prefers dark (site follows it)
 mkdirSync(OUT, { recursive: true });
 
 const failures = [];
@@ -15,7 +16,7 @@ const fail = (m) => failures.push(m);
 const browser = await chromium.launch();
 
 for (const vp of [{ name: 'desktop', width: 1280, height: 800 }, { name: 'mobile', width: 375, height: 812 }]) {
-  const page = await browser.newPage({ viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ colorScheme: SCHEME,  viewport: { width: vp.width, height: vp.height }, deviceScaleFactor: 1 });
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));

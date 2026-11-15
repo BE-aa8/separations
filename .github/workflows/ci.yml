@@ -53,9 +53,12 @@ jobs:
           node tests/browser-smoke.mjs --base http://localhost:8000 --paths /,/gemini/ --out smoke-results
           node tests/browser-phase2.mjs --base http://localhost:8000 --out smoke-results/phase2
           node tests/browser-hero.mjs --base http://localhost:8000 --out smoke-results/hero
+          node tests/browser-smoke.mjs --base http://localhost:8000 --paths /,/gemini/ --out smoke-results/dark --scheme dark
+          node tests/browser-phase2.mjs --base http://localhost:8000 --out smoke-results/phase2-dark --scheme dark
+          node tests/browser-ux.mjs --base http://localhost:8000 --out smoke-results/ux
       - name: Job summary
         if: always() && steps.has_site.outputs.run == 'true'
-        run: '[ -f smoke-results/report.md ] && cat smoke-results/report.md smoke-results/phase2/report.md smoke-results/hero/report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true'
+        run: '[ -f smoke-results/report.md ] && cat smoke-results/report.md smoke-results/phase2/report.md smoke-results/hero/report.md smoke-results/dark/report.md smoke-results/ux/report.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true'
       - name: Upload screenshots and report
         if: always() && steps.has_site.outputs.run == 'true'
         uses: actions/upload-artifact@v4

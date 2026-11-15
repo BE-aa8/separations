@@ -2,15 +2,22 @@
 import { DATA } from './data.js';
 import { solubility, sweepBPE, sweepPurge, sweepN, sweepMolality, primaryEnergy, coolingYield, linspace, sweepTAC, sweepTurndown } from './model.js';
 
-const C = { mvr: '#1f5fae', e1: '#b45309', e3: '#0f766e', e5: '#7c3aed', grey: '#a3a9b5', warn: '#c2410c', ok: '#1f7a4d', text: '#1d2330', grid: '#e6e9ef' };
+// Chart palettes for the light and dark site themes (presentation only; traces and data unchanged).
+const THEMES = {
+  light: { mvr: '#4F6A0F', e1: '#B45309', e3: '#0F766E', e5: '#3B6E8F', grey: '#9AA39D', warn: '#C2410C', ok: '#1F7A4D', text: '#171B19', muted: '#68716C', grid: '#E3E6E0', bg: '#FFFFFF' },
+  dark: { mvr: '#B5CC4E', e1: '#F2A541', e3: '#3CCFC0', e5: '#7FB2D9', grey: '#7D877F', warn: '#FF8A4C', ok: '#5CC28F', text: '#E4E8E0', muted: '#A0AAA2', grid: '#26302A', bg: '#141A17' },
+};
+const C = { ...THEMES.light };
+/** Switch chart colors to the 'light' or 'dark' palette; the caller re-renders. */
+export function setChartTheme(name) { Object.assign(C, THEMES[name] || THEMES.light); }
 const CONFIG = { responsive: true, displayModeBar: false };
-const font = { family: 'system-ui, -apple-system, Segoe UI, Roboto, sans-serif', size: 12, color: C.text };
 const base = (extra = {}) => ({
-  font, margin: { l: 56, r: 16, t: 10, b: 46 }, paper_bgcolor: '#fff', plot_bgcolor: '#fff',
+  font: { family: 'Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif', size: 12, color: C.text },
+  margin: { l: 56, r: 16, t: 10, b: 46 }, paper_bgcolor: C.bg, plot_bgcolor: C.bg,
   showlegend: true, legend: { orientation: 'h', y: -0.22, x: 0, font: { size: 11 } },
   hovermode: 'closest', ...extra,
 });
-const ax = (title, extra = {}) => ({ title: { text: title, standoff: 6 }, gridcolor: C.grid, zeroline: false, automargin: true, ...extra });
+const ax = (title, extra = {}) => ({ title: { text: title, standoff: 6 }, gridcolor: C.grid, linecolor: C.grid, zeroline: false, automargin: true, ...extra });
 const draw = (id, data, layout) => {
   const el = document.getElementById(id);
   if (el && window.Plotly) window.Plotly.react(el, data, layout, CONFIG);
@@ -45,7 +52,7 @@ export function p1b(out) {
   draw('p1b', [
     ...band(bin, msz, 'Metastable zone: seeds grow', 'rgba(15,118,110,0.18)'),
     ...band(msz, spin, 'Labile: nucleation shower → fines', 'rgba(194,65,12,0.16)'),
-    ...band(spin, top, 'Beyond spinodal: unstable', 'rgba(124,58,237,0.16)'),
+    ...band(spin, top, 'Beyond spinodal: unstable', 'rgba(59,110,143,0.18)'),
     { x: Ts, y: bin, mode: 'lines', name: 'Binodal c* (solubility)', line: { color: C.mvr, width: 2.5 }, hoverinfo: 'skip' },
     { x: Ts, y: msz, mode: 'lines', name: 'Metastable limit (schematic)', line: { color: C.e3, dash: 'dash' }, hoverinfo: 'skip' },
     { x: Ts, y: spin, mode: 'lines', name: 'Spinodal (schematic)', line: { color: C.e5, dash: 'dot' }, hoverinfo: 'skip' },
@@ -181,7 +188,7 @@ export function p7(out) {
     xaxis: ax('Purge ratio p = P/F'),
     yaxis: ax('Li yield (%)', { domain: [0.56, 1] }), yaxis2: ax('Impurity (ppm, log)', { domain: [0, 0.44], type: 'log' }),
     shapes, legend: { orientation: 'h', y: -0.25, font: { size: 10 } },
-    annotations: spec == null ? [{ text: 'Battery-grade Na spec line hidden: SOURCE NEEDED', xref: 'paper', yref: 'paper', x: 0.99, y: 0.44, xanchor: 'right', yanchor: 'top', showarrow: false, font: { size: 10, color: '#5b6475' } }] : [],
+    annotations: spec == null ? [{ text: 'Battery-grade Na spec line hidden: SOURCE NEEDED', xref: 'paper', yref: 'paper', x: 0.99, y: 0.44, xanchor: 'right', yanchor: 'top', showarrow: false, font: { size: 10, color: C.muted } }] : [],
   }));
 }
 
@@ -205,7 +212,7 @@ export function p11(out) {
   const inp = out.inputs;
   const sw = sweepN(inp, out.BPE, 10);
   draw('p11', [
-    { x: sw.map((d) => d.N), y: sw.map((d) => d.dT), type: 'bar', name: 'ΔT per effect', marker: { color: sw.map((d) => (d.N === inp.N ? (d.feasible ? C.warn : '#7f1d1d') : d.feasible ? C.e3 : C.grey)) }, hovertemplate: 'N = %{x}: %{y:.2f} K<extra></extra>' },
+    { x: sw.map((d) => d.N), y: sw.map((d) => d.dT), type: 'bar', name: 'ΔT per effect', marker: { color: sw.map((d) => (d.N === inp.N ? (d.feasible ? C.warn : '#9B1C1C') : d.feasible ? C.e3 : C.grey)) }, hovertemplate: 'N = %{x}: %{y:.2f} K<extra></extra>' },
     { x: [0.5, 10.5], y: [inp.dTmin, inp.dTmin], mode: 'lines', name: `ΔT_min = ${inp.dTmin} K`, line: { color: C.warn, dash: 'dash' } },
   ], base({
     xaxis: ax('Number of effects N', { dtick: 1, range: [0.5, 10.5] }), yaxis: ax('ΔT per effect (K)'),

@@ -18,6 +18,7 @@ const args = Object.fromEntries(process.argv.slice(2).reduce((acc, a, i, arr) =>
 const BASE = (args.base || 'http://localhost:8000').replace(/\/$/, '');
 const PATHS = (args.paths || '/').split(',');
 const OUT = args.out || 'docs/screenshots/verification/latest';
+const SCHEME = args.scheme === 'dark' ? 'dark' : 'light';   // --scheme dark: device prefers dark (site follows it)
 mkdirSync(OUT, { recursive: true });
 
 // Tab controls only (not panels): ARIA tabs, in-page nav links, or buttons/links carrying data-tab.
@@ -75,7 +76,7 @@ async function testBuild(browser, path) {
   const fail = (msg) => result.failures.push(msg);
 
   // ---------- desktop ----------
-  const page = await browser.newPage({ viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+  const page = await browser.newPage({ colorScheme: SCHEME,  viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
   page.on('console', (m) => m.type() === 'error' && result.consoleErrors.push(m.text()));
   page.on('pageerror', (e) => result.consoleErrors.push(String(e)));
   const resp = await page.goto(BASE + path, { waitUntil: 'networkidle' }).catch((e) => ({ status: () => 0, err: e }));
@@ -133,7 +134,7 @@ async function testBuild(browser, path) {
   await page.close();
 
   // ---------- mobile 375 px ----------
-  const m = await browser.newPage({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+  const m = await browser.newPage({ colorScheme: SCHEME,  viewport: { width: 375, height: 812 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
   await m.goto(BASE + path, { waitUntil: 'networkidle' });
   await m.waitForTimeout(1000);
   for (const [idx, t] of (await listTabs(m)).entries()) {

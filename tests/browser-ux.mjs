@@ -1,0 +1,117 @@
+// UX checks: light/dark theme toggle and the live PFD animation (presentation only).
+// Usage: node tests/browser-ux.mjs --base http://localhost:8000 --out <dir>
+import { createRequire } from 'node:module';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
+const { chromium } = createRequire(import.meta.url)('playwright');
+
+const args = Object.fromEntries(process.argv.slice(2).reduce((a, x, i, arr) => (x.startsWith('--') && a.push([x.slice(2), arr[i + 1]]), a), []));
+const BASE = (args.base || 'http://localhost:8000').replace(/\/$/, '');
+const OUT = args.out || 'docs/screenshots/verification/ux';
+mkdirSync(OUT, { recursive: true });
+const failures = [];
+const fail = (m) => failures.push(m);
+const browser = await chromium.launch();
+
+const watch = (page, errors) => {
+  page.on('pageerror', (e) => errors.push(String(e)));
+  page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
+};
+const paperBg = (page) => page.$eval('#p5 .main-svg', (svg) => getComputedStyle(svg).backgroundColor || svg.style.background).catch(() => null);
+
+// ---------- 1. theme: default follows the device, toggle flips and persists ----------
+for (const scheme of ['light', 'dark']) {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(800);
+  const t0 = await page.evaluate(() => document.documentElement.dataset.theme);
+  if (t0 !== scheme) fail(`default theme should follow device (${scheme}), got ${t0}`);
+  const bg0 = await paperBg(page);
+  await page.click('#theme-toggle');
+  await page.waitForTimeout(600);
+  const t1 = await page.evaluate(() => document.documentElement.dataset.theme);
+  const other = scheme === 'dark' ? 'light' : 'dark';
+  if (t1 !== other) fail(`toggle from ${scheme} should give ${other}, got ${t1}`);
+  const pressed = await page.getAttribute('#theme-toggle', 'aria-pressed');
+  if (pressed !== String(t1 === 'dark')) fail(`aria-pressed=${pressed} does not match theme ${t1}`);
+  const bg1 = await paperBg(page);
+  if (!bg0 || bg0 === bg1) fail(`chart background did not change with theme (${bg0} -> ${bg1})`);
+  await page.screenshot({ path: join(OUT, `sim-${other}.png`) });
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(400);
+  const t2 = await page.evaluate(() => document.documentElement.dataset.theme);
+  if (t2 !== other) fail(`theme choice not remembered after reload (expected ${other}, got ${t2})`);
+  if (errors.length) fail(`theme (${scheme}): console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+
+// ---------- 2. live PFD ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(900);
+  const info = await page.evaluate(() => {
+    const svg = document.querySelector('#pfd svg');
+    const flows = [...svg.querySelectorAll('.flow')];
+    const running = flows.filter((f) => f.getAnimations().some((a) => a.playState === 'running')).length;
+    return { n: flows.length, running, vapor: +svg.dataset.flowVapor, purge: +svg.dataset.flowPurge, legend: !!document.querySelector('.pfd-legend') };
+  });
+  if (info.n < 7) fail(`expected >= 7 animated streams, found ${info.n}`);
+  if (info.running < info.n) fail(`only ${info.running}/${info.n} streams animating`);
+  if (!(info.vapor < info.purge)) fail(`vapor (${info.vapor}s) should flow faster than purge (${info.purge}s)`);
+  if (!info.legend) fail('stream legend missing');
+  // the feed slider changes the flow speeds
+  const before = await page.$eval('#pfd svg', (s) => s.style.getPropertyValue('--d-feed'));
+  await page.$eval('#in-F', (el) => { el.value = String(+el.max); el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(300);
+  const after = await page.$eval('#pfd svg', (s) => s.style.getPropertyValue('--d-feed'));
+  if (!before || before === after) fail(`feed slider did not change flow speed (${before} -> ${after})`);
+  await page.screenshot({ path: join(OUT, 'pfd-live.png'), clip: { x: 330, y: 150, width: 950, height: 420 } });
+  // infeasible preset stops the flows
+  await page.click('[data-preset="infeasible"]');
+  await page.waitForTimeout(400);
+  const stopped = await page.$eval('#pfd svg', (s) => s.classList.contains('stopped'));
+  if (!stopped) fail('infeasible preset should stop the flows');
+  await page.click('[data-preset="handcalc"]');
+  await page.waitForTimeout(400);
+  if (await page.$eval('#pfd svg', (s) => s.classList.contains('stopped'))) fail('flows should restart after a feasible preset');
+  // a slider change flashes card values
+  await page.$eval('#in-T_C', (el) => { el.value = '70'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(120);
+  const flashed = await page.$$eval('.rcard .num.changed', (els) => els.length);
+  if (flashed < 3) fail(`expected changed card values to flash, got ${flashed}`);
+  if (errors.length) fail(`pfd: console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+
+// ---------- 3. reduced motion and mobile, both themes ----------
+for (const scheme of ['light', 'dark']) {
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce', colorScheme: scheme });
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(700);
+  const running = await page.evaluate(() => [...document.querySelectorAll('#pfd svg .flow, #pfd svg .spin, #pfd svg .xtal')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
+  if (running) fail(`reduced motion (${scheme}): ${running} PFD animations still running`);
+  for (const tab of ['overview', 'theory', 'simulator', 'ai-workflow', 'references']) {
+    await page.evaluate((t) => { location.hash = `#${t}`; }, tab);
+    await page.waitForTimeout(250);
+    const sw = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+    if (sw > 1) fail(`mobile ${scheme} #${tab}: horizontal scroll ${sw}px`);
+  }
+  await page.evaluate(() => { location.hash = '#simulator'; });
+  await page.waitForTimeout(300);
+  await page.screenshot({ path: join(OUT, `mobile-${scheme}.png`) });
+  if (errors.length) fail(`mobile ${scheme}: console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+
+await browser.close();
+const report = failures.length ? failures.map((f) => `- ❌ ${f}`).join('\n') : '- ✅ all UX checks passed (theme toggle, live PFD, reduced motion, mobile)';
+writeFileSync(join(OUT, 'report.md'), `# UX browser checks\n\n${report}\n`);
+console.log(report);
+process.exit(failures.length ? 1 : 0);
