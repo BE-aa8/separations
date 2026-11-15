@@ -1,0 +1,31 @@
+
+> test
+> node --test tests/*.test.mjs
+
+TAP version 13
+# Subtest: data.js: every value has a known sourceId
+ok 1 - data.js: every value has a known sourceId
+  ---
+  duration_ms: 5.322291
+  ...
+# Subtest: claude build (site/js/model.js)
+ok 2 - claude build (site/js/model.js) # SKIP model.js not built yet
+  ---
+  duration_ms: 0.223911
+  type: 'suite'
+  ...
+# Subtest: gemini build (site/gemini/js/model.js)
+ok 3 - gemini build (site/gemini/js/model.js) # SKIP model.js not built yet
+  ---
+  duration_ms: 0.062402
+  type: 'suite'
+  ...
+1..3
+# tests 1
+# suites 2
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 53.450632
