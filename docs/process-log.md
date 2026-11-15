@@ -167,3 +167,29 @@ Entry template:
 **Prompt (verbatim):** "Okay it should be funded now, make sure you don't use a crazy amount of money on this shit otherwise we will be finding other methods."
 
 **What changed:** `run-gemini.sh` now keeps `docs/gemini-build/costs.tsv`. Each run logs a deliberately high cost estimate (all input tokens at $4/M and output at $18/M, no cache discount; $3 flat if a run dies without stats) and **refuses to start once the estimated total reaches $6** (`BUDGET_USD` in the workflow), below the $10 AI Studio credit. Each Gemini call has a time limit (plan 10 min, build 30, follow-up 15), and the whole job has a 45-minute timeout. Tested with a fake Gemini: the cost was logged and the over-budget run refused to start.
+
+## 2026-11-15 (cont.) — Gemini plan + build with gemini-3.5-flash (paid key); both Phase 1 builds merged
+
+**Prompts:** `models` stage → the key offered gemini-2.5-pro, gemini-3.5-flash, gemini-3.1-flash-lite (no 3.x Pro). I chose **gemini-3.5-flash**. Plan stage → Gemini returned a full plan (`docs/gemini-build/plan.md`) with 3 questions. I approved with these answers (sent verbatim as the build message): inline SVG PFD above the cards; presets only from data.js/plan values (Texas $0.0721/kWh, Expensive $0.25/kWh, steam $7.33/t); commit to the current branch; no uncited numbers (drop "China ~70%+" and "largest thermal energy sink").
+
+**Results (Gemini):**
+- Plan run: 3 min 24 s, read-only respected (no files changed). Build run: 12 min 23 s, 66 tool calls, ~8.1 M input tokens (7.8 M cached), ~84 k output tokens. Run stats name the models as gemini-3.8-flash plus gemini-3-flash-preview (Google appears to route the 3.5-flash name to a newer version).
+- npm test 8/8 on the first build run; browser smoke test 7 tabs, 16 sliders, 0 failures; data.js unchanged; nothing touched outside site/gemini/. It followed all of my answers (presets, no "70%" claim).
+- Minor UI issues: stray "—" after unitless values; overlapping annotations on the crossover map. Equations sit behind "?" disclosures (allowed by the plan) rather than shown on every card.
+
+**Cost:** my "$6 cap" only checks before a run starts, and its estimate assumes Pro long-context prices with no cache discount, so it logged $36.61 (it now blocks further Gemini runs, a safe default). At third-party-listed Gemini 3.5 Flash prices ($1.50/M input, $0.15/M cached, $9/M output) the real spend is about **$0.43 (plan) + $2.42 (build) ≈ $2.85**. To be confirmed on the AI Studio usage page. Lesson: a pre-run budget check cannot cap a single agentic run; only the time limit does.
+
+**Comparison snapshot (Phase 1):**
+
+| Metric | Claude (Opus 5.5, fresh Claude Code session) | Gemini (3.5-flash, Gemini CLI on GitHub Actions) |
+|---|---|---|
+| Plan step | Plan mode, no questions | Plan with 3 questions (one exposed invented preset numbers) |
+| Build time | ~13 min | 12 min 23 s (+3 min 24 s plan) |
+| npm test first run | 9/9 | 8/8 Gemini tests (9/9 suite) |
+| Smoke test (independent) | 7 tabs, 18 sliders, 0 failures | 7 tabs, 16 sliders, 0 failures |
+| Follow-up prompts needed | 0 | 0 (after one aborted free-tier attempt) |
+| Cost | ~$3.70 (reported) | ~$2.85 (estimated at list prices) |
+| Size | site/ ≈ 1,360 lines | site/gemini/ ≈ 4,400 lines |
+| Earlier attempt | n/a | free-tier gemini-3-flash: ignored plan-only instruction, hit daily quota, partial build |
+
+**Merged:** both builds merged into the planning branch (`site/` = Claude, `site/gemini/` = Gemini). Combined npm test 17/17; combined smoke test 0 failures on both paths. Netlify Drop zip built at `dist/mvr-crystallizer-site.zip` (not committed).
