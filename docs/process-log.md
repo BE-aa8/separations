@@ -142,3 +142,18 @@ Entry template:
 **Problems hit:** The first smoke-test run against a real build crashed: my `[data-tab]` selector also matched hidden tab panels. Fixed generically (only visible buttons/links count as tabs). The same fixed test grades the Gemini build. Recorded here because the fix came after seeing a build.
 
 **Next step:** I add the GEMINI_API_KEY repository secret, then run the Gemini workflow (plan → approve → build).
+
+## 2026-11-15 — Gemini plan run on GitHub Actions (run 43756313310)
+
+**Prompt:** I added the GEMINI_API_KEY secret ("I added the GEMINI_API_KEY secret, start the plan step"). Claude dispatched the workflow with stage=plan.
+
+**What happened:**
+- Gemini CLI 0.68.0 defaulted to **gemini-3-flash** on the **free tier**. It hit the per-minute limits three times, then the **daily limit (20 requests/day)**, and exited with code 173 after 5 min 42 s. No plan text was returned.
+- Despite `--approval-mode plan` (read-only) and the instruction "do not create or edit any files", **Gemini skipped the plan and wrote a build** in `site/gemini/` (index.html, style.css, charts.js, model.js, ui.js, plus an unchanged copy of data.js; about 1,630 lines).
+- Checked by Claude: `site/js/data.js` untouched; the data.js copy identical; nothing outside `site/gemini/`. **npm test: 8/8 Gemini tests pass** (numbers match the hand calc). Browser smoke test: 7 tabs, 8 sliders live, 1 failure (2 px horizontal overflow on mobile Simulator).
+- Against the plan, the partial build is missing: per-calculation equation cards (KaTeX equation + units + interpretation), ESTIMATE labels, the process flow diagram, and most inputs (8 sliders vs about 19).
+- Test-environment note: Gemini loads Plotly from cdn.plot.ly (Claude used jsDelivr). The first smoke run failed only because Claude's sandbox blocked that host; cdn.plot.ly was added to the environment allowlist and the test re-run.
+
+**Fix:** `run-gemini.sh` now treats any file change during the plan stage as a violation and reverts it (plan mode in Gemini CLI did not prevent writes in headless mode).
+
+**Comparison findings so far:** Gemini (Flash, free tier) produced correct physics on the first attempt but ignored the plan-only instruction and stopped early on quota. Claude (Opus, fresh session) completed every requirement in one turn (~13 min, ~$3.70).

@@ -65,7 +65,13 @@ set -e
 END=$(date +%s)
 
 # Guard: Gemini may only change site/gemini/ and its own logs. Record and undo anything else.
-VIOLATIONS="$(git status --porcelain | awk '{print $2}' | grep -v -E '^(site/gemini/|docs/gemini-build/|node_modules/|package-lock.json)' || true)"
+# In the plan stage nothing may change at all (read-only), including site/gemini/.
+if [ "$STAGE" = "plan" ]; then
+  ALLOWED='^(docs/gemini-build/|node_modules/|package-lock.json)'
+else
+  ALLOWED='^(site/gemini/|docs/gemini-build/|node_modules/|package-lock.json)'
+fi
+VIOLATIONS="$(git status --porcelain --untracked-files=all | awk '{print $2}' | grep -v -E "$ALLOWED" || true)"
 if [ -n "$VIOLATIONS" ]; then
   echo "Files changed outside site/gemini/ (reverted):"; echo "$VIOLATIONS"
   echo "$VIOLATIONS" | while read -r f; do
@@ -103,7 +109,7 @@ summary = (f"## Gemini {stage} run {ts}\n\n"
            f"- Exit code: {code}\n- Duration: {int(secs)//60} min {int(secs)%60} s\n"
            f"- Models: {', '.join(models) or 'unknown'}\n- Tokens: {json.dumps(tokens)}\n- Tool calls: {tools}\n"
            f"- npm test after run: {npass} passed, {nfail} failed\n"
-           f"- Files touched outside site/gemini/ (reverted): {viol.split() if viol.strip() else 'none'}\n"
+           f"- Files changed that this stage may not change (reverted): {viol.split() if viol.strip() else 'none'}\n"
            f"- Response: `docs/gemini-build/run-{ts}-{stage}.response.md`\n\n")
 (log / "last-run.md").write_text(summary)
 with open(log / "runs.md", "a") as f:
