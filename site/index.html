@@ -201,7 +201,59 @@
       <li>Plan v2 (final) merged by Claude.</li>
       <li>Phase 1 built twice from an identical prompt and identical files: Claude Code (this site) and Gemini (<a href="gemini/">/gemini/</a>).</li>
     </ol>
-    <div class="placeholder">PLACEHOLDER: Model comparison (test results, first-run bugs, fix iterations, time, level discipline, data honesty, explanation quality, chart readability, mobile layout, code clarity), the critique decision table, and screenshots will be added in Phase 4.</div>
+    <p>Both builds got the same prompt, plan and data file, in fresh sessions, and were graded by the same tests (written before either build and never shown to the builders). Full write-up with sources: <a href="https://github.com/be-aa8/seperations/blob/main/docs/comparison.md">docs/comparison.md</a>. Try the other build: <a href="gemini/">Gemini's site</a>.</p>
+
+    <h3>Results (Phase 1)</h3>
+    <div class="table-scroll"><table class="data-table">
+      <thead><tr><th>Metric</th><th>Claude (Opus 5.5, Claude Code)</th><th>Gemini (3.5-flash → served as 3.8-flash, Gemini CLI on GitHub Actions)</th></tr></thead>
+      <tbody>
+        <tr><td>Hand-calc tests, first run</td><td>9/9 pass</td><td>9/9 pass</td></tr>
+        <tr><td>Independent browser test</td><td>7 tabs, 18 sliders live, 0 failures</td><td>7 tabs, 16 sliders live, 0 failures</td></tr>
+        <tr><td>Fix prompts needed</td><td>0</td><td>0</td></tr>
+        <tr><td>Build time</td><td>13 min 9 s (35 turns)</td><td>12 min 23 s (66 tool calls) + 3 min 24 s planning</td></tr>
+        <tr><td>Cost</td><td>$3.70 (reported)</td><td>≈ $2.85 (estimated from tokens at list price)</td></tr>
+        <tr><td>Clarifying questions</td><td>0</td><td>3 (one proposed invented preset prices)</td></tr>
+        <tr><td>Equations shown on the Simulator</td><td>29, on every result card</td><td>0 (all behind “?” buttons)</td></tr>
+        <tr><td>Equations on Theory / Industry</td><td>30 / 1</td><td>56 / 26</td></tr>
+        <tr><td>ESTIMATE labels</td><td>On every estimated input and result</td><td>Few (almost none on sliders)</td></tr>
+        <tr><td>Data honesty</td><td>No unsourced numbers; gaps left as “SOURCE NEEDED”</td><td>Uncited kiln temperature (1050 °C); <strong>false claim</strong> that the critique was “approved by course instructor” (Andrew approved it)</td></tr>
+        <tr><td>Code size</td><td>~1,360 lines</td><td>~3,720 lines (2.7×)</td></tr>
+        <tr><td>Level (3rd-year ChemE)</td><td>Within level</td><td>Within level</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3>What I found</h3>
+    <ol>
+      <li><strong>Both got the physics right the first time.</strong> A detailed plan, exact input names and an independent test made correctness the easy part, as Prof. Co predicted.</li>
+      <li><strong>The differences were in presentation.</strong> Claude showed every equation with units and a one-line interpretation on the simulator. Gemini hid them behind buttons but wrote richer Theory and Industry pages.</li>
+      <li><strong>Data honesty needed enforcing for Gemini.</strong> Its plan proposed invented prices (caught at review), and its site has an uncited temperature and a hallucinated approval claim, left in place here as evidence.</li>
+      <li><strong>Instruction-following:</strong> on the free tier, told to only plan, Gemini wrote a full build anyway, then ran out of daily quota. That attempt is kept on its own branch.</li>
+      <li><strong>The critic needs checking too:</strong> Gemini's critique of my plan was right about compressor superheat but wrong on its one “critical” point (an arithmetic slip).</li>
+    </ol>
+
+    <h3>Side by side: Simulator tab (Phase 1, 1280 px)</h3>
+    <div class="compare-shots">
+      <figure><img src="img/compare/claude-phase1-simulator.jpg" alt="Claude build simulator tab: sliders, process flow diagram, and result cards each showing an equation, value, units and interpretation" loading="lazy" width="800" height="1625"><figcaption>Claude (Opus 5.5)</figcaption></figure>
+      <figure><img src="img/compare/gemini-phase1-simulator.jpg" alt="Gemini build simulator tab: sliders, process flow diagram, grouped value cards with question-mark buttons, and plots" loading="lazy" width="800" height="1625"><figcaption>Gemini (3.5-flash)</figcaption></figure>
+    </div>
+
+    <h3>Gemini's critique of plan v1: my decisions</h3>
+    <div class="table-scroll"><table class="data-table">
+      <thead><tr><th>#</th><th>Gemini suggested</th><th>Decision</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td>1A</td><td>Use one P<sub>sat</sub> method (Antoine) in both builds</td><td>Accept fix, reject reasoning</td><td>The predicted test failure came from an arithmetic slip, but one method keeps the builds consistent</td></tr>
+        <tr><td>1B</td><td>ε (adhering liquor) is inconsistent with the mass balance</td><td>Accept</td><td>Made ε a purity-only model</td></tr>
+        <tr><td>2</td><td>State the enthalpy approximations</td><td>Modify</td><td>Added the “compressor work shows up as ~3 % surplus heat” check</td></tr>
+        <tr><td>3</td><td>LiOH's osmotic coefficient makes ideal BPE too high</td><td>Verify first</td><td>Confirmed from Monnin &amp; Dubois (2005): φ ≈ 0.83, real BPE 3.95 K vs 4.76 K ideal</td></tr>
+        <tr><td>4</td><td>Show compressor discharge temperature T<sub>2</sub></td><td>Accept</td><td>Verified ≈ 113–117 °C: compression superheats steam, it isn't wet</td></tr>
+        <tr><td>5</td><td>Add metastable-zone and spinodal bands; crystal-size card</td><td>Modify</td><td>Drawn as SCHEMATIC; its crystal-size cutoffs were unsourced, so rejected</td></tr>
+        <tr><td>6</td><td>Rewrite three interpretations</td><td>Accept</td><td>Clearer answers to “how does that make sense?”</td></tr>
+        <tr><td>7a–c</td><td>Cut stretch goals; keep Phase 2 small</td><td>Accept, but keep a simple turndown</td><td>Prof. Co asked for operating scenarios (Lecture 10)</td></tr>
+        <tr><td>8a–b</td><td>Feasibility guards; exact input names</td><td>Accept (modified threshold)</td><td>Physical guards instead of an arbitrary cutoff</td></tr>
+        <tr><td>9–10</td><td>Fairer comparison; fewer tabs</td><td>Accept</td><td>Same files and fresh sessions for both; 7 tabs</td></tr>
+      </tbody>
+    </table></div>
+    <p class="small">Full table with reasoning: <a href="https://github.com/be-aa8/seperations/blob/main/docs/critique-decisions.md">docs/critique-decisions.md</a>. Caveats: Claude wrote the plan and the tests; the harnesses differ (interactive Claude Code vs headless Gemini CLI); Opus is a top-tier model and Flash a fast-tier one; one build each, no repeats.</p>
   </div>
   <div class="subpanel" data-sub="log" hidden>
     <div class="placeholder">PLACEHOLDER: The process log (models, services, prompts, decisions, iterations) is kept in <a href="https://github.com/be-aa8/seperations/blob/main/docs/process-log.md">docs/process-log.md</a> and will be shown here.</div>

@@ -219,3 +219,17 @@ Entry template:
 - Phase 2 browser check (P9, P10, every clickable PFD unit, keyboard, 375 px): passed.
 - Deployed files compared byte-for-byte with the repo: every JS and CSS file is identical. `index.html` differs only by Netlify's injected hosting comment and HUD script tag. The unit-tested numbers are the ones online.
 - Report and representative screenshots: `docs/screenshots/verification/2026-11-15-live/` (the full set of about 13 MB was kept out of the repo).
+
+## 2026-11-15 (cont.) — Claude Code — model comparison write-up
+
+**Prompt (verbatim):** "start the model comparison write-up, I also want to work on tidying up the website, giving it more of a better UI and UX design, and then we can do full deployment. But let's start with our model comparison write-up, and then we'll get to that in a little bit."
+
+**Process:** plan mode → plan approved. Evidence gathered: the Claude build session record (13 min 9 s, 35 turns, $3.70, 74 k output tokens, 0 questions), Gemini run logs (`docs/gemini-build/runs.md`), the smoke-test KaTeX/plot counts for both Phase 1 builds (Claude's Phase 1 re-served from `claude/phase1-build` for a fair screenshot), line and byte counts, and text audits for unsourced numbers and level.
+
+**Decision (Andrew):** Gemini's site says the critique outcomes were "approved by course instructor", which is false (I approved them). Leave Gemini's code untouched as evidence and flag it in the comparison.
+
+**Produced:** `docs/comparison.md` (setup, sourced results table, findings, fairness caveats, process lessons, and a "My conclusions" section for me to write); the site's AI Workflow → Model Comparison sub-tab (results table, findings, side-by-side Phase 1 simulator screenshots in `site/img/compare/`, short critique-decision table). Verified: npm test 23/23, smoke test 0 failures, Phase 2 browser check passed; screenshots reviewed at 1280 and 375 px.
+
+**Key findings:** both builds were correct on the first run (9/9, 0 fix prompts, ~12–13 min, ~$3). The differences were presentation (Claude: equations on every simulator card; Gemini: none on the simulator but a richer Theory tab) and data honesty (Gemini: invented preset prices in its plan, an uncited kiln temperature, a hallucinated approval claim).
+
+**Next:** I write "My conclusions" in comparison.md; then the UI/UX pass and full deployment.

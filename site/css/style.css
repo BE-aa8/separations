@@ -147,3 +147,11 @@ button.active { background: var(--accent); color: #fff; border-color: var(--acce
   #pfd { overflow-x: auto; -webkit-overflow-scrolling: touch; }
   #pfd svg { min-width: 600px; }
 }
+
+/* ---- Model comparison screenshots ---- */
+.compare-shots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.compare-shots figure { margin: 0; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
+.compare-shots img { display: block; width: 100%; height: auto; }
+.compare-shots figcaption { padding: 6px 10px; font-weight: 600; font-size: 0.9rem; }
+@media (max-width: 640px) { .compare-shots { grid-template-columns: minmax(0, 1fr); } }
+p.small { font-size: 0.85rem; }
