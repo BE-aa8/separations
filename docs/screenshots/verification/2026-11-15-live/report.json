@@ -1,0 +1,378 @@
+[
+  {
+    "path": "/",
+    "tabs": [
+      {
+        "label": "Overview",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-01-Overview.png"
+      },
+      {
+        "label": "Industry Context",
+        "katex": 1,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-02-Industry_Context.png"
+      },
+      {
+        "label": "Theory",
+        "katex": 33,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-03-Theory.png"
+      },
+      {
+        "label": "Simulator",
+        "katex": 35,
+        "katexErrors": 0,
+        "plots": 12,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 22,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-04-Simulator.png"
+      },
+      {
+        "label": "AI Workflow",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-05-AI_Workflow.png"
+      },
+      {
+        "label": "Video & Transcript",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-06-Video_Transcript.png"
+      },
+      {
+        "label": "References",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-07-References.png"
+      }
+    ],
+    "sliders": [
+      {
+        "id": "in-F",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-xF",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-zF",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-T_C",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-purgeRatio",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-epsilon",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-activityFactor",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-dT_heater",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-etaIs",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-etaMotor",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-N",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-Ts_C",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-Tlast_C",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-dTmin",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-ce",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-cs",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-hours",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-U",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-interest",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-life_yr",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "in-loadFraction",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "tcold",
+        "changed": true,
+        "nan": false
+      }
+    ],
+    "failures": [],
+    "consoleErrors": []
+  },
+  {
+    "path": "/gemini/",
+    "tabs": [
+      {
+        "label": "1. Overview",
+        "katex": 7,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-01-1_Overview.png"
+      },
+      {
+        "label": "2. Industry Context",
+        "katex": 26,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-02-2_Industry_Context.png"
+      },
+      {
+        "label": "3. Theory",
+        "katex": 56,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-03-3_Theory.png"
+      },
+      {
+        "label": "4. Simulator",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 9,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 16,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-04-4_Simulator.png"
+      },
+      {
+        "label": "5. AI Workflow",
+        "katex": 8,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-05-5_AI_Workflow.png"
+      },
+      {
+        "label": "6. Video & Transcript",
+        "katex": 0,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-06-6_Video_Transcript.png"
+      },
+      {
+        "label": "7. References & Contributions",
+        "katex": 1,
+        "katexErrors": 0,
+        "plots": 0,
+        "plotsUnrendered": 0,
+        "nanText": false,
+        "sliders": 0,
+        "scrollWidth": 1280,
+        "clientWidth": 1280,
+        "screenshot": "desktop-07-7_References_Contributions.png"
+      }
+    ],
+    "sliders": [
+      {
+        "id": "input-F-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-xF-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-zF-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-T_C-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-purgeRatio-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-epsilon-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-dT_heater-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-etaIs-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-etaMotor-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-Ts_C-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-Tlast_C-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-dTmin-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-N-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-ce-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-cs-range",
+        "changed": true,
+        "nan": false
+      },
+      {
+        "id": "input-hours-range",
+        "changed": true,
+        "nan": false
+      }
+    ],
+    "failures": [],
+    "consoleErrors": []
+  }
+]

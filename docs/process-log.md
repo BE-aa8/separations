@@ -209,3 +209,13 @@ Entry template:
 **Results:** heater 469 m², TAC $470k/yr at ΔT = 6 K; **cost-optimal ΔT = 3.0 K** (TAC $444k/yr). Pricier electricity → 2.3 K; U 3000 → 2.0 K; U 1000 → 4.4 K. Turndown 75 %/50 % → 24.6/20.1 kWh/t. All in `docs/handcalc.md`.
 
 **Verification:** npm test 23/23 (Phase 1 17 + Phase 2 6); Phase 2 browser check passed at 1280 and 375 px; generic smoke test 0 failures on `/` (22 sliders) and `/gemini/` (16). Screenshots reviewed: fixed a clipped P9 label, and made the PFD readable on phones (min width with in-box scroll instead of shrinking).
+
+## 2026-11-15 (cont.) — live-site verification
+
+**Prompt (verbatim):** "deployed, run the tests on the live site"
+
+**Results against https://ucseparations.netlify.app:**
+- Generic browser smoke test: `/` (Claude, Phases 1+2) 7 tabs, 22 sliders, 0 failures; `/gemini/` (Gemini, Phase 1) 7 tabs, 16 sliders, 0 failures.
+- Phase 2 browser check (P9, P10, every clickable PFD unit, keyboard, 375 px): passed.
+- Deployed files compared byte-for-byte with the repo: every JS and CSS file is identical. `index.html` differs only by Netlify's injected hosting comment and HUD script tag. The unit-tested numbers are the ones online.
+- Report and representative screenshots: `docs/screenshots/verification/2026-11-15-live/` (the full set of about 13 MB was kept out of the repo).
