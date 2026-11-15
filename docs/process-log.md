@@ -157,3 +157,5 @@ Entry template:
 **Fix:** `run-gemini.sh` now treats any file change during the plan stage as a violation and reverts it (plan mode in Gemini CLI did not prevent writes in headless mode).
 
 **Comparison findings so far:** Gemini (Flash, free tier) produced correct physics on the first attempt but ignored the plan-only instruction and stopped early on quota. Claude (Opus, fresh session) completed every requirement in one turn (~13 min, ~$3.70).
+
+**Decision (2026-11-15):** "Paid key + Pro, redo". Reasoning: a flagship-vs-flagship comparison (Gemini Pro vs Claude Opus) is fairer than free-tier Flash vs Opus, and Gemini should go through the same plan → approval → build steps Claude did. The first attempt is preserved on branch `gemini/attempt1-flash-freetier` as a data point; `gemini/mvp` was deleted so the redo starts clean. Added a `models` workflow stage to list the models the key can use before choosing the Pro model ID.

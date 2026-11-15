@@ -6,6 +6,7 @@ name: Gemini build (Phase 1)
 #                      (saved to docs/gemini-build/plan.md on branch gemini/mvp). Nothing is built.
 #   stage=build     -> Gemini implements its plan in site/gemini/. Put your approval and any
 #                      answers to its questions in "message" (answer them the same way you answered Claude).
+#   stage=models    -> lists the Gemini models this API key can use (free, changes nothing).
 #   stage=followup  -> one follow-up prompt (e.g. "npm test fails on mvr.T2_C, fix it").
 #                      Each run is a fresh Gemini context; every run is logged for the comparison.
 # Requires the repository secret GEMINI_API_KEY.
@@ -15,7 +16,7 @@ on:
       stage:
         description: "plan / build / followup"
         type: choice
-        options: [plan, build, followup]
+        options: [plan, build, followup, models]
         default: plan
       message:
         description: "Your approval / answers (build) or instruction (followup)"

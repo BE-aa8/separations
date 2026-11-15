@@ -14,6 +14,13 @@ if [ -z "${GEMINI_API_KEY:-}" ]; then
   exit 1
 fi
 
+if [ "$STAGE" = "models" ]; then
+  # Lists the models this API key can use (no prompt, no files changed).
+  npx -y "@google/gemini-cli@$GEMINI_CLI_VERSION" --list-models 2>&1 | tee "$LOG_DIR/models-$TS.txt"
+  printf '## Available models (%s)\n\n```\n%s\n```\n' "$TS" "$(cat "$LOG_DIR/models-$TS.txt")" > "$LOG_DIR/last-run.md"
+  exit 0
+fi
+
 case "$STAGE" in
   plan)
     PROMPT="$BASE_PROMPT
