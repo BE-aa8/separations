@@ -233,3 +233,11 @@ Entry template:
 **Key findings:** both builds were correct on the first run (9/9, 0 fix prompts, ~12–13 min, ~$3). The differences were presentation (Claude: equations on every simulator card; Gemini: none on the simulator but a richer Theory tab) and data honesty (Gemini: invented preset prices in its plan, an uncited kiln temperature, a hallucinated approval claim).
 
 **Next:** I write "My conclusions" in comparison.md; then the UI/UX pass and full deployment.
+
+## 2026-11-15 (cont.) — brief for a third model (ChatGPT) to do the UX pass
+
+**Prompt (verbatim):** "Could you give me a project breakdown that I can add into ChatGPT, I'm currently working with Chat to implement better UX to the website."
+
+**Produced:** `docs/ux-brief-for-chatgpt.md`: a self-contained brief covering what the site is and who it's for, file-by-file edit permissions (`model.js`, `data.js` and `site/gemini/` are off-limits), the hard constraints the automated tests enforce (tab controls, live sliders, no NaN, KaTeX, Plotly, no console errors, no horizontal scroll at 375 px, the Phase 2 IDs), course content rules (equation, units and interpretation stay visible; ESTIMATE/SCHEMATIC/SOURCE NEEDED labels stay), a list of known UX problems, the delivery format (plan first, then small diffs), and how to test. Also a paste/upload bundle (`dist/chatgpt-ux-bundle.txt`, not committed) with the brief plus the UI source files.
+
+**Why:** ChatGPT becomes a third model in the workflow; the brief makes it easy to verify whatever it returns against the same tests.
