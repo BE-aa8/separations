@@ -241,3 +241,15 @@ Entry template:
 **Produced:** `docs/ux-brief-for-chatgpt.md`: a self-contained brief covering what the site is and who it's for, file-by-file edit permissions (`model.js`, `data.js` and `site/gemini/` are off-limits), the hard constraints the automated tests enforce (tab controls, live sliders, no NaN, KaTeX, Plotly, no console errors, no horizontal scroll at 375 px, the Phase 2 IDs), course content rules (equation, units and interpretation stay visible; ESTIMATE/SCHEMATIC/SOURCE NEEDED labels stay), a list of known UX problems, the delivery format (plan first, then small diffs), and how to test. Also a paste/upload bundle (`dist/chatgpt-ux-bundle.txt`, not committed) with the brief plus the UI source files.
 
 **Why:** ChatGPT becomes a third model in the workflow; the brief makes it easy to verify whatever it returns against the same tests.
+
+## 2026-11-15 (cont.) — UI/UX redesign: plan from ChatGPT, Phase 0 report, Phase 1 (global identity)
+
+**Prompt:** Andrew pasted a 6-phase redesign plan written with **ChatGPT** (a third model): a hybrid dark-cinematic / light-technical style, lime/olive accent, "Anduril/Palantir-inspired" industrial look, strict preservation of physics, data, IDs and tests, and a checkpoint after each phase. Instruction: "Please follow this plan in plan mode."
+
+**Phase 0 (plan mode, approved):** confirmed the repo matched main with no prior CSS patch; baseline npm 23/23, smoke 0 failures on both builds, Phase 2 check pass; measured the mobile Simulator's first result at y = 2,259 px (page 14,668 px). Risks flagged: hash routing makes `href="#…"` jump links switch tabs (use buttons); lime #A6BB43 fails contrast on white (~2.2:1), so olive #55621A is used for text and links; the hero can't reuse the PFD (duplicate IDs); headline metrics should render live from the model, not be hard-coded.
+
+**Phase 1 (done):** `site/css/style.css` rewritten as a design system (tokens for light and dark surfaces, lime/olive, preserved status colors; type scale; mono for values and labels; dark sticky header 86 px vs 117 px before; restyled buttons, cards, value-first result cards, equation cards, tables with dark heads, callouts, intentional placeholders, focus rings, reduced-motion, print). Inter is **self-hosted** (`site/fonts/`, OFL license included) instead of Google Fonts, avoiding a third-party request and projector-Wi-Fi risk. Bug found in review: `.wrap` padding overrode `main`'s top padding, so content sat under the header; fixed.
+
+**Checkpoint:** local tag `pre-ux-redesign` = `2fe4d1f` (the git proxy refused pushing tags); main stays at that commit until the redesign is approved.
+
+**Tests after Phase 1:** npm 23/23; smoke `/` 7 tabs, 22 sliders, 0 failures; `/gemini/` 0 failures; Phase 2 check pass. Screenshots reviewed at 1280×720, 1280×800 and 375×812.
