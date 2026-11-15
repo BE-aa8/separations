@@ -253,3 +253,13 @@ Entry template:
 **Checkpoint:** local tag `pre-ux-redesign` = `2fe4d1f` (the git proxy refused pushing tags); main stays at that commit until the redesign is approved.
 
 **Tests after Phase 1:** npm 23/23; smoke `/` 7 tabs, 22 sliders, 0 failures; `/gemini/` 0 failures; Phase 2 check pass. Screenshots reviewed at 1280×720, 1280×800 and 375×812.
+
+## 2026-11-15 (cont.) — "CRYSTALLIZE" fluid dot-lattice hero (wow factor)
+
+**Prompt (verbatim):** "Overall I think it looks pretty good, is there anyway we could make a flashy "homepage" that is only there for looks? I think anything that could give a wow factor would be nice. Could we implement some flowy physics? something kinda like the screenrecording attached?" (A 9-second screen recording of a dot-grid wordmark that swirls under the cursor; Claude extracted frames with ffmpeg to study it.)
+
+**Decisions (Andrew):** the word is **CRYSTALLIZE**; it sits at the top of the Overview tab (header and tabs stay visible). Planned in plan mode and approved.
+
+**Built:** `site/js/hero.js` (self-contained, no libraries): the letters are sampled onto a dot lattice; on load the dots settle out of a scattered "supersaturated" cloud (a crystallization nod); the pointer drives a coarse 2-D Stam stable-fluids solver (splat → vorticity confinement → semi-Lagrangian advection → 14-iteration pressure projection → decay) whose velocity carries the dots, with springs pulling them back. Fast dots tint lime. An automatic slow stir runs after 4 s idle (for projector demos). It pauses when the tab is hidden or off screen; reduced-motion users get static dots. Mobile stacks CRYS / TAL / LIZE. The hero markup and CSS are in `index.html` and `style.css`; `model.js`, `data.js` and the Gemini build are untouched.
+
+**Tests:** new `tests/browser-hero.mjs` (added to CI): lattice renders; stirring changes the frame; reduced motion is static with 0 frames; the loop stops on another tab; no console errors; no horizontal scroll at 375 px. The first run caught a real bug: the loop kept running after switching tabs (fixed by checking `offsetParent`). Then: npm 23/23, smoke 0 failures on both builds, Phase 2 pass, hero pass. Frame sequences reviewed: tuned fluid coupling down (it was too explosive) and resized the hero to remove an empty band.

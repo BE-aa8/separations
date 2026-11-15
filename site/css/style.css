@@ -315,3 +315,30 @@ p.small { font-size: 0.85rem; color: var(--muted); }
   .tab[hidden] { display: none !important; }
   .card, .eq-card, .rcard, .plot { break-inside: avoid; box-shadow: none; }
 }
+
+/* ---------- hero: CRYSTALLIZE dot lattice (js/hero.js) ---------- */
+.visually-hidden { position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.hero {
+  position: relative; overflow: hidden; background: var(--ink); color: var(--ink-text);
+  margin: calc(-1 * var(--s6)) calc(-1 * var(--s5)) var(--s6);
+  height: clamp(440px, 62vh, 580px); touch-action: pan-y; border-bottom: 1px solid var(--ink-border);
+}
+#hero-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.hero-copy { position: relative; z-index: 1; padding: var(--s6) var(--s5) 0; max-width: 640px; pointer-events: none; }
+.hero-copy a { pointer-events: auto; }
+.hero-eyebrow { margin: 0 0 var(--s3); font: 600 var(--fs-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-muted); display: flex; align-items: center; gap: 10px; }
+.hero-eyebrow::before { content: ""; width: 18px; height: 2px; background: var(--lime); }
+.hero-tag { margin: 0 0 var(--s4); font-size: 1.35rem; line-height: 1.35; letter-spacing: -0.01em; color: var(--ink-text); max-width: 30ch; }
+.hero-cta {
+  display: inline-flex; align-items: center; gap: 8px; background: var(--lime); color: var(--ink); text-decoration: none;
+  font-weight: 650; font-size: 0.95rem; padding: 10px 16px; border-radius: var(--radius); transition: background .15s, transform .15s;
+}
+.hero-cta:hover { background: #B8CC55; color: var(--ink); transform: translateY(-1px); }
+.hero-cta:focus-visible { box-shadow: 0 0 0 2px var(--ink), 0 0 0 4px var(--lime); }
+.hero-hint { position: absolute; right: var(--s5); bottom: var(--s3); z-index: 1; margin: 0; font: 500 var(--fs-xs)/1.4 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); pointer-events: none; }
+@media (max-width: 640px) {
+  .hero { margin: calc(-1 * var(--s6)) calc(-1 * var(--s4)) var(--s5); height: clamp(480px, 72vh, 640px); }
+  .hero-copy { padding: var(--s5) var(--s4) 0; }
+  .hero-tag { font-size: 1.1rem; }
+  .hero-hint { right: var(--s4); }
+}

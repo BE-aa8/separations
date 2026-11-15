@@ -11,6 +11,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"></script>
 <script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js" crossorigin="anonymous"></script>
 <script type="module" src="js/ui.js"></script>
+<script type="module" src="js/hero.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -33,6 +34,16 @@
 
 <!-- ================= 1. OVERVIEW ================= -->
 <section id="tab-overview" class="tab" data-tab="overview">
+  <div class="hero" id="hero">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-copy">
+      <p class="hero-eyebrow">CHE 4061 · Separation Processes · University of Cincinnati</p>
+      <h2 class="visually-hidden">Crystallize</h2>
+      <p class="hero-tag">Evaporative crystallization of battery-grade LiOH·H<sub>2</sub>O with mechanical vapor recompression.</p>
+      <a class="hero-cta" href="#simulator">Open the simulator <span aria-hidden="true">→</span></a>
+    </div>
+    <p class="hero-hint" aria-hidden="true">Move to stir · scroll for the story ↓</p>
+  </div>
   <div class="banner ai-banner">
     <strong>This is an AI project.</strong> The plan was written by one AI model, critiqued by another, and the site was built by two different models so they can be compared.
     See <a href="#ai-workflow">AI Workflow</a> for the models, prompts, decisions, and the comparison.
