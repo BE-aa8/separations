@@ -2,3 +2,4 @@ node_modules/
 smoke-results/
 package-lock.json
 dist/
+__pycache__/

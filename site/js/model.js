@@ -180,8 +180,10 @@ export const DEFAULT_INPUTS = Object.freeze({
   ce: DATA.prices.electricity.value,
   cs: DATA.prices.steam.value,
   hours: 8000,
-  U: DATA.evaporator.U.value,    // Phase 2 (unused)
-  loadFraction: 1.0,             // Phase 2 (unused)
+  U: DATA.evaporator.U.value,    // Phase 2: overall heat-transfer coefficient, W/(m2 K)
+  loadFraction: 1.0,             // Phase 2: part load for turndown (fixed heater area)
+  interest: DATA.capital.interest.value,   // Phase 2: 1/yr, for annualizing capital
+  life_yr: DATA.capital.life_yr.value,     // Phase 2: yr
 });
 
 /** Slider ranges (§5.4) for the UI. */
@@ -190,6 +192,7 @@ export const RANGES = Object.freeze({
   epsilon: [0, 0.10], activityFactor: [0.75, 1.20], dT_heater: [1, 15], etaIs: [0.60, 0.85],
   etaMotor: [0.90, 0.97], Ts_C: [100, 150], Tlast_C: [40, 60], dTmin: [3, 10], N: [1, 7],
   ce: [0.03, 0.25], cs: [5, 40], hours: [4000, 8760],
+  U: [1000, 3500], loadFraction: [0.5, 1.1], interest: [0.05, 0.15], life_yr: [5, 20],
 });
 
 /** BPE for a given state, using the osmotic coefficient or the activity slider. */
@@ -198,8 +201,8 @@ export function bpeFor(inp, s = solubility(inp.T_C)) {
   return { a, BPE: bpe({ s, T_C: inp.T_C, i: inp.i, activityFactor: a }) };
 }
 
-/** Run every unit model (§5.4). Never throws for slider-range inputs; non-finite values become null. */
-export function simulate(inputs = {}) {
+/** Phase 1 unit models only (no capital-cost design); used by the Phase 2 sweeps. */
+function simulateBase(inputs = {}) {
   const inp = { ...DEFAULT_INPUTS, ...inputs };
   const warnings = [];
   const s = solubility(inp.T_C);
@@ -239,6 +242,99 @@ export function simulate(inputs = {}) {
   }
 
   return { inputs: inp, s, m, Kb, phi, BPE, lambdaV, mass, Q_kW, mvr: mv, effects, econ, warnings };
+}
+
+/** Run every unit model (§5.4) plus the Phase 2 design (heater area, capital, TAC optimum, turndown).
+ *  Never throws for slider-range inputs; non-finite values become null. */
+export function simulate(inputs = {}) {
+  const out = simulateBase(inputs);
+  out.design = designFor(out.inputs, out);
+  out.warnings.push(...out.design.warnings);
+  return out;
+}
+
+// ---------- Phase 2: heater area, equipment cost, TAC, turndown ($5–$7) ----------
+const CAP = DATA.capital;
+/** CEPCI escalation from the DOE 1998 cost basis to the latest sourced annual index. */
+export const ESCALATION = CAP.cepciNow.value / CAP.cepciBase.value;
+
+/** Heater area ($5): A = Q / (U ΔT). Q in kW, U in W/(m² K), ΔT in K → m². */
+export function heaterArea({ Q_kW, U, dT }) { return Q_kW * 1000 / (U * dT); }
+
+/** Log-log interpolation in a DOE cost table (installed $, 1998). Throws outside the table. */
+function costLookup(table, x, what) {
+  const rows = table.rows;
+  const lo = rows[0][0], hi = rows[rows.length - 1][0];
+  if (!(x >= lo && x <= hi)) throw new RangeError(`${what} ${x.toFixed(0)} is outside the DOE cost table (${lo}–${hi}); capital cost not shown`);
+  for (let k = 0; k < rows.length - 1; k++) {
+    const [x0, , y0] = rows[k], [x1, , y1] = rows[k + 1];
+    if (x <= x1) {
+      const t = (Math.log10(x) - Math.log10(x0)) / (Math.log10(x1) - Math.log10(x0));
+      return 10 ** (Math.log10(y0) + t * (Math.log10(y1) - Math.log10(y0)));
+    }
+  }
+  return rows[rows.length - 1][2];
+}
+/** Installed compressor cost, $ (current CEPCI), from shaft power in kW (DOE proxy, ESTIMATE). */
+export function compressorCost(kW) { return costLookup(CAP.compressor, kW, 'Compressor power (kW)') * ESCALATION; }
+/** Installed shell-and-tube heater cost, $ (current CEPCI), from area in m². */
+export function heaterCost(m2) { return costLookup(CAP.heaterShellTube, m2, 'Heater area (m²)') * ESCALATION; }
+/** Capital recovery factor: annual payment per $ of capital at interest i over n years. */
+export function crf(i, n) { return i * (1 + i) ** n / ((1 + i) ** n - 1); }
+
+/** Total annualized cost ($6) of the MVR at heater driving force dT (full load). Throws if off the cost tables. */
+export function tacAt(inp, dT) {
+  const o = simulateBase({ ...inp, dT_heater: dT });
+  if (!o.mass.feasible || o.Q_kW == null || !o.mvr) throw new RangeError('infeasible state');
+  const A = heaterArea({ Q_kW: o.Q_kW, U: o.inputs.U, dT });
+  const C_hx = heaterCost(A);
+  const C_comp = compressorCost(o.mvr.Wshaft_kW);
+  const f = crf(o.inputs.interest, o.inputs.life_yr);
+  const capAnnual = f * (C_hx + C_comp);
+  const energyAnnual = o.econ[1].annual_MVR;
+  return { dT, A, Wshaft_kW: o.mvr.Wshaft_kW, C_hx, C_comp, crf: f, capAnnual, energyAnnual, TAC: capAnnual + energyAnnual };
+}
+const tryTac = (inp, dT) => { try { return tacAt(inp, dT); } catch { return null; } };
+
+/** TAC vs heater ΔT for P9 (points off the cost tables are omitted). */
+export function sweepTAC(inp, dTs = linspace(1, 15, 57)) { return dTs.map((d) => tryTac(inp, d)).filter(Boolean); }
+
+/** Cost-optimal heater ΔT on a 0.1 K grid from 1 to 15 K (same grid as the reference). */
+export function optimumDT(inp) {
+  let best = null;
+  for (let k = 0; k <= 140; k++) {
+    const d = Math.round((1 + 0.1 * k) * 10) / 10;
+    const t = tryTac(inp, d);
+    if (t && (!best || t.TAC < best.TAC)) best = t;
+  }
+  return best ? { dT: best.dT, TAC: best.TAC } : null;
+}
+
+/** Fixed-area turndown ($7): heater sized at full load; at load f, Q' = fQ and ΔT' = Q'/(U A) = f ΔT. */
+export function turndownAt(inp, f) {
+  const p = { ...DEFAULT_INPUTS, ...inp };
+  const dT = f * p.dT_heater;
+  const part = simulateBase({ ...p, F: f * p.F, dT_heater: dT });
+  const mv = part.mvr;
+  if (!mv) return { f, dT, r: null, kWh_per_t: null, cost_per_t: null, Welec_kW: null };
+  return { f, dT, r: mv.r, kWh_per_t: mv.kWh_per_t, cost_per_t: p.ce * mv.kWh_per_t, Welec_kW: mv.Welec_kW };
+}
+/** Turndown curve for P10. */
+export function sweepTurndown(inp, fs = linspace(0.5, 1.1, 25)) { return fs.map((f) => turndownAt(inp, f)); }
+
+function designFor(inp, base) {
+  const warnings = [];
+  const nul = { A: null, C_hx: null, C_comp: null, crf: null, capAnnual: null, energyAnnual: null, TAC: null };
+  let point = nul;
+  if (base.mass.feasible && base.Q_kW != null && base.mvr) {
+    try { point = tacAt(inp, inp.dT_heater); } catch (e) {
+      point = { ...nul, A: heaterArea({ Q_kW: base.Q_kW, U: inp.U, dT: inp.dT_heater }) };
+      warnings.push(e.message);
+    }
+  }
+  const optimum = base.mass.feasible ? optimumDT(inp) : null;
+  const turndown = turndownAt(inp, inp.loadFraction);
+  return { ...point, optimum, turndown, escalation: ESCALATION, warnings };
 }
 
 // ---------- sweeps for plots (pure) ----------

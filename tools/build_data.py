@@ -14,6 +14,7 @@ import math
 from pathlib import Path
 
 ACCESSED = "2026-11-13"
+ACCESSED_P2 = "2026-11-15"
 
 SOURCES = {
     "nist-water": {
@@ -67,6 +68,16 @@ SOURCES = {
         "url": "https://mynews13.com/fl/orlando/news/2026/01/21/tesla-lithium-refinery-in-texas-is-now-fully-operational",
         "accessed": "2026-10-23",
     },
+    "doe-netl-2002": {
+        "citation": "Loh, H.P.; Lyons, J.; White, C.W. III. Process Equipment Cost Estimation, Final Report. DOE/NETL-2002/1169, U.S. Department of Energy, National Energy Technology Laboratory, 2002 (OSTI 797810). Appendix B: ICARUS purchased and installed costs, 1st quarter 1998 dollars (shell-and-tube heat exchanger p. 58; centrifugal compressor p. 70). Table 11: CEPCI 1998 = 389.5. Stated accuracy: order-of-magnitude +50 %/-30 %.",
+        "url": "https://www.osti.gov/servlets/purl/797810",
+        "accessed": ACCESSED_P2,
+    },
+    "ce-econ-ind-2024": {
+        "citation": "Chemical Engineering magazine, Economic Indicators, September 2024, p. 45: CEPCI annual index 2023 = 797.9 (1957-59 = 100); June 2024 preliminary 798.8. The 2024 and 2025 annual averages are behind the publisher's paywall (2025 reported 1.6 % above 2024).",
+        "url": "https://www.chemengonline.com/wp-content/uploads/2024/08/19_CHE_0924_EconInd_p45.pdf",
+        "accessed": ACCESSED_P2,
+    },
     "us10961126": {
         "citation": "US Patent 10,961,126 B2, Process for reducing fouling in evaporators in lithium hydroxide recovery (Veolia). Lithium carbonate scaling in LiOH evaporators; MVR, TVR and multi-effect options.",
         "url": "https://patents.google.com/patent/US10961126",
@@ -75,6 +86,25 @@ SOURCES = {
 }
 
 # --- NIST saturation table, verbatim (T_C, P_kPa, hf, hg in kJ/kg) ---
+# --- DOE/NETL 2002, Appendix B, 1st quarter 1998 dollars (verbatim) ---
+# Shell and tube heat exchanger (p. 58): surface area ft2, purchased $, installed $
+DOE_HX = [
+    (100, 13200, 48300), (200, 13600, 55800), (300, 14500, 57300), (400, 16100, 59100),
+    (500, 16200, 68000), (600, 16600, 68400), (700, 18000, 70000), (800, 18400, 70400),
+    (900, 20300, 72600), (1000, 20800, 73100), (2000, 31900, 95800), (3000, 44700, 109600),
+    (4000, 53900, 132900), (5000, 62100, 141800), (6000, 70800, 151100), (7000, 99600, 203500),
+    (8000, 107900, 212400), (9000, 117100, 222100), (10000, 124200, 229800), (15000, 186300, 321500),
+    (20000, 248400, 427000), (30000, 354000, 573900), (40000, 479100, 767500), (50000, 582500, 953000),
+    (60000, 708300, 1106600), (70000, 839000, 1425600),
+]
+# Centrifugal compressor with motor driver (p. 70), 4-stage series: driver hp, purchased $, installed $
+DOE_COMP4 = [
+    (60, 595400, 702700), (125, 626400, 749300), (600, 719700, 907100), (1250, 1114800, 1339000),
+    (6000, 2699800, 3247700), (12000, 5275800, 6142000), (17000, 8722600, 9735100), (25000, 9627600, 10980400),
+]
+FT2_PER_M2 = 1 / 0.09290304
+KW_PER_HP = 0.745699872
+
 NIST_ROWS = [
     (30.0000, 4.24697, 125.734, 2555.55),
     (35.0000, 5.62902, 146.634, 2564.55),
@@ -241,6 +271,25 @@ def build():
             "teslaCapacity": val(50, "GWh/yr battery capacity", "tesla-robstown"),
             "lceToHydrate": val(round(2 * (M_LIOH + M_H2O) / 73.89, 4), "t LiOH.H2O per t LCE", "iupac-mw", False, "2 x 41.962 / 73.89 (Li2CO3)."),
             "lceIntensity": val(None, "kg LCE / kWh", "estimate", True, "SOURCE NEEDED (IEA Global Critical Minerals Outlook). Not used until sourced."),
+        },
+        "capital": {
+            "basis": "INSTALLED cost (equipment + setting + installation bulks), DOE/NETL Appendix B, escalated from 1998 to 2023 dollars by CEPCI ratio. Interpolated log-log between rows; no extrapolation outside the table.",
+            "heaterShellTube": {
+                "columns": ["area_m2", "purchased_usd1998", "installed_usd1998"],
+                "rows": [[round(a / FT2_PER_M2, 3), pc, ic] for (a, pc, ic) in DOE_HX],
+                "sourceId": "doe-netl-2002", "estimate": False,
+                "note": "Carbon-steel shell-and-tube (A285C shell, A214 tubes), 150 psig; areas converted from ft2 (x 0.09290304). A forced-circulation crystallizer heater is a shell-and-tube exchanger; LiOH service would need better alloys (cost higher, not modeled).",
+            },
+            "compressor": {
+                "columns": ["shaft_kW", "purchased_usd1998", "installed_usd1998"],
+                "rows": [[round(hp * KW_PER_HP, 2), pc, ic] for (hp, pc, ic) in DOE_COMP4],
+                "sourceId": "doe-netl-2002", "estimate": True,
+                "note": "PROXY: DOE 4-stage centrifugal air compressor with motor (3:1 ratio, MW 29), cost vs driver power (hp x 0.7457 = kW). An MVR compressor is a single-stage, large-volume steam machine; using driver power as the size parameter is a stated approximation (ESTIMATE).",
+            },
+            "cepciBase": val(389.5, "-", "doe-netl-2002", False, "CEPCI 1998 annual average (DOE report Table 11)."),
+            "cepciNow": val(797.9, "-", "ce-econ-ind-2024", False, "CEPCI 2023 annual average, latest annual value available without a subscription."),
+            "interest": val(0.10, "1/yr", "estimate", True, "Interest (discount) rate for annualizing capital; slider 0.05-0.15."),
+            "life_yr": val(10, "yr", "estimate", True, "Equipment life for annualizing capital; slider 5-20."),
         },
         "spec": {
             "naMax_ppm": val(None, "ppm Na", "estimate", True, "SOURCE NEEDED: GB/T 26008-2020 Table 1 or a producer data sheet. Spec line hidden until sourced."),

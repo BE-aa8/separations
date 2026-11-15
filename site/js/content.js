@@ -71,6 +71,12 @@ export const EQ = {
     interp: 'Below this electricity price, MVR is cheaper to run.' },
   $4: { title: 'Annual operating cost', tex: String.raw`\text{Annual} = \text{cost}/\text{t} \times V \times \dfrac{\text{hours}}{1000}`, units: '$/yr',
     interp: 'Scales the per-tonne cost to the plant.' },
+  $5: { title: 'Heater area', tex: String.raw`A = \dfrac{1000\,Q}{U\,\Delta T_{heater}}`, units: 'm² (Q in kW, U in W/(m²·K), ΔT in K)',
+    interp: 'A small ΔT saves compressor power but needs a huge heater: area grows as 1/ΔT.' },
+  $6: { title: 'Total annualized cost (capital + energy)', tex: String.raw`\mathrm{TAC} = \mathrm{CRF}\,(C_{comp} + C_{HX}) + \text{annual electricity},\qquad \mathrm{CRF} = \dfrac{i(1+i)^n}{(1+i)^n - 1},\qquad C = C_{1998}\,\dfrac{\mathrm{CEPCI}_{2023}}{\mathrm{CEPCI}_{1998}}`, units: '$/yr (CRF in 1/yr)',
+    interp: 'The best ΔT minimizes total cost, not just energy: capital rises as ΔT falls (more area), electricity rises as ΔT grows (more lift).' },
+  $7: { title: 'Turndown at fixed heater area', tex: String.raw`Q' = f\,Q,\qquad \Delta T' = \dfrac{1000\,Q'}{U A} = f\,\Delta T\quad(U\ \text{assumed constant, ESTIMATE})`, units: 'K (f = load fraction)',
+    interp: 'At part load the same heater needs less driving force, so less lift, so fewer kWh per tonne.' },
 };
 
 export const THEORY_GROUPS = [
@@ -78,5 +84,5 @@ export const THEORY_GROUPS = [
   { title: 'Phase equilibrium, BPE, and crystallization', ids: ['B1', 'B2', 'B3', 'B4', 'B5'] },
   { title: 'Energy: single and multiple effects', ids: ['E1', 'E2', 'E3', 'E4'] },
   { title: 'MVR compressor (a heat pump)', ids: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8'] },
-  { title: 'Economics (operating cost only in Phase 1)', ids: ['$1', '$2', '$3', '$4'] },
+  { title: 'Economics: operating cost, capital, and turndown', ids: ['$1', '$2', '$3', '$4', '$5', '$6', '$7'] },
 ];

@@ -1,30 +1,39 @@
-// pfd.js: static labeled process flow diagram (inline SVG) with live stream values.
+// pfd.js: process flow diagram (inline SVG) with live stream values. Phase 2: units are clickable (data-unit), handled in ui.js.
 const SVG = `
 <svg viewBox="0 0 760 300" role="img" aria-label="Process flow diagram of an MVR evaporative crystallizer" font-family="system-ui, sans-serif" font-size="12">
   <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#1d2330"/></marker></defs>
-  <style>.u{fill:#f2f6fc;stroke:#1f5fae;stroke-width:2}.s{fill:none;stroke:#1d2330;stroke-width:1.6;marker-end:url(#arr)}.v{stroke:#1f5fae}.l{fill:#1d2330}.n{fill:#5b6475;font-size:11px}.k{font-weight:700}</style>
-  <!-- crystallizer body -->
+  <style>.u{fill:#f2f6fc;stroke:#1f5fae;stroke-width:2}.s{fill:none;stroke:#1d2330;stroke-width:1.6;marker-end:url(#arr)}.v{stroke:#1f5fae}.l{fill:#1d2330}.n{fill:#5b6475;font-size:11px}.k{font-weight:700}.unit{cursor:pointer;outline:none}.unit .hit{fill:transparent}.unit:hover .u,.unit:focus .u{stroke-width:3.5}.unit:focus .hit,.unit:hover .hit{fill:rgba(31,95,174,0.08)}.unit.sel .u{fill:#dbe8f8;stroke-width:3.5}.unit.sel .hit{fill:rgba(31,95,174,0.14)}</style>
+  <g class="unit" data-unit="crystallizer" role="button" tabindex="0" aria-pressed="false" aria-label="Crystallizer: show equations">
+<!-- crystallizer body -->
   <rect class="u" x="270" y="70" width="120" height="150" rx="30"/>
   <text class="l k" x="330" y="140" text-anchor="middle">Crystallizer</text>
   <text class="l" x="330" y="156" text-anchor="middle" id="pfd-Tb">T_b</text>
   <text class="n" x="330" y="172" text-anchor="middle" id="pfd-P1">P₁</text>
-  <!-- compressor -->
+    </g>
+  <g class="unit" data-unit="compressor" role="button" tabindex="0" aria-pressed="false" aria-label="Compressor: show equations">
+<!-- compressor -->
   <path class="u" d="M480,30 L540,45 L540,85 L480,100 z"/>
   <text class="l k" x="510" y="22" text-anchor="middle">Compressor</text>
   <text class="n" x="470" y="118" id="pfd-r">r</text>
   <text class="n" x="470" y="133" id="pfd-W">W</text>
-  <!-- heater -->
+    </g>
+  <g class="unit" data-unit="heater" role="button" tabindex="0" aria-pressed="false" aria-label="Heater: show equations">
+<!-- heater -->
   <rect class="u" x="550" y="150" width="95" height="80" rx="6"/>
   <text class="l k" x="597" y="186" text-anchor="middle">Heater</text>
   <text class="n" x="597" y="204" text-anchor="middle" id="pfd-Tc">T_c</text>
-  <!-- centrifuge -->
+    </g>
+  <g class="unit" data-unit="centrifuge" role="button" tabindex="0" aria-pressed="false" aria-label="Centrifuge: show equations">
+<!-- centrifuge -->
   <rect class="u" x="250" y="250" width="70" height="36" rx="6"/>
   <text class="l k" x="285" y="273" text-anchor="middle">Centrifuge</text>
+    </g>
   <!-- streams -->
   <path class="s" d="M20,150 L268,150"/>
+  <g class="unit" data-unit="feed" role="button" tabindex="0" aria-pressed="false" aria-label="Feed: show equations"><rect class="hit" x="16" y="126" width="150" height="62"/>
   <text class="l k" x="22" y="140">Feed</text>
   <text class="n" x="22" y="168" id="pfd-F">F</text>
-  <text class="n" x="22" y="183" id="pfd-xF">x_F</text>
+  <text class="n" x="22" y="183" id="pfd-xF">x_F</text></g>
   <path class="s v" d="M330,70 L330,60 L478,60"/>
   <text class="n" x="345" y="52" id="pfd-V">V</text>
   <path class="s v" d="M540,65 L595,65 L595,148"/>
@@ -38,8 +47,9 @@ const SVG = `
   <text class="l k" x="480" y="265">Crystals</text>
   <text class="n" x="480" y="281" id="pfd-C">C</text>
   <path class="s" d="M250,268 L140,268"/>
+  <g class="unit" data-unit="purge" role="button" tabindex="0" aria-pressed="false" aria-label="Purge: show equations"><rect class="hit" x="24" y="250" width="110" height="38"/>
   <text class="l k" x="30" y="265">Purge</text>
-  <text class="n" x="30" y="281" id="pfd-P">P</text>
+  <text class="n" x="30" y="281" id="pfd-P">P</text></g>
   <text class="n" x="150" y="258">mother liquor</text>
 </svg>`;
 

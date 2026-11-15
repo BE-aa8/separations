@@ -96,5 +96,23 @@ Crossover electricity price (MVR cheaper below it): vs 3 effects **$0.0905/kWh**
 
 **How does that make sense?** At today's cheap Texas gas ($2.98/Mcf), fuel-only steam is so cheap that a 5-effect evaporator has lower *energy* cost than MVR. This comparison leaves out what favors MVR: the steam cost excludes boiler capital and O&M, a 5-effect plant needs five bodies and a cooling-water condenser, and MVR needs no boiler. The Phase 2 capital-cost comparison (P9) answers this properly.
 
-## Phase 2 reference values (not in the MVP test)
-Heater area A = Q/(U ΔT) = 5,627,000/(2000 × 6) ≈ 469 m². Turndown values get recomputed with the Phase 2 code.
+## Phase 2: heater area, capital cost, optimum ΔT, turndown
+
+Checked by `tests/phase2.test.mjs` against `handcalc-expected.json → phase2` (Claude build only). Additional inputs: U = 2000 W/(m²·K) (ESTIMATE), interest i = 10 %/yr and life n = 10 yr (ESTIMATE). Capital costs come from DOE/NETL (2002) Appendix B **installed** costs in 1998 dollars, log-log interpolated, × CEPCI 797.9/389.5 = 2.0485 (to 2023 dollars).
+
+| Step | Equation | Result | Units check | How does that make sense? |
+|---|---|---|---|---|
+| Heater area | A = 1000 Q/(U ΔT) = 1000 × 5,627.4/(2000 × 6) | **468.9 m²** (5,048 ft²) | kW·1000/[W/(m²K)·K] = m² ✔ | Halve ΔT and the heater doubles |
+| Heater cost | DOE shell-and-tube, installed, at 5,048 ft²: $142,270 (1998) × 2.0485 | **$291,400** | $ | Mid-table (DOE rows 5,000–6,000 ft²) |
+| Compressor cost | DOE centrifugal (4-stage proxy), installed, at W_shaft = 235.9 kW (316 hp): $839,060 (1998) × 2.0485 | **$1,718,800** (ESTIMATE) | $ | Dominates capital; nearly flat with power at this small size |
+| CRF | i(1+i)ⁿ/((1+i)ⁿ−1) = 0.1 × 1.1¹⁰/(1.1¹⁰ − 1) | **0.16275 /yr** | 1/yr ✔ | Each $ of capital costs 16 ¢ per year over 10 years at 10 % |
+| Annualized capital | 0.16275 × (291,400 + 1,718,800) | **$327,200/yr** | $/yr | |
+| Electricity | 0.0721 × 29.02 × 8,557.8 × 8,000/1000 | **$143,300/yr** | ($/kWh)(kWh/t)(t/h)(h/yr) ✔ | Same as Phase 1 annual MVR cost |
+| TAC at ΔT = 6 K | capital + electricity | **$470,400/yr** | $/yr | |
+| **Optimum ΔT** | min TAC on a 0.1 K grid, 1–15 K | **3.0 K**, TAC $444,100/yr | K | Below 3 K, extra area costs more than the electricity it saves; above it, extra lift costs more than the area saved |
+| Turndown 75 % | ΔT′ = 0.75 × 6 = 4.5 K (fixed A) | r = 1.477, **24.56 kWh/t**, $1.77/t | – | Less heat through the same area needs less driving force, so less lift |
+| Turndown 50 % | ΔT′ = 3.0 K | r = 1.381, **20.13 kWh/t**, $1.45/t | – | Energy per tonne falls at part load (no surge limit modeled) |
+
+**Trend checks (asserted in tests):** doubling the electricity price moves the optimum down to 2.3 K (energy is dearer, so buy area). U = 3000 moves it to 2.0 K (area is cheaper), and U = 1000 to 4.4 K. The TAC curve is flat between about 3 and 5 K, so any heater ΔT in that band costs within ~3 %.
+
+**Caveats (shown on the site):** DOE costs are carbon steel and order-of-magnitude (+50 %/−30 %). The compressor is a proxy (multistage air machine priced by driver power, not a single-stage steam MVR fan). U is held constant at part load. No compressor surge or stonewall map.

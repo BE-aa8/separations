@@ -163,7 +163,7 @@
     </aside>
     <div class="results">
       <div id="warnings" class="warnings" role="status" aria-live="polite"></div>
-      <div class="pfd-wrap"><h3>Process flow (live)</h3><div id="pfd"></div></div>
+      <div class="pfd-wrap"><h3>Process flow (live)</h3><p class="hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
       <div id="cards"></div>
       <h3>Plots</h3>
       <div class="plots">
@@ -178,6 +178,8 @@
         <figure class="plot"><figcaption>P1 · LiOH solubility and cooling yield</figcaption><div id="p1" class="chart"></div>
           <label class="inline-slider">Cooling to T<sub>cold</sub> = <output id="tcold-out">20</output> °C <input id="tcold" type="range" min="0" max="95" step="1" value="20"></label>
           <p class="whatif">Cool instead of evaporate? <span id="cool-yield"></span></p></figure>
+        <figure class="plot"><figcaption>P9 · Heater ΔT: capital vs energy (total annualized cost)</figcaption><div id="p9" class="chart"></div><p class="whatif">Why not just use a tiny ΔT? Try U, electricity price, and interest. Capital: DOE/NETL installed costs (1998) × CEPCI 797.9/389.5; compressor cost is a proxy (ESTIMATE, ±50 %).</p></figure>
+        <figure class="plot"><figcaption>P10 · Turndown at fixed heater area</figcaption><div id="p10" class="chart"></div><p class="whatif">Does the unit still work at part load? With the heater already built, less heat needs less ΔT, so less lift. (No compressor surge map: beyond course level.)</p></figure>
         <figure class="plot"><figcaption>P1b · Metastable zone (SCHEMATIC)</figcaption><div id="p1b" class="chart"></div><p class="whatif">Where should the liquor operate? Inside the metastable zone, with seeds.</p></figure>
       </div>
     </div>

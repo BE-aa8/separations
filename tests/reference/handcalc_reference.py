@@ -126,6 +126,59 @@ def simulate(inp):
             "mass": mass, "mvr": mvr, "effects": effects, "econ": econ}
 
 
+# ---------------- Phase 2 (plan-phase2-claude.md) ----------------
+CAP = DATA["capital"]
+PHASE2_INPUTS = {
+    "U": DATA["evaporator"]["U"]["value"],
+    "loadFraction": 1.0,
+    "interest": CAP["interest"]["value"],
+    "life_yr": CAP["life_yr"]["value"],
+}
+ESC = CAP["cepciNow"]["value"] / CAP["cepciBase"]["value"]
+
+
+def interp_loglog(rows, x, col=2):
+    pts = [(r[0], r[col]) for r in rows]
+    for (x0, y0), (x1, y1) in zip(pts, pts[1:]):
+        if x0 <= x <= x1:
+            t = (math.log10(x) - math.log10(x0)) / (math.log10(x1) - math.log10(x0))
+            return 10 ** (math.log10(y0) + t * (math.log10(y1) - math.log10(y0)))
+    raise ValueError(f"{x} outside cost table {pts[0][0]}-{pts[-1][0]}")
+
+
+def crf(i, n):
+    return i * (1 + i) ** n / ((1 + i) ** n - 1)
+
+
+def tac_at(inp, dT):
+    p = {**DEFAULT_INPUTS, **PHASE2_INPUTS, **inp, "dT_heater": dT}
+    o = simulate(p)
+    A = o["Q_kW"] * 1000 / (p["U"] * dT)
+    c_hx = interp_loglog(CAP["heaterShellTube"]["rows"], A) * ESC
+    c_comp = interp_loglog(CAP["compressor"]["rows"], o["mvr"]["Wshaft_kW"]) * ESC
+    f = crf(p["interest"], p["life_yr"])
+    cap = f * (c_hx + c_comp)
+    energy = o["econ"]["1"]["annual_MVR"]
+    return {"A": A, "C_hx": c_hx, "C_comp": c_comp, "crf": f, "capAnnual": cap,
+            "energyAnnual": energy, "TAC": cap + energy}
+
+
+def optimum(inp):
+    grid = [round(1 + 0.1 * k, 1) for k in range(141)]       # 1.0 ... 15.0 K
+    best = min(grid, key=lambda d: tac_at(inp, d)["TAC"])
+    return {"dT": best, "TAC": tac_at(inp, best)["TAC"]}
+
+
+def turndown_at(inp, f):
+    p = {**DEFAULT_INPUTS, **PHASE2_INPUTS, **inp}
+    full = simulate(p)
+    dT = f * p["dT_heater"]                       # fixed A, constant U: dT' = Q'/(U A) = f dT
+    part = simulate({**p, "F": f * p["F"], "dT_heater": dT})
+    return {"dT": dT, "r": part["mvr"]["r"], "kWh_per_t": part["mvr"]["kWh_per_t"],
+            "cost_per_t": p["ce"] * part["mvr"]["kWh_per_t"],
+            "A_check": full["Q_kW"] * 1000 / (p["U"] * p["dT_heater"])}
+
+
 def flatten(d, prefix=""):
     out = {}
     for k, v in d.items():
@@ -150,6 +203,14 @@ def main():
         "infeasibleEffects": {"inputs": {"N": 8}, "expect": {"effects.8.feasible": False,
                                                               "effects.8.maxFeasibleN": base["effects"]["3"]["maxFeasibleN"]}},
     }
+    t = tac_at({}, DEFAULT_INPUTS["dT_heater"])
+    expected["phase2Inputs"] = PHASE2_INPUTS
+    expected["phase2"] = {
+        **{f"design.{k}": v for k, v in t.items()},
+        "design.optimum.dT": optimum({})["dT"],
+        "design.optimum.TAC": optimum({})["TAC"],
+        **{f"turndown.{f}.{k}": v for f in (0.75, 0.5) for k, v in turndown_at({}, f).items() if k != "A_check"},
+    }
     # sanity: the infeasible case really is infeasible in the reference
     assert simulate(expected["infeasibleMass"]["inputs"])["mass"]["feasible"] is False
     out = ROOT / "tests/handcalc-expected.json"
@@ -163,6 +224,8 @@ def main():
               "econ.3.ce_crossover", "econ.5.ce_crossover", "econ.3.annual_MVR", "econ.3.annual_ME"]:
         print(f"{k:28s} {b[k]}")
     print("ideal BPE", ideal["BPE"], "ideal kWh/t", ideal["mvr"]["kWh_per_t"])
+    for k, v in expected["phase2"].items():
+        print(f"{k:28s} {v}")
     print("wrote", out)
 
 

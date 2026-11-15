@@ -107,5 +107,30 @@
       "effects.8.feasible": false,
       "effects.8.maxFeasibleN": 7
     }
+  },
+  "phase2Inputs": {
+    "U": 2000,
+    "loadFraction": 1.0,
+    "interest": 0.1,
+    "life_yr": 10
+  },
+  "phase2": {
+    "design.A": 468.9471442416269,
+    "design.C_hx": 291443.3607004147,
+    "design.C_comp": 1718843.010673503,
+    "design.crf": 0.16274539488251152,
+    "design.capAnnual": 327164.84933617944,
+    "design.energyAnnual": 143250.8306432303,
+    "design.TAC": 470415.67997940973,
+    "design.optimum.dT": 3.0,
+    "design.optimum.TAC": 444102.65224527195,
+    "turndown.0.75.dT": 4.5,
+    "turndown.0.75.r": 1.4772884951515561,
+    "turndown.0.75.kWh_per_t": 24.5591975027748,
+    "turndown.0.75.cost_per_t": 1.770718139950063,
+    "turndown.0.5.dT": 3.0,
+    "turndown.0.5.r": 1.38060835359244,
+    "turndown.0.5.kWh_per_t": 20.127023595563802,
+    "turndown.0.5.cost_per_t": 1.4511584012401502
   }
 }

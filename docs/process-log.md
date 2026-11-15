@@ -193,3 +193,19 @@ Entry template:
 | Earlier attempt | n/a | free-tier gemini-3-flash: ignored plan-only instruction, hit daily quota, partial build |
 
 **Merged:** both builds merged into the planning branch (`site/` = Claude, `site/gemini/` = Gemini). Combined npm test 17/17; combined smoke test 0 failures on both paths. Netlify Drop zip built at `dist/mvr-crystallizer-site.zip` (not committed).
+
+## 2026-11-15 (cont.) — Claude Code — Phase 2 (Claude build): capital cost optimum, clickable PFD, turndown
+
+**Prompts (verbatim):** "merge the builds to main and start Phase 2, you can see the live version currently at https://ucseparations.netlify.app". Cost-data choice (to Claude's question): "Use the public DOE report".
+
+**Process:** main fast-forwarded with both Phase 1 builds. Phase 2 started in **plan mode** (project rule); plan approved and saved as `docs/plan-phase2-claude.md`. Network allowlist extended (osti.gov, www.osti.gov, www.chemengonline.com, ucseparations.netlify.app) with my approval.
+
+**Data (Step 0):** DOE/NETL "Process Equipment Cost Estimation" (2002, OSTI 797810) has **tabulated** ICARUS purchased and installed costs (Appendix B, 1st-quarter 1998 dollars), so no graph reading was needed: shell-and-tube heat exchanger vs area, centrifugal compressor vs driver hp (4-stage series used as a proxy, flagged ESTIMATE). CEPCI 1998 = 389.5 (same report); CEPCI 2023 = 797.9 (Chemical Engineering, Economic Indicators Sept 2024, the latest annual value without a paywall). Interest 10 %, life 10 yr (ESTIMATE sliders).
+
+**Tests first (Step 4):** the Python reference was extended with an independent Phase 2 calculation; `tests/phase2.test.mjs` (values, trends, out-of-table guard) and `tests/browser-phase2.mjs` (P9/P10 render and respond; every PFD unit opens a panel with KaTeX; keyboard Enter; 375 px) were written before the code and failed (6 red) until it existed. CI now runs the Phase 2 browser check.
+
+**Built (Steps 1–3):** `model.js`: heaterArea, compressorCost/heaterCost (log-log in DOE tables, × CEPCI ratio, no extrapolation), crf, tacAt, sweepTAC, optimumDT (0.1 K grid), turndownAt/sweepTurndown; `simulate()` gains `design`. Charts P9 (capital vs electricity vs TAC, with optimum, and area on a 2nd axis) and P10 (kWh/t, $/t, r vs load). New sliders U, i, n, load f; new cards $5–$7 with KaTeX, units, and interpretations; Theory tab gains $5–$7; PFD units are now buttons that open a live equations panel.
+
+**Results:** heater 469 m², TAC $470k/yr at ΔT = 6 K; **cost-optimal ΔT = 3.0 K** (TAC $444k/yr). Pricier electricity → 2.3 K; U 3000 → 2.0 K; U 1000 → 4.4 K. Turndown 75 %/50 % → 24.6/20.1 kWh/t. All in `docs/handcalc.md`.
+
+**Verification:** npm test 23/23 (Phase 1 17 + Phase 2 6); Phase 2 browser check passed at 1280 and 375 px; generic smoke test 0 failures on `/` (22 sliders) and `/gemini/` (16). Screenshots reviewed: fixed a clipped P9 label, and made the PFD readable on phones (min width with in-box scroll instead of shrinking).

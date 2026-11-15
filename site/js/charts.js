@@ -1,6 +1,6 @@
-// charts.js: Plotly renderers (plan §9: P1–P8, P11). Each takes the simulate() output and redraws with Plotly.react.
+// charts.js: Plotly renderers (plan §9: P1–P11; P9–P10 are Phase 2). Each takes the simulate() output and redraws with Plotly.react.
 import { DATA } from './data.js';
-import { solubility, sweepBPE, sweepPurge, sweepN, sweepMolality, primaryEnergy, coolingYield, linspace } from './model.js';
+import { solubility, sweepBPE, sweepPurge, sweepN, sweepMolality, primaryEnergy, coolingYield, linspace, sweepTAC, sweepTurndown } from './model.js';
 
 const C = { mvr: '#1f5fae', e1: '#b45309', e3: '#0f766e', e5: '#7c3aed', grey: '#a3a9b5', warn: '#c2410c', ok: '#1f7a4d', text: '#1d2330', grid: '#e6e9ef' };
 const CONFIG = { responsive: true, displayModeBar: false };
@@ -213,8 +213,49 @@ export function p11(out) {
   }));
 }
 
+// P9 (Phase 2): annualized capital + energy = TAC vs heater ΔT, heater area on a second axis
+export function p9(out) {
+  const sw = sweepTAC(out.inputs);
+  if (!sw.length) { draw('p9', [], base({ annotations: [{ text: 'Outside the DOE cost tables at these inputs', xref: 'paper', yref: 'paper', x: 0.5, y: 0.5, showarrow: false }] })); return; }
+  const x = sw.map((d) => d.dT), k = (v) => v / 1000;
+  const d = out.design || {};
+  const traces = [
+    { x, y: sw.map((t) => k(t.capAnnual)), name: 'Capital (annualized)', line: { color: C.e1 } },
+    { x, y: sw.map((t) => k(t.energyAnnual)), name: 'Electricity', line: { color: C.mvr } },
+    { x, y: sw.map((t) => k(t.TAC)), name: 'Total (TAC)', line: { color: C.text, width: 3 } },
+    { x, y: sw.map((t) => t.A), name: 'Heater area (m²)', line: { color: C.grey, dash: 'dot' }, yaxis: 'y2' },
+  ];
+  if (d.optimum) traces.push({ x: [d.optimum.dT], y: [k(d.optimum.TAC)], mode: 'markers+text', name: 'Optimum', text: [`optimum ${d.optimum.dT.toFixed(1)} K`], textposition: d.optimum.dT < 5 ? 'top right' : 'top center', marker: { size: 12, color: C.ok, symbol: 'star' } });
+  if (nn(d.TAC) != null) traces.push({ x: [out.inputs.dT_heater], y: [k(d.TAC)], mode: 'markers', name: 'Current ΔT', marker: { size: 10, color: C.warn, symbol: 'diamond' } });
+  draw('p9', traces, base({
+    xaxis: ax('Heater driving force ΔT_heater (K)'),
+    yaxis: ax('k$/yr (2023 $)', { rangemode: 'tozero' }),
+    yaxis2: ax('Heater area (m²)', { overlaying: 'y', side: 'right', showgrid: false, rangemode: 'tozero' }),
+    margin: { l: 56, r: 56, t: 10, b: 46 },
+  }));
+}
+
+// P10 (Phase 2): fixed-area turndown
+export function p10(out) {
+  const sw = sweepTurndown(out.inputs).filter((t) => nn(t.kWh_per_t) != null);
+  const x = sw.map((t) => 100 * t.f);
+  const cur = out.design && out.design.turndown;
+  const traces = [
+    { x, y: sw.map((t) => t.kWh_per_t), name: 'kWh per t water', line: { color: C.mvr } },
+    { x, y: sw.map((t) => t.cost_per_t), name: '$ per t water', line: { color: C.e1, dash: 'dash' } },
+    { x, y: sw.map((t) => t.r), name: 'Pressure ratio r', line: { color: C.e3 }, yaxis: 'y2' },
+  ];
+  if (cur && nn(cur.kWh_per_t) != null) traces.push({ x: [100 * cur.f], y: [cur.kWh_per_t], mode: 'markers', name: 'Current load', marker: { size: 10, color: C.warn, symbol: 'diamond' } });
+  draw('p10', traces, base({
+    xaxis: ax('Load (% of design feed), heater area fixed'),
+    yaxis: ax('kWh/t  ·  $/t', { rangemode: 'tozero' }),
+    yaxis2: ax('r', { overlaying: 'y', side: 'right', showgrid: false }),
+    margin: { l: 56, r: 48, t: 10, b: 46 },
+  }));
+}
+
 export function renderAll(out, Tcold) {
-  p5(out); p6(out); p3(out); p4(out); p2(out); p11(out); p7(out); p8(out); p1b(out);
+  p5(out); p6(out); p3(out); p4(out); p2(out); p11(out); p7(out); p8(out); p1b(out); p9(out); p10(out);
   return p1(out, Tcold);
 }
 export { nn };

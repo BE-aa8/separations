@@ -58,6 +58,16 @@ export const DATA = {
       "url": "https://mynews13.com/fl/orlando/news/2026/01/21/tesla-lithium-refinery-in-texas-is-now-fully-operational",
       "accessed": "2026-10-23"
     },
+    "doe-netl-2002": {
+      "citation": "Loh, H.P.; Lyons, J.; White, C.W. III. Process Equipment Cost Estimation, Final Report. DOE/NETL-2002/1169, U.S. Department of Energy, National Energy Technology Laboratory, 2002 (OSTI 797810). Appendix B: ICARUS purchased and installed costs, 1st quarter 1998 dollars (shell-and-tube heat exchanger p. 58; centrifugal compressor p. 70). Table 11: CEPCI 1998 = 389.5. Stated accuracy: order-of-magnitude +50 %/-30 %.",
+      "url": "https://www.osti.gov/servlets/purl/797810",
+      "accessed": "2026-11-15"
+    },
+    "ce-econ-ind-2024": {
+      "citation": "Chemical Engineering magazine, Economic Indicators, September 2024, p. 45: CEPCI annual index 2023 = 797.9 (1957-59 = 100); June 2024 preliminary 798.8. The 2024 and 2025 annual averages are behind the publisher's paywall (2025 reported 1.6 % above 2024).",
+      "url": "https://www.chemengonline.com/wp-content/uploads/2024/08/19_CHE_0924_EconInd_p45.pdf",
+      "accessed": "2026-11-15"
+    },
     "us10961126": {
       "citation": "US Patent 10,961,126 B2, Process for reducing fouling in evaporators in lithium hydroxide recovery (Veolia). Lithium carbonate scaling in LiOH evaporators; MVR, TVR and multi-effect options.",
       "url": "https://patents.google.com/patent/US10961126",
@@ -679,6 +689,231 @@ export const DATA = {
       "sourceId": "estimate",
       "estimate": true,
       "note": "SOURCE NEEDED (IEA Global Critical Minerals Outlook). Not used until sourced."
+    }
+  },
+  "capital": {
+    "basis": "INSTALLED cost (equipment + setting + installation bulks), DOE/NETL Appendix B, escalated from 1998 to 2023 dollars by CEPCI ratio. Interpolated log-log between rows; no extrapolation outside the table.",
+    "heaterShellTube": {
+      "columns": [
+        "area_m2",
+        "purchased_usd1998",
+        "installed_usd1998"
+      ],
+      "rows": [
+        [
+          9.29,
+          13200,
+          48300
+        ],
+        [
+          18.581,
+          13600,
+          55800
+        ],
+        [
+          27.871,
+          14500,
+          57300
+        ],
+        [
+          37.161,
+          16100,
+          59100
+        ],
+        [
+          46.452,
+          16200,
+          68000
+        ],
+        [
+          55.742,
+          16600,
+          68400
+        ],
+        [
+          65.032,
+          18000,
+          70000
+        ],
+        [
+          74.322,
+          18400,
+          70400
+        ],
+        [
+          83.613,
+          20300,
+          72600
+        ],
+        [
+          92.903,
+          20800,
+          73100
+        ],
+        [
+          185.806,
+          31900,
+          95800
+        ],
+        [
+          278.709,
+          44700,
+          109600
+        ],
+        [
+          371.612,
+          53900,
+          132900
+        ],
+        [
+          464.515,
+          62100,
+          141800
+        ],
+        [
+          557.418,
+          70800,
+          151100
+        ],
+        [
+          650.321,
+          99600,
+          203500
+        ],
+        [
+          743.224,
+          107900,
+          212400
+        ],
+        [
+          836.127,
+          117100,
+          222100
+        ],
+        [
+          929.03,
+          124200,
+          229800
+        ],
+        [
+          1393.546,
+          186300,
+          321500
+        ],
+        [
+          1858.061,
+          248400,
+          427000
+        ],
+        [
+          2787.091,
+          354000,
+          573900
+        ],
+        [
+          3716.122,
+          479100,
+          767500
+        ],
+        [
+          4645.152,
+          582500,
+          953000
+        ],
+        [
+          5574.182,
+          708300,
+          1106600
+        ],
+        [
+          6503.213,
+          839000,
+          1425600
+        ]
+      ],
+      "sourceId": "doe-netl-2002",
+      "estimate": false,
+      "note": "Carbon-steel shell-and-tube (A285C shell, A214 tubes), 150 psig; areas converted from ft2 (x 0.09290304). A forced-circulation crystallizer heater is a shell-and-tube exchanger; LiOH service would need better alloys (cost higher, not modeled)."
+    },
+    "compressor": {
+      "columns": [
+        "shaft_kW",
+        "purchased_usd1998",
+        "installed_usd1998"
+      ],
+      "rows": [
+        [
+          44.74,
+          595400,
+          702700
+        ],
+        [
+          93.21,
+          626400,
+          749300
+        ],
+        [
+          447.42,
+          719700,
+          907100
+        ],
+        [
+          932.12,
+          1114800,
+          1339000
+        ],
+        [
+          4474.2,
+          2699800,
+          3247700
+        ],
+        [
+          8948.4,
+          5275800,
+          6142000
+        ],
+        [
+          12676.9,
+          8722600,
+          9735100
+        ],
+        [
+          18642.5,
+          9627600,
+          10980400
+        ]
+      ],
+      "sourceId": "doe-netl-2002",
+      "estimate": true,
+      "note": "PROXY: DOE 4-stage centrifugal air compressor with motor (3:1 ratio, MW 29), cost vs driver power (hp x 0.7457 = kW). An MVR compressor is a single-stage, large-volume steam machine; using driver power as the size parameter is a stated approximation (ESTIMATE)."
+    },
+    "cepciBase": {
+      "value": 389.5,
+      "units": "-",
+      "sourceId": "doe-netl-2002",
+      "estimate": false,
+      "note": "CEPCI 1998 annual average (DOE report Table 11)."
+    },
+    "cepciNow": {
+      "value": 797.9,
+      "units": "-",
+      "sourceId": "ce-econ-ind-2024",
+      "estimate": false,
+      "note": "CEPCI 2023 annual average, latest annual value available without a subscription."
+    },
+    "interest": {
+      "value": 0.1,
+      "units": "1/yr",
+      "sourceId": "estimate",
+      "estimate": true,
+      "note": "Interest (discount) rate for annualizing capital; slider 0.05-0.15."
+    },
+    "life_yr": {
+      "value": 10,
+      "units": "yr",
+      "sourceId": "estimate",
+      "estimate": true,
+      "note": "Equipment life for annualizing capital; slider 5-20."
     }
   },
   "spec": {

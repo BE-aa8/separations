@@ -131,3 +131,19 @@ button.active { background: var(--accent); color: #fff; border-color: var(--acce
   .chart { height: 300px; }
   .cards { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ---- Phase 2: clickable PFD panel ---- */
+.pfd-panel { border: 1px solid #c9d6ea; border-radius: 10px; background: #f7faff; padding: 10px 12px; margin-top: 8px; }
+.pfd-panel .phead { display: flex; justify-content: space-between; align-items: center; }
+.pfd-panel h4 { margin: 0 0 6px; }
+.pfd-panel .pclose { border: 0; background: none; font-size: 20px; line-height: 1; cursor: pointer; padding: 2px 8px; }
+.pfd-panel .prow { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 2px 12px; padding: 6px 0; border-top: 1px solid #e3e9f3; }
+.pfd-panel .pname { font-weight: 600; }
+.pfd-panel .pval { text-align: right; font-variant-numeric: tabular-nums; }
+.pfd-panel .peq, .pfd-panel .psay { grid-column: 1 / -1; min-width: 0; overflow-x: auto; }
+.pfd-panel .psay { color: #4a5263; font-size: 0.92em; }
+@media (max-width: 640px) { .pfd-panel .prow { grid-template-columns: minmax(0, 1fr); } .pfd-panel .pval { text-align: left; } }
+@media (max-width: 640px) {
+  #pfd { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  #pfd svg { min-width: 600px; }
+}

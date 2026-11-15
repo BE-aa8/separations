@@ -45,6 +45,11 @@ const SLIDERS = [
   { key: 'ce', label: 'Electricity c_e', units: '$/kWh', step: 0.001, d: 3, note: 'EIA Texas industrial Aug 2026 = 0.0721' },
   { key: 'cs', label: 'Steam c_s', units: '$/t', step: 0.05, d: 2, estimate: est(DATA.prices.steam), note: 'fuel-only ESTIMATE = 7.33' },
   { key: 'hours', label: 'Operating hours', units: 'h/yr', step: 10, d: 0 },
+  { group: 'Capital cost and turndown (Phase 2)' },
+  { key: 'U', label: 'Heater U', units: 'W/(m²·K)', step: 50, d: 0, estimate: est(DATA.evaporator.U) },
+  { key: 'interest', label: 'Interest rate i', units: '1/yr', step: 0.005, d: 3, estimate: est(DATA.capital.interest) },
+  { key: 'life_yr', label: 'Equipment life n', units: 'yr', step: 1, d: 0, estimate: est(DATA.capital.life_yr) },
+  { key: 'loadFraction', label: 'Load (turndown) f', units: '× design feed', step: 0.01, d: 2, note: 'heater area fixed at the full-load design' },
 ];
 
 function buildSliders() {
@@ -165,6 +170,22 @@ const CARDS = [
       sub: (o) => String.raw`\dfrac{${o.inputs.Ts_C} - ${o.inputs.Tlast_C} - ${o.inputs.N}\times ${fmt(o.BPE, 2)}}{${o.inputs.N}} = ${fmt(o.effects[o.inputs.N]?.dT_per_effect, 2)}\ \mathrm{K}`,
       say: (o) => `${o.effects[o.inputs.N]?.feasible ? 'Feasible' : 'INFEASIBLE'}: max ${o.effects[o.inputs.N]?.maxFeasibleN} effects fit (P11).` },
   ] },
+  { group: 'Capital cost and turndown', items: [
+    { id: 'A', eq: '$5', name: 'Heater area A', units: 'm²', d: 0, v: (o) => o.design?.A,
+      sub: (o) => String.raw`A = \dfrac{1000\times ${fmt(o.Q_kW, 0)}}{${fmt(o.inputs.U, 0)}\times ${fmt(o.inputs.dT_heater, 1)}} = ${fmt(o.design?.A, 0)}\ \mathrm{m^2}`,
+      say: (o) => `Halve ΔT and the heater doubles: ${fmt(o.design?.A, 0)} m² at ${fmt(o.inputs.dT_heater, 1)} K.` },
+    { id: 'Ccomp', name: 'Compressor installed cost', tex: String.raw`C_{comp} = C_{DOE,1998}(W_{shaft})\times \dfrac{797.9}{389.5}`, units: '$ (2023)', d: 0, v: (o) => o.design?.C_comp,
+      say: (o) => `For ${fmt(o.mvr?.Wshaft_kW, 0)} kW shaft power. Proxy from a DOE multistage air compressor (ESTIMATE, ±50 %).` },
+    { id: 'Chx', name: 'Heater installed cost', tex: String.raw`C_{HX} = C_{DOE,1998}(A)\times \dfrac{797.9}{389.5}`, units: '$ (2023)', d: 0, v: (o) => o.design?.C_hx,
+      say: () => 'Carbon-steel shell-and-tube (DOE/NETL, installed). LiOH service would need better alloys: real cost is higher.' },
+    { id: 'TAC', eq: '$6', name: 'Total annualized cost', units: '$/yr', d: 0, v: (o) => o.design?.TAC,
+      sub: (o) => String.raw`${fmt(o.design?.crf, 4)}\times(${fmt(o.design?.C_comp, 0)} + ${fmt(o.design?.C_hx, 0)}) + ${fmt(o.design?.energyAnnual, 0)} = ${fmt(o.design?.TAC, 0)}`,
+      say: (o) => `Capital ${fmt(o.design?.capAnnual, 0)} $/yr + electricity ${fmt(o.design?.energyAnnual, 0)} $/yr (P9).` },
+    { id: 'opt', name: 'Cost-optimal heater ΔT', tex: String.raw`\Delta T^{*} = \arg\min_{\Delta T}\ \mathrm{TAC}(\Delta T)`, units: 'K', d: 1, v: (o) => o.design?.optimum?.dT, v2: (o) => o.design?.optimum?.TAC, units2: '$/yr',
+      say: (o) => (o.design?.optimum ? `Below ${fmt(o.design.optimum.dT, 1)} K the extra heater area costs more than the electricity it saves; above it, the extra lift costs more than the area saved.` : 'No optimum: outside the cost tables at these inputs.') },
+    { id: 'td', eq: '$7', name: 'Turndown: ΔT′ and energy at load f', units: 'K', d: 2, v: (o) => o.design?.turndown?.dT, v2: (o) => o.design?.turndown?.kWh_per_t, units2: 'kWh/t',
+      say: (o) => `At ${fmt(100 * o.inputs.loadFraction, 0)} % load the fixed heater needs only ${fmt(o.design?.turndown?.dT, 2)} K, so r = ${fmt(o.design?.turndown?.r, 3)} (P10).` },
+  ] },
   { group: 'Operating cost', items: [
     { id: 'cMVR', eq: '$1', name: 'MVR cost', units: '$/t water', d: 2, v: (o) => o.econ[1]?.cost_MVR_per_t,
       sub: (o) => String.raw`${fmt(o.inputs.ce, 4)}\times ${fmt(o.mvr?.kWh_per_t, 2)} = ${fmt(o.econ[1]?.cost_MVR_per_t, 2)}`,
@@ -228,6 +249,53 @@ function updateCards(o) {
   }
 }
 
+// ---------- clickable PFD (Phase 2) ----------
+const UNIT_CARDS = {
+  feed: { title: 'Feed', ids: ['s', 'zML', 'xL'] },
+  crystallizer: { title: 'Crystallizer (evaporative, forced circulation)', ids: ['s', 'm', 'BPE', 'Tv', 'C', 'V', 'yield', 'Q'] },
+  compressor: { title: 'MVR compressor', ids: ['P12', 'r', 'ws', 'w', 'T2', 'kwh', 'cop', 'Ccomp'] },
+  heater: { title: 'Heater (shell-and-tube)', ids: ['Q', 'A', 'Chx', 'TAC', 'opt', 'td'] },
+  centrifuge: { title: 'Centrifuge and wash', ids: ['C', 'imp', 'yield'] },
+  purge: { title: 'Mother-liquor purge', ids: ['P', 'zML', 'imp'] },
+};
+const CARD_BY_ID = Object.fromEntries(CARDS.flatMap((g) => g.items).map((c) => [c.id, c]));
+let selectedUnit = null;
+function selectUnit(u) {
+  selectedUnit = selectedUnit === u ? null : u;
+  document.querySelectorAll('#pfd [data-unit]').forEach((g) => {
+    const on = g.getAttribute('data-unit') === selectedUnit;
+    g.classList.toggle('sel', on);
+    g.setAttribute('aria-pressed', on);
+  });
+  if (lastOut) renderPanel(lastOut);
+}
+function renderPanel(o) {
+  const panel = document.getElementById('pfd-panel');
+  if (!panel) return;
+  if (!selectedUnit) { panel.hidden = true; panel.innerHTML = ''; return; }
+  const u = UNIT_CARDS[selectedUnit];
+  const rows = u.ids.map((id) => CARD_BY_ID[id]).filter(Boolean).map((c) => {
+    const e = c.eq ? EQ[c.eq] : null;
+    let val = '—', say = '';
+    try { val = fmt(c.v(o), c.d); if (c.v2) val += ` ${c.units} · ${fmt(c.v2(o), c.units2 === '$/yr' ? 0 : c.d)} ${c.units2 || ''}`; else val += ` ${c.units}`; } catch { val = '—'; }
+    try { say = c.say ? c.say(o) : ''; } catch { say = ''; }
+    return `<div class="prow"><div class="pname">${c.eq ? `<span class="tag">${c.eq}</span>` : ''}${c.name}</div>
+      <div class="pval">${val.replace(/NaN|undefined/g, '—')}</div>
+      <div class="peq">${tex(c.tex || e.tex, false)}</div>
+      <div class="psay">${esc(say.replace(/NaN|undefined/g, '—'))}</div></div>`;
+  }).join('');
+  panel.innerHTML = `<div class="phead"><h4>${u.title}</h4><button type="button" class="pclose" aria-label="Close">×</button></div>${rows}`;
+  panel.hidden = false;
+  panel.querySelector('.pclose').addEventListener('click', () => selectUnit(selectedUnit));
+}
+function initPFDClicks() {
+  document.querySelectorAll('#pfd [data-unit]').forEach((g) => {
+    const go = () => selectUnit(g.getAttribute('data-unit'));
+    g.addEventListener('click', go);
+    g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } });
+  });
+}
+
 // ---------- update loop ----------
 let pending = false, lastOut = null;
 function schedule() { if (!pending) { pending = true; requestAnimationFrame(update); } }
@@ -244,6 +312,7 @@ function update() {
   w.innerHTML = out.warnings.length ? `<strong>Warning</strong><ul>${out.warnings.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>` : '';
   updateCards(out);
   updatePFD(out);
+  renderPanel(out);
   if (currentTab() === 'simulator' && window.Plotly) {
     const yc = renderAll(out, Tcold);
     document.getElementById('cool-yield').textContent = `Cooling ${fmt(out.inputs.T_C, 0)} → ${Tcold} °C recovers only ${fmt(100 * yc, 1)} % of the dissolved LiOH (M9).`;
@@ -328,6 +397,7 @@ function init() {
   buildSliders();
   buildCards();
   mountPFD(document.getElementById('pfd'));
+  initPFDClicks();
   document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
   const tc = document.getElementById('tcold');
   tc.addEventListener('input', () => { Tcold = parseFloat(tc.value); document.getElementById('tcold-out').textContent = Tcold; schedule(); });
