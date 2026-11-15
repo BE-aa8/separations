@@ -274,3 +274,11 @@ Entry template:
 - **Cause → effect motion:** card values flash briefly when a slider changes them; tabs fade in. All motion is off under reduced motion.
 
 **Tests:** new `tests/browser-ux.mjs` (theme default/toggle/persistence, chart background follows the theme, streams animate with vapor faster than purge, the feed slider changes flow speed, the infeasible preset stops flows, value flashes, reduced motion → no animations, no horizontal scroll at 375 px in both themes, no console errors): passed on the first run. Smoke and Phase 2 tests gained `--scheme dark`; CI now runs them in both themes.
+
+## 2026-11-15 (cont.) — shipped the redesign so far
+
+**Prompt (verbatim):** "Let's ship out what we have right now, and then I'll take a look at it, and I'll come back later and see if there's any other UI UX stuff that I want to fix with it." then "send me the zip when CI passes"
+
+**Done:** waited for GitHub CI on `2b09249` (data + hand-calc job and browser job, now covering the light and dark smoke tests, Phase 2 in both themes, the hero and UX checks): all green. Fast-forwarded main to `2b09249` (the pre-redesign checkpoint `2fe4d1f` is still in history). Built `dist/mvr-crystallizer-site.zip` (28 files) and verified its contents byte-for-byte against the committed `site/` before sending it for Netlify Drop.
+
+**Still open (by choice, for later):** Simulator layout (key-results strip, chart groups, mobile inputs panel), the Overview area below the hero (live headline numbers, cards), Theory TOC, placeholders. My "conclusions" section in comparison.md.
