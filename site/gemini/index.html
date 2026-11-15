@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MVR Crystallizer Explorer</title>
+    
+    <!-- Pinned CDN versions as per §5.1 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
+    
+    <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+    
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>MVR Crystallizer Explorer</h1>
+            <div class="ai-banner">
+                CHE 4061 AI Project | <a href="#ai-workflow">AI Workflow</a>
+            </div>
+        </div>
+    </header>
+
+    <nav id="tab-bar">
+        <ul>
+            <li><a href="#overview">Overview</a></li>
+            <li><a href="#industry">Industry</a></li>
+            <li><a href="#theory">Theory</a></li>
+            <li><a href="#simulator" class="active">Simulator</a></li>
+            <li><a href="#ai-workflow">AI Workflow</a></li>
+            <li><a href="#video">Video</a></li>
+            <li><a href="#references">References</a></li>
+        </ul>
+    </nav>
+
+    <main id="content">
+        <!-- Overview Tab -->
+        <section id="overview" class="tab-content">
+            <h2>Overview</h2>
+            <p>Rising demand for electric vehicle batteries is driving the need for efficient lithium refining. This site explores the <strong>MVR (Mechanical Vapor Recompression) evaporative crystallizer</strong>, a key technology for producing battery-grade Lithium Hydroxide Monohydrate (LiOH·H2O).</p>
+            
+            <div class="card">
+                <h3>What this site does</h3>
+                <p>This interactive tool compares single-effect, multi-effect, and MVR evaporation strategies. It teaches the underlying physics—from solubility and Boiling Point Elevation (BPE) to compressor thermodynamics—and reveals why MVR is often the most energy-efficient choice despite using more expensive electricity.</p>
+            </div>
+
+            <div class="card">
+                <h3>What I learned</h3>
+                <ul>
+                    <li>The critical role of BPE in determining the "lift" required by an MVR compressor.</li>
+                    <li>How electricity-vs-steam price crossovers dictate the economic choice of technology.</li>
+                    <li>The trade-off between crystal yield and purity controlled by the purge ratio.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3>Next Steps</h3>
+                <p>[Placeholder: What I want to learn next about crystallizer design, e.g., population balances or rigorous impurity modeling.]</p>
+            </div>
+        </section>
+
+        <!-- Industry Tab -->
+        <section id="industry" class="tab-content">
+            <h2>Industry Context</h2>
+            <div class="industry-grid">
+                <div class="card">
+                    <h3>Tesla Robstown Refinery</h3>
+                    <p>The Tesla lithium refinery in Robstown, TX (operational as of Jan 2026) aims to produce about 50 GWh/year of battery capacity. This requires translating spodumene concentrate through a kiln, alkaline leach, and purification steps into final crystallization.</p>
+                    <p><strong>Capacity Math:</strong> 50 GWh/yr &times; [Intensity kg LCE/kWh] &times; 1.136 t Hydrate/t LCE &approx; 40,000 t LiOH&middot;H2O/yr &approx; 5 t/h.</p>
+                </div>
+                
+                <div class="card warning-card">
+                    <h3>Operating Problems</h3>
+                    <p><strong>Foaming:</strong> LiOH solutions can foam, leading to carry-over into condensate or wet compressor suction (erosion).</p>
+                    <p><strong>Scaling:</strong> Li2CO3 scaling reduces heat transfer (U) and requires periodic washing.</p>
+                </div>
+
+                <div class="card">
+                    <h3>Market Share</h3>
+                    <p>MVR technology holds approximately 55-60% of the market for new lithium crystallization plants due to its low carbon footprint and operating cost advantages in regions with stable power grids.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Theory Tab -->
+        <section id="theory" class="tab-content">
+            <h2>Theory & Terminology</h2>
+            <div class="theory-container">
+                <div class="card">
+                    <h3>1. Evaporation & BPE</h3>
+                    <div id="eq-bpe" class="equation-block"></div>
+                    <p class="interpretation">Dissolved ions lower water's vapor pressure, so the liquor must be hotter to boil at the same pressure.</p>
+                </div>
+
+                <div class="card">
+                    <h3>2. MVR as a Heat Pump</h3>
+                    <div id="eq-cop" class="equation-block"></div>
+                    <p class="interpretation">By paying for a small pressure "lift", MVR recycles the massive latent heat of the vapor.</p>
+                </div>
+
+                <div class="card">
+                    <h3>3. Solubility & Supersaturation</h3>
+                    <p>Crystallization occurs when a solution is driven into the metastable zone (supersaturated). For LiOH, the solubility is relatively flat with temperature, making evaporative crystallization necessary.</p>
+                    <div class="schematic-note">
+                        <strong>Metastable Zone (Schematic):</strong>
+                        <ul>
+                            <li><strong>Binodal:</strong> The equilibrium solubility line.</li>
+                            <li><strong>Metastable Limit:</strong> Growth on seeds, but no new nuclei.</li>
+                            <li><strong>Spinodal:</strong> Spontaneous phase separation.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Glossary</h3>
+                    <dl>
+                        <dt>MVR</dt><dd>Mechanical Vapor Recompression.</dd>
+                        <dt>BPE</dt><dd>Boiling Point Elevation.</dd>
+                        <dt>COP</dt><dd>Coefficient of Performance.</dd>
+                        <dt>Purge</dt><dd>Stream removed to prevent impurity buildup.</dd>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- Simulator Tab -->
+        <section id="simulator" class="tab-content active">
+            <div class="simulator-layout">
+                <aside id="controls">
+                    <div class="preset-buttons">
+                        <button id="preset-handcalc">Hand-calc case</button>
+                        <button id="preset-highbpe">High BPE</button>
+                        <button id="preset-texas">Texas ($)</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Feed Flow (F): <span id="val-F">10000</span> kg/h</label>
+                        <input type="range" id="input-F" min="2000" max="50000" step="1000" value="10000">
+                    </div>
+                    
+                    <div class="input-group">
+                        <label>Feed LiOH (xF): <span id="val-xF">0.060</span></label>
+                        <input type="range" id="input-xF" min="0.02" max="0.11" step="0.005" value="0.060">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Purge Ratio (p): <span id="val-purgeRatio">0.05</span></label>
+                        <input type="range" id="input-purgeRatio" min="0.005" max="0.20" step="0.005" value="0.05">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Boiling Temp (Tb): <span id="val-T_C">60</span> °C</label>
+                        <input type="range" id="input-T_C" min="40" max="100" step="1" value="60">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Heater ΔT: <span id="val-dT_heater">6</span> K</label>
+                        <input type="range" id="input-dT_heater" min="1" max="15" step="0.5" value="6">
+                    </div>
+
+                    <div class="input-group">
+                        <label>BPE Activity: <span id="val-activityFactor">1.00</span></label>
+                        <input type="range" id="input-activityFactor" min="0.75" max="1.20" step="0.01" value="1.00">
+                        <label class="toggle"><input type="checkbox" id="input-useOsmotic" checked> Use Osmotic Coeff</label>
+                    </div>
+
+                    <hr>
+                    <div class="input-group">
+                        <label>Electricity: <span id="val-ce">0.072</span> $/kWh</label>
+                        <input type="range" id="input-ce" min="0.03" max="0.25" step="0.005" value="0.072">
+                    </div>
+                    <div class="input-group">
+                        <label>Steam: <span id="val-cs">7.33</span> $/t</label>
+                        <input type="range" id="input-cs" min="5" max="40" step="0.5" value="7.33">
+                    </div>
+                </aside>
+
+                <div id="results">
+                    <div id="infeasible-warning" class="warning-banner hidden"></div>
+                    
+                    <div class="results-grid">
+                        <div class="card result-card">
+                            <div class="card-header">
+                                <h4>BPE</h4>
+                                <button class="help-btn" data-help="bpe">?</button>
+                            </div>
+                            <div class="math-value" id="res-BPE"></div>
+                            <span class="units">K</span>
+                            <div class="help-content hidden" id="help-bpe">
+                                <div class="eq">BPE = \phi \cdot i \cdot K_b \cdot m</div>
+                                <p class="interpretation">Boiling point increase due to solute.</p>
+                            </div>
+                        </div>
+                        <div class="card result-card">
+                            <div class="card-header">
+                                <h4>MVR Power</h4>
+                                <button class="help-btn" data-help="power">?</button>
+                            </div>
+                            <div class="math-value" id="res-kWh_per_t"></div>
+                            <span class="units">kWh/t water</span>
+                            <div class="help-content hidden" id="help-power">
+                                <div class="eq">kWh/t = \frac{w}{3.6 \cdot \eta_m}</div>
+                                <p class="interpretation">Electricity used per tonne of vapor.</p>
+                            </div>
+                        </div>
+                        <div class="card result-card">
+                            <div class="card-header">
+                                <h4>Li Yield</h4>
+                                <button class="help-btn" data-help="yield">?</button>
+                            </div>
+                            <div class="math-value" id="res-liYield"></div>
+                            <span class="units">%</span>
+                            <div class="help-content hidden" id="help-yield">
+                                <div class="eq">Yield = \frac{0.5707 \cdot C}{F \cdot x_F}</div>
+                                <p class="interpretation">Fraction of feed lithium recovered.</p>
+                            </div>
+                        </div>
+                        <div class="card result-card">
+                            <div class="card-header">
+                                <h4>Product Impurity</h4>
+                                <button class="help-btn" data-help="impurity">?</button>
+                            </div>
+                            <div class="math-value" id="res-impurity"></div>
+                            <span class="units">ppm</span>
+                            <div class="help-content hidden" id="help-impurity">
+                                <div class="eq">Imp \approx \frac{\epsilon \cdot z_{ML}}{1 + \epsilon}</div>
+                                <p class="interpretation">Impurity level in crystals.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="charts-container">
+                        <div id="chart-solubility" class="chart"></div>
+                        <div id="chart-energy" class="chart"></div>
+                        <div id="chart-crossover" class="chart"></div>
+                        <div id="chart-purity" class="chart"></div>
+                        <div id="chart-power-bpe" class="chart"></div>
+                        <div id="chart-mass-flow" class="chart"></div>
+                        <div id="chart-lift" class="chart"></div>
+                        <div id="chart-me-feas" class="chart"></div>
+                        <div id="chart-bpe-conc" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Workflow Tab -->
+        <section id="ai-workflow" class="tab-content">
+            <h2>AI Workflow</h2>
+            <nav class="sub-nav">
+                <a href="#ai-comparison">Model Comparison</a> | 
+                <a href="#ai-log">Process Log</a>
+            </nav>
+            <div id="ai-comparison" class="sub-tab">
+                <h3>Model Comparison</h3>
+                <p>This build was created by <strong>Gemini 2.0 Flash</strong> (via Gemini CLI). It is compared against the Claude build to evaluate physics accuracy, code quality, and UI/UX polish.</p>
+                <div class="placeholder-box">Detailed metrics and decision tables will be added in Phase 4.</div>
+            </div>
+            <div id="ai-log" class="sub-tab hidden">
+                <h3>Process Log</h3>
+                <p>Tracked decisions, prompts, and iterations during the build process.</p>
+                <div class="placeholder-box">Full log will be populated from docs/process-log.md.</div>
+            </div>
+        </section>
+
+        <!-- Video Tab -->
+        <section id="video" class="tab-content">
+            <h2>Video & Transcript</h2>
+            <div class="video-wrapper">
+                <div class="placeholder-box">
+                    <p>YouTube Presentation Placeholder</p>
+                    <p>(Upload by Dec 4, 2026)</p>
+                </div>
+            </div>
+            <div class="transcript-box">
+                <h3>Verbatim Transcript</h3>
+                <p>[Placeholder for auto-generated transcript]</p>
+            </div>
+        </section>
+
+        <!-- References Tab -->
+        <section id="references" class="tab-content">
+            <h2>References & Contributions</h2>
+            <div id="dynamic-references"></div>
+            <div class="contributions">
+                <h3>Contributions</h3>
+                <ul>
+                    <li><strong>Andrew:</strong> Project lead, data verification, hand-calc reference.</li>
+                    <li><strong>Gemini:</strong> Full Phase 1 build of this version.</li>
+                    <li><strong>NIST / EIA / Monnin:</strong> Data sources for steam, prices, and LiOH properties.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 MVR Crystallizer Explorer | Individual Project | Fall 2026</p>
+    </footer>
+
+    <script type="module" src="js/ui.js"></script>
+</body>
+</html>

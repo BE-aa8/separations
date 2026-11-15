@@ -1,0 +1,47 @@
+npm warn deprecated @github/keytar@7.10.6: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+Warning: 256-color support not detected. Using a terminal with at least 256-color support is recommended for a better visual experience.
+Ripgrep is not available. Falling back to GrepTool.
+Attempt 1 failed: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 5, model: gemini-3-flash, description: Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+Please retry in 59.702324016s.
+Suggested retry after 59s.. Retrying after 70002ms...
+(node:2795) MaxListenersExceededWarning: Possible EventTarget memory leak detected. 11 abort listeners added to [AbortSignal]. MaxListeners is 10. Use events.setMaxListeners() to increase limit
+(Use `node --trace-warnings ...` to show where the warning was created)
+Attempt 1 failed: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 250000, model: gemini-3-flash, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+Please retry in 46.818468689s.
+Suggested retry after 46s.. Retrying after 48168ms...
+Attempt 1 failed: You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. 
+* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 250000, model: gemini-3-flash, description: Generate content input tokens per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.
+Please retry in 51.036237656s.
+Suggested retry after 51s.. Retrying after 57824ms...
+Error when talking to Gemini API Full report available at: /tmp/gemini-client-error-Turn.run-sendMessageStream-2026-11-15T20-14-13-736Z.json TerminalQuotaError: You have exhausted your daily quota on this model.
+    at classifyGoogleError (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:308905:16)
+    at retryWithBackoff (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:309638:29)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async GeminiChat.makeApiCallAndProcessStream (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:334930:28)
+    at async GeminiChat.streamWithRetries (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:334610:29)
+    at async Turn.run (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:335668:24)
+    at async GeminiClient.processTurn (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:349660:22)
+    at async GeminiClient.sendMessageStream (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/chunk-RCB6BI5H.js:349757:14)
+    at async file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/gemini-Q2FNZWQG.js:13754:26
+    at async main (file:///home/runner/.npm/_npx/094fddddf6916012/node_modules/@google/gemini-cli/bundle/gemini-Q2FNZWQG.js:19134:5) {
+  cause: {
+    code: 429,
+    message: 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n' +
+      '* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-3-flash, description: Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\n' +
+      'Please retry in 11h45m46.281356283s.',
+    details: [ [Object], [Object], [Object] ]
+  },
+  retryDelayMs: undefined,
+  reason: undefined,
+  status: 429
+}
+{
+  "session_id": "0bcc623d-5ecf-42a1-95a6-029f708e7786",
+  "error": {
+    "type": "Error",
+    "message": "You have exhausted your daily quota on this model.",
+    "code": 429
+  }
+}
