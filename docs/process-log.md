@@ -161,3 +161,9 @@ Entry template:
 **Decision (2026-11-15):** "Paid key + Pro, redo". Reasoning: a flagship-vs-flagship comparison (Gemini Pro vs Claude Opus) is fairer than free-tier Flash vs Opus, and Gemini should go through the same plan → approval → build steps Claude did. The first attempt is preserved on branch `gemini/attempt1-flash-freetier` as a data point; `gemini/mvp` was deleted so the redo starts clean. Added a `models` workflow stage to list the models the key can use before choosing the Pro model ID.
 
 **Update:** the git proxy refused deleting `gemini/mvp`, so the redo runs on a fresh branch `gemini/pro` instead. `gemini/mvp` stays as a duplicate of the saved first attempt.
+
+## 2026-11-15 (cont.) — spending limits on the Gemini workflow
+
+**Prompt (verbatim):** "Okay it should be funded now, make sure you don't use a crazy amount of money on this shit otherwise we will be finding other methods."
+
+**What changed:** `run-gemini.sh` now keeps `docs/gemini-build/costs.tsv`. Each run logs a deliberately high cost estimate (all input tokens at $4/M and output at $18/M, no cache discount; $3 flat if a run dies without stats) and **refuses to start once the estimated total reaches $6** (`BUDGET_USD` in the workflow), below the $10 AI Studio credit. Each Gemini call has a time limit (plan 10 min, build 30, follow-up 15), and the whole job has a 45-minute timeout. Tested with a fake Gemini: the cost was logged and the over-budget run refused to start.

@@ -37,7 +37,7 @@ concurrency:
 jobs:
   gemini:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,6 +64,7 @@ jobs:
           STAGE: ${{ inputs.stage }}
           MESSAGE: ${{ inputs.message }}
           MODEL: ${{ inputs.model }}
+          BUDGET_USD: "6"   # hard stop on estimated total Gemini spend; raise only with the user's OK
         run: bash .github/scripts/run-gemini.sh
       - name: Commit and push the run to gemini/pro
         if: always()
