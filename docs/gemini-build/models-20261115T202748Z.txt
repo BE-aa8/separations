@@ -1,0 +1,16 @@
+npm warn deprecated @github/keytar@7.10.6: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
+Available Gemini Models:
+
+auto (Auto)
+  Description:   Let Gemini CLI decide the best model for the task: gemini-2.5-pro, gemini-3.5-flash
+  Context limit: 1,048,576 input tokens / 8,192 output tokens
+
+gemini-2.5-pro (gemini-2.5-pro)
+  Context limit: 1,048,576 input tokens / 8,192 output tokens
+
+gemini-3.5-flash (gemini-3.5-flash)
+  Context limit: 1,048,576 input tokens / 8,192 output tokens
+
+gemini-3.1-flash-lite (gemini-3.1-flash-lite)
+  Context limit: 1,048,576 input tokens / 8,192 output tokens
+

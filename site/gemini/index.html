@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MVR Crystallizer Explorer | LiOH·H₂O Separations</title>
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Pinned KaTeX 0.16.11 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+  <!-- Pinned Plotly 2.35.2 -->
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="header-top">
+        <div class="brand-title">
+          <span>MVR Crystallizer Explorer</span>
+          <span class="brand-badge">Gemini Build (Phase 1)</span>
+        </div>
+        <div class="header-subtitle">
+          UC CHE 4061 Separation Processes &bull; Prof. Carlos Co &bull; Fall 2026
+        </div>
+      </div>
+
+      <!-- AI Project Banner -->
+      <div class="ai-banner">
+        <span>🤖 <strong>AI Dual-Model Exploration:</strong> Comparing autonomous engineering builds between Gemini CLI and Claude Code.</span>
+        <a href="#ai-workflow">View AI Workflow &amp; Comparison &rarr;</a>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav class="nav-tabs" role="tablist">
+        <a class="nav-tab active" role="tab" href="#overview" aria-selected="true">1. Overview</a>
+        <a class="nav-tab" role="tab" href="#industry" aria-selected="false">2. Industry Context</a>
+        <a class="nav-tab" role="tab" href="#theory" aria-selected="false">3. Theory</a>
+        <a class="nav-tab" role="tab" href="#simulator" aria-selected="false">4. Simulator</a>
+        <a class="nav-tab" role="tab" href="#ai-workflow" aria-selected="false">5. AI Workflow</a>
+        <a class="nav-tab" role="tab" href="#video" aria-selected="false">6. Video &amp; Transcript</a>
+        <a class="nav-tab" role="tab" href="#references" aria-selected="false">7. References &amp; Contributions</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="main-content">
+
+    <!-- TAB 1: OVERVIEW -->
+    <section id="overview" class="tab-panel active">
+      <div class="section-card">
+        <h1>Evaporative Crystallization of Battery-Grade $\text{LiOH}\cdot\text{H}_2\text{O}$</h1>
+        <p class="lead">
+          Why do modern lithium hydroxide refineries deploy Mechanical Vapor Recompression (MVR) heat pump evaporative crystallizers instead of traditional multi-effect steam trains?
+        </p>
+
+        <div class="callout-box">
+          <h3>The Industrial Problem</h3>
+          <p>
+            The global transition to electric mobility relies heavily on high-nickel lithium-ion battery chemistries (e.g., NMC 811 and NCA). Producing these cathodes requires battery-grade lithium hydroxide monohydrate ($\text{LiOH}\cdot\text{H}_2\text{O}$). Chemical refining routes generate large volumes of aqueous lithium liquor. Because $\text{LiOH}$ exhibits an unusually flat aqueous solubility curve, cooling crystallization achieves poor yields, mandating evaporative crystallization. However, evaporating thousands of tonnes of water per day with fresh boiler steam requires massive thermal energy. MVR technology dramatically slashes this energy burden by upgrading low-pressure overhead vapor into heating steam with an electrically driven compressor.
+          </p>
+        </div>
+
+        <h3>Interactive Learning Objectives</h3>
+        <ul>
+          <li><strong>Energy Thermodynamics:</strong> Discover how MVR acts as an open-loop heat pump, achieving effective Coefficients of Performance ($\text{COP} > 20$) by only paying for compressor lift ($\Delta T_{\text{lift}} = \text{BPE} + \Delta T_{\text{heater}}$) rather than latent heat of vaporization.</li>
+          <li><strong>Electrolyte Colligative Limits:</strong> Analyze why Boiling Point Elevation ($\text{BPE}$) erodes the thermodynamic driving force of multi-effect evaporators in series while directly increasing MVR compression ratios.</li>
+          <li><strong>Utility Economics:</strong> Identify the electricity vs. steam operating cost crossover points, benchmarking real-world industrial utility rates from the U.S. Energy Information Administration (EIA).</li>
+          <li><strong>Mass &amp; Purge Balances:</strong> Balance lithium recovery yield against product purity by adjusting mother liquor purge ratios and crystal cake washing.</li>
+        </ul>
+
+        <div class="section-card" style="background: #f8fafc; border-color: #cbd5e1; margin-top: 1.5rem;">
+          <h3>What I Learned &amp; What I Want to Learn Next</h3>
+          <p>
+            <strong>What I learned:</strong> Vapor recompression achieves massive primary energy reductions by recirculating latent heat that would otherwise be discarded into cooling towers. Colligative boiling point elevation represents a pure parasitic thermodynamic penalty that directly elevates the compressor pressure ratio and discharge temperature. In multi-effect evaporators, BPE compounds across every stage, rapidly rendering high effect numbers infeasible.
+          </p>
+          <p>
+            <strong>What I want to learn next:</strong> In Phase 2, how to rigorously balance the capital expenditure of heat exchanger surface area against compressor electrical consumption (optimum $\Delta T_{\text{heater}}$), and how fixed-area crystallizers handle turndown during plant operational swings.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: INDUSTRY CONTEXT -->
+    <section id="industry" class="tab-panel" hidden>
+      <div class="section-card">
+        <h1>Industry Context: The Lithium Refining Revolution</h1>
+
+        <h2>1. Why Lithium Hydroxide for High-Nickel Cathodes?</h2>
+        <p>
+          Lithium-ion battery cathodes with high nickel content (such as NMC 811: 80% Ni, 10% Mn, 10% Co) require lithium hydroxide ($\text{LiOH}\cdot\text{H}_2\text{O}$) rather than lithium carbonate ($\text{Li}_2\text{CO}_3$). Nickel-rich cathode precursors cannot withstand the high calcination temperatures ($>900\ ^\circ\text{C}$) required to decompose lithium carbonate without inducing nickel reduction ($\text{Ni}^{3+} \rightarrow \text{Ni}^{2+}$) and destructive cation mixing in the crystal lattice. Lithium hydroxide melts and reacts at lower synthesis temperatures ($\sim 700\ ^\circ\text{C}$), ensuring optimal cathode crystallinity and performance.
+        </p>
+
+        <h2>2. Refinery Walkthrough: Tesla Robstown, Texas Facility</h2>
+        <p>
+          Tesla's lithium refinery in Robstown, Texas processes hard-rock spodumene ore into battery-grade lithium hydroxide monohydrate using an acid-free or direct alkaline conversion pathway:
+        </p>
+
+        <div class="process-flow-steps">
+          <div class="flow-step">Spodumene Ore<br><small>$\alpha$-spodumene</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">Calcining Kiln<br><small>1050 °C &rarr; $\beta$-spodumene</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">Alkaline / Acid Leach<br><small>Water extraction</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">Purification &amp; IX<br><small>Remove Ca, Mg, trace Na</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step" style="border-color: #dc2626; background: #fef2f2;">MVR Crystallizer<br><small>Flash evaporation</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">Centrifuge &amp; Wash<br><small>Solid-liquid split</small></div>
+          <div class="flow-arrow">&rarr;</div>
+          <div class="flow-step">Drying &amp; Packaging<br><small>$\text{LiOH}\cdot\text{H}_2\text{O}$ crystals</small></div>
+        </div>
+
+        <h2>3. Production Volume Arithmetic</h2>
+        <p>
+          What does a commercial battery-scale refinery look like in numbers?
+        </p>
+        <div class="callout-box">
+          <p>
+            For a battery production capacity of $50\ \text{GWh/yr}$:
+          </p>
+          $$\text{Battery Demand} = 50\ \text{GWh/yr} \times 0.7\ \frac{\text{kg LCE}}{\text{kWh}}\ (\text{ESTIMATE}) \approx 35,000\ \text{t LCE/yr}$$
+          <p>
+            Converting Lithium Carbonate Equivalent (LCE, $\text{Li}_2\text{CO}_3$, $73.89\ \text{g/mol}$) to Lithium Hydroxide Monohydrate ($\text{LiOH}\cdot\text{H}_2\text{O}$, $41.965\ \text{g/mol}$):
+          </p>
+          $$\text{Conversion Factor} = \frac{2 \times 41.965}{73.89} = 1.136\ \frac{\text{t}\ \text{LiOH}\cdot\text{H}_2\text{O}}{\text{t LCE}}$$
+          $$\text{Hydrate Product} = 35,000 \times 1.136 \approx 40,000\ \text{t}\ \text{LiOH}\cdot\text{H}_2\text{O/yr} \approx 5\ \text{t/h}$$
+          <p>
+            At a typical crystallizer feed concentration of $6.0\ \text{wt\%}\ \text{LiOH}$, this requires a continuous crystallizer feed rate of approximately $\mathbf{50\ \text{t/h}}$ ($50,000\ \text{kg/h}$) and evaporates over $42\ \text{t/h}$ of water!
+          </p>
+        </div>
+
+        <h2>4. Commercial Hardware: Forced-Circulation MVR Crystallizers</h2>
+        <p>
+          Industrial suppliers such as Veolia Water Technologies (HPD crystallization systems, US Patent 10,961,126 B2) utilize forced-circulation (FC) evaporative crystallizers. High circulation velocities prevent boiling inside the heat exchanger tubes, suppressing localized tube scaling and driving flash evaporation exclusively in the vapor disengagement chamber. Market studies estimate MVR commands roughly <strong>55–60%</strong> of newly installed industrial evaporative crystallization capacity (Meticulous Research, market estimate, ESTIMATE).
+        </p>
+
+        <h2>5. Operational Problem Callouts</h2>
+        <div class="callout-box warning">
+          <h3>Problem 1: Severe Foaming &amp; Liquid Carry-Over</h3>
+          <p>
+            <strong>Phenomenon:</strong> High vapor velocities combined with trace organic impurities, surfactants, or carbonate fines create stable foam heads in the vapor body.
+          </p>
+          <p>
+            <strong>Impact on MVR:</strong> Liquid droplet carry-over into the high-speed compressor suction causes severe mechanical droplet erosion on titanium/hastelloy impellers, dynamic unbalance, and alkaline contamination of the condensed vapor.
+          </p>
+          <p>
+            <strong>Mitigation:</strong> Conservative vapor body sizing ($v_{\text{vapor}} < 1.5\ \text{m/s}$), dual-stage wire-mesh demisters with wash sprays, and continuous addition of food-grade silicone antifoam emulsions.
+          </p>
+        </div>
+
+        <div class="callout-box danger">
+          <h3>Problem 2: $\text{Li}_2\text{CO}_3$ Inverse-Solubility Scaling</h3>
+          <p>
+            <strong>Phenomenon:</strong> Contact with ambient air or residual process carbonate leads to carbonate formation. Unlike $\text{LiOH}$, lithium carbonate ($\text{Li}_2\text{CO}_3$) exhibits <em>inverse (retrograde) solubility</em>—it becomes <em>less soluble</em> at higher temperatures.
+          </p>
+          <p>
+            <strong>Impact on MVR:</strong> As circulating liquor contacts the hot heat exchanger tube walls, $\text{Li}_2\text{CO}_3$ precipitates directly onto the tube surface, creating a hard, insulating mineral scale that rapidly degrades the overall heat transfer coefficient ($U$).
+          </p>
+          <p>
+            <strong>Mitigation:</strong> Strict upstream ion-exchange decarbonation, pressurized liquid circulation to ensure zero boiling in tubes, and automated periodic chemical cleaning (clean-in-place, CIP) cycles.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: THEORY -->
+    <section id="theory" class="tab-panel" hidden>
+      <div class="section-card">
+        <h1>Separation Process Theory &amp; Governing Equations</h1>
+        <p class="lead">
+          Every governing relationship from chemical engineering separations (CHE 4061) is detailed below with its formula, dimensional units, and physical interpretation.
+        </p>
+
+        <h2>1. Mass Balances &amp; Recovery</h2>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M1: Total Mass Balance</span>
+            <span class="eq-units">[kg/h]</span>
+          </div>
+          <div class="theory-eq-math">$$F = V + C + P$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Everything fed leaves as vapor, crystals, or purge.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M2: Lithium Mass Balance</span>
+            <span class="eq-units">[kg LiOH/h]</span>
+          </div>
+          <div class="theory-eq-math">$$F x_F = 0.5707\, C + P x_L$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Lithium leaves only in crystals or purge, so a bigger purge means less product.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M3: Impurity Solute Balance</span>
+            <span class="eq-units">[kg/h]</span>
+          </div>
+          <div class="theory-eq-math">$$F z_F = P z_{\text{ML}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Impurities don't crystallize, so the purge is their only exit.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M4: Mother Liquor Impurity Concentration</span>
+            <span class="eq-units">[dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$z_{\text{ML}} = \frac{z_F}{p}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> The mother liquor concentrates impurity by $1/p$.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M5: Saturated Liquor Mass Fraction</span>
+            <span class="eq-units">[mass fraction]</span>
+          </div>
+          <div class="theory-eq-math">$$x_L = (1 - z_{\text{ML}}) \frac{s}{100 + s}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Saturated liquor: the LiOH:water ratio is fixed by solubility at $T$.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M6: Water Mass Balance</span>
+            <span class="eq-units">[kg/h]</span>
+          </div>
+          <div class="theory-eq-math">$$F(1 - x_F - z_F) = V + 0.4293\, C + P(1 - x_L - z_{\text{ML}})$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Water leaves as vapor, as hydrate water, or in the purge.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M7: Lithium Recovery Yield</span>
+            <span class="eq-units">[fraction]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{Yield} = \frac{0.5707\, C}{F x_F}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Fraction of the incoming Li recovered.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M8: Product Crystal Impurity</span>
+            <span class="eq-units">[ppm]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{Impurity} \approx \frac{\varepsilon z_{\text{ML}}}{1 + \varepsilon} \times 10^6$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Purity-only model: the liquor film left on the crystals after the centrifuge carries impurity. Its mass is neglected in M1–M6.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation M9: Theoretical Cooling Crystallization Yield</span>
+            <span class="eq-units">[fraction]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{Cooling Yield} = \frac{s(T_{\text{hot}}) - s(T_{\text{cold}})}{s(T_{\text{hot}})}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Flat solubility: cooling recovers little, so water must be evaporated.</div>
+        </div>
+
+        <h2>2. Phase Equilibria, BPE &amp; Crystallization Kinetics</h2>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation B1: Boiling Point Elevation (BPE)</span>
+            <span class="eq-units">[K]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{BPE} = a \cdot i \cdot K_b \cdot m, \quad K_b = \frac{R\, T_b^2\, M_w}{\Delta H_{\text{vap}}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Dissolved ions lower water's vapor pressure, so the liquor must be hotter to boil at the same pressure. $K_b$ is taken at $T_b$ for simplicity.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation B2: Boiling Liquor Temperature</span>
+            <span class="eq-units">[°C]</span>
+          </div>
+          <div class="theory-eq-math">$$T_b = T_{\text{sat}}(P) + \text{BPE}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Non-volatile LiOH stays in the liquid, so the boiling liquor is at $T_b$. It makes pure water vapor at pressure $P$, superheated by BPE above that vapor's condensation point $T_{\text{sat}}(P)$.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation B3: Antoine Vapor Pressure</span>
+            <span class="eq-units">[mmHg, kPa]</span>
+          </div>
+          <div class="theory-eq-math">$$\log_{10} P_{\text{sat}} [\text{mmHg}] = A - \frac{B}{C + T\,[^\circ\text{C}]}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Higher $T \rightarrow$ higher vapor pressure. The compressor raises $P$ so the vapor condenses hotter.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation B4: Supersaturation Ratio &amp; Driving Force</span>
+            <span class="eq-units">[dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$S = \frac{c}{c^*}, \quad \sigma = \frac{c - c^*}{c^*}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Driving force for crystallization: how far above saturation the liquor is.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation B5: Phase Boundaries (Binodal &amp; Spinodal)</span>
+            <span class="eq-units">[concentration]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{Binodal } (c^*) < \text{Metastable Limit} < \text{Spinodal Limit}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Below $c^*$: crystals dissolve. Metastable zone: existing seed crystals grow, but new nuclei rarely form, so seeding controls size. Above the metastable limit: nucleation shower $\rightarrow$ fines. Spinodal: thermodynamic limit where phase separation needs no nucleation barrier.</div>
+        </div>
+
+        <div class="callout-box">
+          <h3>Why Crystal Size Distribution Matters</h3>
+          <p>
+            <strong>Crystals that are too small (fines):</strong> Slower centrifuge dewatering rates, higher adhering mother liquor retention ($\varepsilon$), resulting in excessive impurity carryover (elevated ppm Na) and severe airborne dust hazards during pneumatic conveyance and dry packaging.
+          </p>
+          <p>
+            <strong>Crystals that are too large:</strong> Excessive agglomeration traps mother liquor inclusions inside the crystal matrix (which cannot be washed away by surface cake rinsing), longer required residence times, and crystal attrition/breakage in pumps.
+          </p>
+        </div>
+
+        <h2>3. Energy &amp; Multi-Effect Steam Evaporation</h2>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation E1: Evaporator Heat Duty</span>
+            <span class="eq-units">[kW]</span>
+          </div>
+          <div class="theory-eq-math">$$Q \approx \frac{V\, h_{fg}(T_v)}{3600}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Almost all the energy goes into boiling water off.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation E2: Steam Consumption &amp; Economy</span>
+            <span class="eq-units">[kg/h, dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$S = \frac{Q}{h_{fg}(T_s)}, \quad E = \frac{V}{S}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> One kg of steam boils about one kg of water.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation E3: Multi-Effect Economy</span>
+            <span class="eq-units">[dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$E_N \approx N \cdot E_1$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Each effect's vapor heats the next, so the latent heat is reused $N$ times (an upper bound).</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation E4: Multi-Effect Temperature Penalty</span>
+            <span class="eq-units">[K]</span>
+          </div>
+          <div class="theory-eq-math">$$\Delta T_{\text{per effect}} = \frac{T_s - T_{\text{last}} - N \cdot \text{BPE}}{N} \ge \Delta T_{\text{min}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> In each effect, vapor leaves the liquor at $T_{b,k}$ but condenses in the next heater only at $T_{b,k} - \text{BPE}$, so BPE is subtracted from the usable driving force in every stage.</div>
+        </div>
+
+        <h2>4. Mechanical Vapor Recompression (MVR) Heat Pump</h2>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C1: Saturation Pressures &amp; Temperatures</span>
+            <span class="eq-units">[°C, kPa]</span>
+          </div>
+          <div class="theory-eq-math">$$T_c = T_b + \Delta T_{\text{heater}}, \quad P_2 = P_{\text{sat}}(T_c), \quad P_1 = P_{\text{sat}}(T_b - \text{BPE})$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> The vapor must be compressed until it condenses hotter than the liquor it heats.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C2: Pressure Ratio</span>
+            <span class="eq-units">[dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$r = \frac{P_2}{P_1}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Set by the required lift ($\text{BPE} + \Delta T_{\text{heater}}$).</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C3: Isentropic Compression Work</span>
+            <span class="eq-units">[kJ/kg]</span>
+          </div>
+          <div class="theory-eq-math">$$w_s = \frac{\gamma}{\gamma - 1} R_v T_1 \left(r^{\frac{\gamma - 1}{\gamma}} - 1\right) / 1000$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Work grows with the lift, not with the latent heat recycled. It scales with $T_1$ and $R/M$ because hotter, lighter vapor has a larger specific volume ($v = RT/(PM)$), so more $\int v\, dP$ work is needed per kg for the same pressure ratio.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C4: Real Work &amp; Electrical Power</span>
+            <span class="eq-units">[kJ/kg, kW]</span>
+          </div>
+          <div class="theory-eq-math">$$w = \frac{w_s}{\eta_{\text{is}}}, \quad W_{\text{elec}} = \frac{V \cdot w}{3600 \cdot \eta_{\text{motor}}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Real machines and motors lose some work as heat.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C5: Specific Energy Consumption</span>
+            <span class="eq-units">[kWh/t vapor]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{kWh/t} = \frac{w}{3.6 \cdot \eta_{\text{motor}}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> The plant-comparison number (vendor range 20–60, ESTIMATE).</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C6: Coefficient of Performance (COP)</span>
+            <span class="eq-units">[dimensionless]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{COP} = \frac{h_{fg}}{w}, \quad \text{COP}_{\text{Carnot}} = \frac{T_c + 273.15}{T_c - T_v}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> A heat pump: ~22 units of heat moved per unit of work, because only the lift is paid for.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C7: Compressor Discharge Superheat</span>
+            <span class="eq-units">[°C]</span>
+          </div>
+          <div class="theory-eq-math">$$T_2 = T_1 \left[1 + \frac{r^{\frac{\gamma - 1}{\gamma}} - 1}{\eta_{\text{is}}}\right] - 273.15$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Compression superheats steam (&approx;113–117 °C out vs 66 °C condensing); it doesn't make it wet. Liquid reaches the compressor only as entrained mist or foam (erosion, LiOH carry-over), or deliberately as condensate spray to desuperheat.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation C8: Compressor Surplus Heat</span>
+            <span class="eq-units">[kJ/kg]</span>
+          </div>
+          <div class="theory-eq-math">$$q_{\text{delivered}} \approx h_{fg}(T_v) + c_{p,v}\,\text{BPE} + w > h_{fg}(T_c)$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> The compressor work doesn't disappear: it shows up as ~3 % surplus heat, used for feed preheat and losses, or vented.</div>
+        </div>
+
+        <h2>5. Operating Economics</h2>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation $1: MVR Operating Cost</span>
+            <span class="eq-units">[$/t vapor]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{cost}_{\text{MVR}} = c_e \cdot \text{kWh/t}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> You pay only for the lift.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation $2: Multi-Effect Operating Cost</span>
+            <span class="eq-units">[$/t vapor]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{cost}_N = \frac{c_s}{E_N}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> You pay for steam, divided by the number of reuses.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation $3: Economic Utility Crossover Price</span>
+            <span class="eq-units">[$/kWh]</span>
+          </div>
+          <div class="theory-eq-math">$$c_e^* = \frac{c_s}{E_N \cdot \text{kWh/t}}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Below this electricity price, MVR is cheaper to run.</div>
+        </div>
+
+        <div class="theory-eq-card">
+          <div class="theory-eq-header">
+            <span class="eq-badge">Equation $4: Annual Operating Cost</span>
+            <span class="eq-units">[$/yr]</span>
+          </div>
+          <div class="theory-eq-math">$$\text{Annual Cost} = \text{cost/t} \times V \times \frac{\text{hours}}{1000}$$</div>
+          <div class="theory-eq-interp"><strong>Physical Interpretation:</strong> Scales to the plant.</div>
+        </div>
+
+        <h2>6. Engineering Glossary</h2>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr><th>Term</th><th>Symbol</th><th>Units</th><th>Definition</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Boiling Point Elevation</td><td>BPE</td><td>K</td><td>Elevation of solution boiling point over pure water due to non-volatile solute molality.</td></tr>
+              <tr><td>Coefficient of Performance</td><td>COP</td><td>—</td><td>Ratio of heat delivered in the condenser to compressor shaft/electrical work input.</td></tr>
+              <tr><td>Isentropic Efficiency</td><td>$\eta_{\text{is}}$</td><td>—</td><td>Ratio of ideal reversible adiabatic work to actual fluid shaft work.</td></tr>
+              <tr><td>Steam Economy</td><td>$E$</td><td>—</td><td>Mass ratio of water evaporated to fresh heating steam consumed.</td></tr>
+              <tr><td>Purge Ratio</td><td>$p$</td><td>—</td><td>Ratio of mother liquor purge mass flow to raw feed mass flow ($P/F$).</td></tr>
+              <tr><td>Adhering Liquor</td><td>$\varepsilon$</td><td>kg/kg</td><td>Liquid film entrained on dry crystal cake leaving centrifuge filtration.</td></tr>
+              <tr><td>Osmotic Coefficient</td><td>$\phi_{\text{sat}}$</td><td>—</td><td>Thermodynamic non-ideality correction for solvent chemical potential in concentrated electrolytes.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SIMULATOR -->
+    <section id="simulator" class="tab-panel" hidden>
+      <!-- Feasibility Warning Banner -->
+      <div id="simulator-alert" class="alert-banner" style="display: none;"></div>
+
+      <!-- Presets Bar -->
+      <div class="presets-bar">
+        <span class="presets-label">Operational Presets:</span>
+        <button type="button" class="btn-preset" data-preset="handcalc">Hand-calc case</button>
+        <button type="button" class="btn-preset" data-preset="cheapElec">Cheap electricity (Texas: $0.0721/kWh)</button>
+        <button type="button" class="btn-preset" data-preset="expensiveElec">Expensive electricity ($0.25/kWh)</button>
+        <button type="button" class="btn-preset" data-preset="highBpe">High BPE (70 °C, 9 wt% LiOH)</button>
+      </div>
+
+      <!-- Simulator Layout Grid -->
+      <div class="simulator-layout">
+
+        <!-- Controls Sidebar -->
+        <aside class="controls-sidebar">
+          <div class="control-group-title">Feed &amp; Crystallizer</div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Feed Rate (F)</span>
+              <small>kg/h</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-F-range" min="2000" max="50000" step="500" value="10000">
+              <input type="number" id="input-F" min="2000" max="50000" step="500" value="10000">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Feed LiOH (xF)</span>
+              <small>mass frac</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-xF-range" min="0.02" max="0.11" step="0.005" value="0.06">
+              <input type="number" id="input-xF" min="0.02" max="0.11" step="0.005" value="0.06">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Feed Impurity (zF)</span>
+              <small>mass frac</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-zF-range" min="0" max="0.005" step="0.0002" value="0.001">
+              <input type="number" id="input-zF" min="0" max="0.005" step="0.0002" value="0.001">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Boiling Temp (T_C)</span>
+              <small>°C</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-T_C-range" min="40" max="100" step="1" value="60">
+              <input type="number" id="input-T_C" min="40" max="100" step="1" value="60">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Purge Ratio (P/F)</span>
+              <small>fraction</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-purgeRatio-range" min="0.005" max="0.20" step="0.005" value="0.05">
+              <input type="number" id="input-purgeRatio" min="0.005" max="0.20" step="0.005" value="0.05">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Adhering Liquor (&epsilon;)</span>
+              <small>kg/kg</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-epsilon-range" min="0" max="0.10" step="0.005" value="0.03">
+              <input type="number" id="input-epsilon" min="0" max="0.10" step="0.005" value="0.03">
+            </div>
+          </div>
+
+          <div class="control-group-title">Thermodynamics &amp; BPE Model</div>
+
+          <div class="control-row">
+            <label class="toggle-wrap">
+              <input type="checkbox" id="input-useOsmotic" checked>
+              <span>Use Real Osmotic &phi; (Monnin 2005)</span>
+            </label>
+          </div>
+
+          <div class="control-row" id="container-activityFactor" style="display: none;">
+            <div class="control-label-wrap">
+              <span>Ideal Activity Factor</span>
+              <small>slider</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-activityFactor-range" min="0.75" max="1.20" step="0.01" value="1.0">
+              <input type="number" id="input-activityFactor" min="0.75" max="1.20" step="0.01" value="1.0">
+            </div>
+          </div>
+
+          <div class="control-group-title">MVR Compressor</div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Heater &Delta;T (driving force)</span>
+              <small>K</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-dT_heater-range" min="1" max="15" step="0.5" value="6">
+              <input type="number" id="input-dT_heater" min="1" max="15" step="0.5" value="6">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Isentropic Efficiency (&eta;_is)</span>
+              <small>fraction</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-etaIs-range" min="0.60" max="0.85" step="0.01" value="0.75">
+              <input type="number" id="input-etaIs" min="0.60" max="0.85" step="0.01" value="0.75">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Motor Efficiency (&eta;_m)</span>
+              <small>fraction</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-etaMotor-range" min="0.90" max="0.97" step="0.005" value="0.95">
+              <input type="number" id="input-etaMotor" min="0.90" max="0.97" step="0.005" value="0.95">
+            </div>
+          </div>
+
+          <div class="control-group-title">Multi-Effect Evaporator</div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Steam Temp (Ts)</span>
+              <small>°C</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-Ts_C-range" min="100" max="150" step="1" value="120">
+              <input type="number" id="input-Ts_C" min="100" max="150" step="1" value="120">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Last Effect Condenser (Tlast)</span>
+              <small>°C</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-Tlast_C-range" min="40" max="60" step="1" value="50">
+              <input type="number" id="input-Tlast_C" min="40" max="60" step="1" value="50">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Minimum &Delta;T per Effect</span>
+              <small>K</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-dTmin-range" min="3" max="10" step="0.5" value="5">
+              <input type="number" id="input-dTmin" min="3" max="10" step="0.5" value="5">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Selected Number of Effects (N)</span>
+              <small>effects</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-N-range" min="1" max="7" step="1" value="3">
+              <input type="number" id="input-N" min="1" max="7" step="1" value="3">
+            </div>
+          </div>
+
+          <div class="control-group-title">Utility Economics</div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Electricity Price (ce)</span>
+              <small>$/kWh</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-ce-range" min="0.03" max="0.25" step="0.005" value="0.0721">
+              <input type="number" id="input-ce" min="0.03" max="0.25" step="0.005" value="0.0721">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Steam Price (cs)</span>
+              <small>$/t steam</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-cs-range" min="5" max="40" step="0.5" value="7.33">
+              <input type="number" id="input-cs" min="5" max="40" step="0.5" value="7.33">
+            </div>
+          </div>
+
+          <div class="control-row">
+            <div class="control-label-wrap">
+              <span>Annual Operating Hours</span>
+              <small>h/yr</small>
+            </div>
+            <div class="control-input-wrap">
+              <input type="range" id="input-hours-range" min="4000" max="8760" step="100" value="8000">
+              <input type="number" id="input-hours" min="4000" max="8760" step="100" value="8000">
+            </div>
+          </div>
+        </aside>
+
+        <!-- Simulator Display & Outputs -->
+        <div class="simulator-display">
+
+          <!-- Process Flow Diagram (Inline SVG with Live Labels) -->
+          <div class="pfd-container" id="pfd-container"></div>
+
+          <!-- RESULT CARDS -->
+
+          <!-- 1. Mass Balance & Recovery Cards -->
+          <h2 class="results-category-title">1. Plant Mass Balance &amp; Recovery</h2>
+          <div class="cards-grid">
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Crystals Produced (C)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-C">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$C = \frac{F x_F - P x_L}{f_{\text{Li}}}$$</div>
+                <div class="card-units">Units: kg/h $\text{LiOH}\cdot\text{H}_2\text{O}$</div>
+                <div class="card-interp">Lithium leaves only in crystals or purge, so a bigger purge means less product.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Water Evaporated (V)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-V">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$F(1-x_F-z_F) = V + 0.4293 C + P(1-x_L-z_{\text{ML}})$$</div>
+                <div class="card-units">Units: kg/h water vapor</div>
+                <div class="card-interp">Water leaves as vapor, as hydrate water, or in the purge.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Purge Flow (P)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-P">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$P = p \cdot F$$</div>
+                <div class="card-units">Units: kg/h mother liquor</div>
+                <div class="card-interp">Everything fed leaves as vapor, crystals, or purge.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Lithium Recovery Yield</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-yield">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Yield} = \frac{0.5707 C}{F x_F}$$</div>
+                <div class="card-units">Units: %</div>
+                <div class="card-interp">Fraction of the incoming Li recovered.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Product Impurity</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-impurity">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Impurity} \approx \frac{\varepsilon z_{\text{ML}}}{1 + \varepsilon} \times 10^6$$</div>
+                <div class="card-units">Units: ppm Na</div>
+                <div class="card-interp">Purity-only model: the liquor film left on the crystals after the centrifuge carries impurity. Its mass is neglected in M1–M6.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Mass Balance Closure Error</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mass-closure">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Closure} = V + C + P - F$$</div>
+                <div class="card-units">Units: kg/h (asserted &lt; 10⁻⁶ kg/h)</div>
+                <div class="card-interp">Total mass conservation check across the boundary.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Thermodynamics & BPE Cards -->
+          <h2 class="results-category-title">2. Solution Thermodynamics &amp; BPE</h2>
+          <div class="cards-grid">
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Boiling Point Elevation (BPE)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-thermo-BPE">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{BPE} = a \cdot i \cdot K_b \cdot m$$</div>
+                <div class="card-units">Units: K</div>
+                <div class="card-interp">Dissolved ions lower water's vapor pressure, so the liquor must be hotter to boil at the same pressure. $K_b$ is taken at $T_b$ for simplicity.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Solvent Vapor Temp (Tv)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-thermo-Tv">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$T_v = T_b - \text{BPE}$$</div>
+                <div class="card-units">Units: °C</div>
+                <div class="card-interp">Non-volatile LiOH stays in the liquid, so the boiling liquor is at $T_b$. It makes pure water vapor at pressure $P$, superheated by BPE above that vapor's condensation point $T_{\text{sat}}(P)$.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Osmotic Coefficient (&phi;)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-thermo-phi">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\phi_{\text{sat}}(T) \quad [\text{Monnin \& Dubois 2005}]$$</div>
+                <div class="card-units">Units: dimensionless</div>
+                <div class="card-interp">Real electrolyte activity correction reflecting strong $\text{Li}^+ - \text{OH}^-$ ion-pairing.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Latent Heat &lambda;V</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-thermo-lamV">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\lambda_V = h_{fg}(T_v)$$</div>
+                <div class="card-units">Units: kJ/kg (NIST steam table)</div>
+                <div class="card-interp">Latent heat released when vapor at $T_v$ condenses.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Evaporator Heat Duty (Q)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-thermo-Q">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$Q = \frac{V \cdot h_{fg}(T_v)}{3600}$$</div>
+                <div class="card-units">Units: kW thermal</div>
+                <div class="card-interp">Almost all the energy goes into boiling water off.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3. MVR Compressor Performance Cards -->
+          <h2 class="results-category-title">3. MVR Compressor Performance</h2>
+          <div class="cards-grid">
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Pressure Ratio (r)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-r">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$r = \frac{P_2}{P_1} = \frac{P_{\text{sat}}(T_c)}{P_{\text{sat}}(T_v)}$$</div>
+                <div class="card-units">Units: dimensionless</div>
+                <div class="card-interp">Set by the required lift ($\text{BPE} + \Delta T_{\text{heater}}$).</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Compressor Total Lift</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-lift">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Lift} = T_c - T_v = \text{BPE} + \Delta T_{\text{heater}}$$</div>
+                <div class="card-units">Units: K</div>
+                <div class="card-interp">The thermal gap the compressor must bridge to reuse vapor.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Discharge Temp (T2)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-T2">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$T_2 = T_1 \left[1 + \frac{r^{\frac{\gamma - 1}{\gamma}} - 1}{\eta_{\text{is}}}\right] - 273.15$$</div>
+                <div class="card-units">Units: °C (superheated vapor)</div>
+                <div class="card-interp">Compression superheats steam (&approx;113–117 °C out vs 66 °C condensing); it doesn't make it wet. Liquid reaches the compressor only as entrained mist or foam (erosion, LiOH carry-over), or deliberately as condensate spray to desuperheat.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Electrical Power (Welec)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-Welec">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$W_{\text{elec}} = \frac{V \cdot w_s}{3600 \cdot \eta_{\text{is}} \cdot \eta_{\text{motor}}}$$</div>
+                <div class="card-units">Units: kW electricity</div>
+                <div class="card-interp">Real machines and motors lose some work as heat.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Specific Energy Consumption</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-kwh">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{kWh/t} = \frac{w}{3.6 \cdot \eta_{\text{motor}}}$$</div>
+                <div class="card-units">Units: kWh / t water evaporated</div>
+                <div class="card-interp">The plant-comparison number (vendor range 20–60, ESTIMATE).</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Coefficient of Performance (COP)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-mvr-cop">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{COP} = \frac{h_{fg}(T_v)}{w}$$</div>
+                <div class="card-units">Units: dimensionless</div>
+                <div class="card-interp">A heat pump: ~22 units of heat moved per unit of work, because only the lift is paid for.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Multi-Effect Evaporator Comparison Cards -->
+          <h2 class="results-category-title">4. Multi-Effect Evaporator Comparison (Selected N)</h2>
+          <div class="cards-grid">
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Steam Economy</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-me-economy">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$E_N = N \cdot \frac{h_{fg}(T_s)}{\lambda_V}$$</div>
+                <div class="card-units">Units: kg water / kg steam</div>
+                <div class="card-interp">Each effect's vapor heats the next, so the latent heat is reused $N$ times (an upper bound).</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Fresh Steam Required (S)</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-me-steam">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$S = \frac{V}{E_N}$$</div>
+                <div class="card-units">Units: kg/h boiler steam</div>
+                <div class="card-interp">One kg of steam boils about one kg of water.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">&Delta;T per Effect</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-me-dT">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\Delta T = \frac{T_s - T_{\text{last}} - N \cdot \text{BPE}}{N}$$</div>
+                <div class="card-units">Units: K / effect</div>
+                <div class="card-interp">In each effect, vapor leaves the liquor at $T_{b,k}$ but condenses in the next heater only at $T_{b,k} - \text{BPE}$, so BPE is subtracted from the usable driving force in every stage.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Max Feasible Effects</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-me-maxN">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$N_{\text{max}} = \left\lfloor\frac{T_s - T_{\text{last}}}{\text{BPE} + \Delta T_{\text{min}}}\right\rfloor$$</div>
+                <div class="card-units">Units: integer</div>
+                <div class="card-interp">Thermodynamic limit imposed by total temperature span and BPE.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Economics & Crossover Cards -->
+          <h2 class="results-category-title">5. Operating Cost &amp; Utility Economics</h2>
+          <div class="cards-grid">
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">MVR Operating Cost</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-mvr-cost">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{cost}_{\text{MVR}} = c_e \cdot \text{kWh/t}$$</div>
+                <div class="card-units">Units: $/t water evaporated</div>
+                <div class="card-interp">You pay only for the lift.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Steam Evaporator Cost</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-me-cost">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{cost}_N = \frac{c_s}{E_N}$$</div>
+                <div class="card-units">Units: $/t water evaporated</div>
+                <div class="card-interp">You pay for steam, divided by the number of reuses.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Crossover Electricity Price</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-crossover">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$c_e^* = \frac{c_s}{E_N \cdot \text{kWh/t}}$$</div>
+                <div class="card-units">Units: $/kWh</div>
+                <div class="card-interp">Below this electricity price, MVR is cheaper to run.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Annual MVR Operating Cost</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-annual-mvr">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Annual} = \text{cost/t} \times V \times \frac{\text{hours}}{1000}$$</div>
+                <div class="card-units">Units: $/yr</div>
+                <div class="card-interp">Scales to the plant.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Annual Steam Cost</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-annual-me">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Annual} = \text{cost/t} \times V \times \frac{\text{hours}}{1000}$$</div>
+                <div class="card-units">Units: $/yr</div>
+                <div class="card-interp">Scales to the plant.</div>
+              </div>
+            </div>
+
+            <div class="result-card">
+              <div class="card-header">
+                <span class="card-title">Annual MVR Cost Savings</span>
+                <button type="button" class="card-disclosure-btn" aria-expanded="false" title="Show formula">?</button>
+              </div>
+              <div class="card-value" id="val-econ-savings">—</div>
+              <div class="card-details">
+                <div class="card-equation">$$\text{Savings} = \text{Annual}_{\text{ME}} - \text{Annual}_{\text{MVR}}$$</div>
+                <div class="card-units">Units: $/yr</div>
+                <div class="card-interp">Net annual operating budget reduction achieved by deploying MVR heat pumps.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PLOT GRID (P1-P8, P11) -->
+          <h2 class="results-category-title">6. Thermodynamic &amp; Performance Plots</h2>
+          <div class="plots-grid">
+            <div class="plot-container" id="plot-p1"></div>
+            <div class="plot-container" id="plot-p2"></div>
+            <div class="plot-container" id="plot-p3"></div>
+            <div class="plot-container" id="plot-p4"></div>
+            <div class="plot-container" id="plot-p5"></div>
+            <div class="plot-container" id="plot-p6"></div>
+            <div class="plot-container" id="plot-p7"></div>
+            <div class="plot-container" id="plot-p8"></div>
+            <div class="plot-container" id="plot-p11"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 5: AI WORKFLOW -->
+    <section id="ai-workflow" class="tab-panel" hidden>
+      <div class="section-card">
+        <h1>AI Development Workflow &amp; Model Comparison</h1>
+        <p class="lead">
+          Documenting the autonomous multi-agent implementation of this chemical engineering tool, contrasting Gemini CLI and Claude Code builds.
+        </p>
+
+        <!-- Subtabs -->
+        <div class="subtabs-bar">
+          <button type="button" class="subtab-btn active" data-subtab="subtab-comparison">Model Comparison</button>
+          <button type="button" class="subtab-btn" data-subtab="subtab-process">Process Log</button>
+        </div>
+
+        <!-- Sub-panel 1: Comparison -->
+        <div id="subtab-comparison" class="subtab-panel active">
+          <h2>Dual-Model Architecture &amp; Evaluation Metrics</h2>
+          <p>
+            To evaluate modern LLM agents on rigorous chemical engineering tasks, identical prompt specifications (`docs/plan-v2-final.md`) and data (`data.js`) were provided to two distinct autonomous development agents:
+          </p>
+          <ul>
+            <li><strong>Claude Code build:</strong> Root workspace directory (`site/`).</li>
+            <li><strong>Gemini CLI build:</strong> Dedicated directory (`site/gemini/`).</li>
+          </ul>
+
+          <div class="table-responsive">
+            <table>
+              <thead>
+                <tr>
+                  <th>Comparison Dimension</th>
+                  <th>Claude Code Build</th>
+                  <th>Gemini CLI Build</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Workspace Path</strong></td>
+                  <td><code>site/</code></td>
+                  <td><code>site/gemini/</code></td>
+                </tr>
+                <tr>
+                  <td><strong>Unit Test Pass Rate (npm test)</strong></td>
+                  <td>8 / 8 passed</td>
+                  <td>8 / 8 passed</td>
+                </tr>
+                <tr>
+                  <td><strong>Model Architecture</strong></td>
+                  <td>Claude 3.7 Sonnet</td>
+                  <td>Gemini 2.5 Pro / Flash</td>
+                </tr>
+                <tr>
+                  <td><strong>Thermodynamic Physics Separation</strong></td>
+                  <td>Pure ESM module (<code>model.js</code>)</td>
+                  <td>Pure ESM module (<code>model.js</code>)</td>
+                </tr>
+                <tr>
+                  <td><strong>Critique Contribution</strong></td>
+                  <td>Original Plan v1 author</td>
+                  <td>Critique v1 identified $T_2$ superheat and $\varepsilon$ adhering liquor mass clarity</td>
+                </tr>
+                <tr>
+                  <td><strong>PFD Implementation</strong></td>
+                  <td>SVG component</td>
+                  <td>Inline responsive SVG with live stream text nodes</td>
+                </tr>
+                <tr>
+                  <td><strong>Plotly Charts (Phase 1)</strong></td>
+                  <td>P1–P8, P11</td>
+                  <td>P1–P8, P11</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3>Summary of Critique Decisions</h3>
+          <p>
+            In the pre-implementation phase, Gemini evaluated Claude's initial Plan v1. Key outcomes approved by course instructor:
+          </p>
+          <ul>
+            <li><strong>Compressor Superheat ($T_2$):</strong> Gemini correctly noted that vapor compression produces superheated steam ($T_2 \approx 113–117\ ^\circ\text{C}$), never wet steam. Incorporated into Section 8 (Equation C7).</li>
+            <li><strong>Adhering Liquor ($\varepsilon$):</strong> Clarified that $\varepsilon$ governs crystal purity in Equation M8 without corrupting the bulk mass balance M1–M6.</li>
+            <li><strong>Osmotic Coefficient:</strong> Verified via Monnin &amp; Dubois (2005) that $\text{LiOH}$ has an unusually low osmotic coefficient ($\phi \approx 0.83$), resulting in lower real BPE (3.95 K) than ideal colligative estimates (4.76 K).</li>
+          </ul>
+        </div>
+
+        <!-- Sub-panel 2: Process Log -->
+        <div id="subtab-process" class="subtab-panel" hidden>
+          <h2>Development Process Log</h2>
+          <div class="callout-box">
+            <h4>Phase 0: Sourced Data &amp; Reference Verification</h4>
+            <p>
+              Independent Python reference script (<code>tests/reference/handcalc_reference.py</code>) developed to parse <code>site/js/data.js</code> and generate ground-truth <code>tests/handcalc-expected.json</code> with zero rounding. Node.js test harness (<code>tests/handcalc.test.mjs</code>) built to enforce strict $\pm 0.5\%$ tolerances and $10^{-6}\ \text{kg/h}$ mass closure.
+            </p>
+          </div>
+          <div class="callout-box">
+            <h4>Phase 1: Gemini CLI Autonomous Implementation</h4>
+            <p>
+              1. Cloned <code>site/js/data.js</code> unchanged into <code>site/gemini/js/data.js</code>.<br>
+              2. Implemented pure thermodynamic functions in <code>site/gemini/js/model.js</code>; verified all 8 unit tests passed on first execution.<br>
+              3. Engineered responsive inline SVG Process Flow Diagram with dynamic live telemetry overlay in <code>site/gemini/js/pfd.js</code>.<br>
+              4. Developed interactive Plotly visualizations for P1–P8 and P11 with operating point indicators in <code>site/gemini/js/charts.js</code>.<br>
+              5. Integrated 7-tab responsive architecture with pinned KaTeX rendering and strict mobile 375px overflow protection.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: VIDEO & TRANSCRIPT -->
+    <section id="video" class="tab-panel" hidden>
+      <div class="section-card">
+        <h1>Recorded Technical Presentation &amp; Transcript</h1>
+        <p class="lead">
+          Video presentation and verbatim transcript for UC CHE 4061 Separation Processes.
+        </p>
+
+        <!-- Video Placeholder Container -->
+        <div class="video-placeholder-container">
+          <div style="font-size: 2.5rem; margin-bottom: 0.75rem;">🎬</div>
+          <h3 style="color: #ffffff; margin-bottom: 0.5rem;">Presentation Video</h3>
+          <p style="color: #94a3b8; max-width: 500px; margin-bottom: 0;">
+            In-class presentation recording will be embedded here by Dec 4, 2026.
+          </p>
+          <small style="color: #64748b; margin-top: 0.5rem;">Format: Privacy-enhanced YouTube Embed (youtube-nocookie.com)</small>
+        </div>
+
+        <h2>Verbatim Presentation Transcript</h2>
+        <div class="transcript-box">
+          <p>
+            <em>[Verbatim auto-generated transcript of the recorded technical presentation will be placed here prior to December 4, 2026.]</em>
+          </p>
+          <p>
+            <strong>Outline:</strong><br>
+            1. Introduction: Battery demand and the critical role of lithium hydroxide monohydrate in high-nickel EV cathodes.<br>
+            2. Refinery Context: Walkthrough of the Tesla Robstown, Texas spodumene conversion facility.<br>
+            3. Thermodynamics: Why flat aqueous solubility necessitates evaporative crystallization over cooling crystallization.<br>
+            4. The MVR Breakthrough: Open-loop heat pump mechanics, compressor pressure ratio, and the physics of vapor superheat.<br>
+            5. The Colligative Penalty: How Boiling Point Elevation (BPE) limits multi-effect staging and penalizes compression work.<br>
+            6. Economic Crossover: Analyzing electricity and steam utility thresholds using EIA industrial benchmarks.<br>
+            7. Simulator Demonstration &amp; Live Q&amp;A.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 7: REFERENCES & CONTRIBUTIONS -->
+    <section id="references" class="tab-panel" hidden>
+      <div class="section-card">
+        <h1>References &amp; Project Contributions</h1>
+
+        <h2>Dynamic Property &amp; Citation Bibliography</h2>
+        <p>
+          Every physical constant, property correlation, and utility price in this simulator is sourced from verified scientific literature or explicitly flagged as an <strong>ESTIMATE</strong>.
+        </p>
+
+        <!-- Dynamically rendered references from DATA.sources -->
+        <div id="references-list"></div>
+
+        <h2>Course &amp; Project Contributions Table</h2>
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>Contributor / Role</th>
+                <th>Responsibilities &amp; Scope</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Andrew (Student)</strong><br>CHE 4061 Lead</td>
+                <td>Project direction, prompt engineering, thermodynamic verification, technical Q&amp;A defense, slide preparation, and video recording.</td>
+              </tr>
+              <tr>
+                <td><strong>Prof. Carlos Co</strong><br>Course Instructor</td>
+                <td>Curriculum design, separation processes methodology (Seader/Henley/Roper), and critique review.</td>
+              </tr>
+              <tr>
+                <td><strong>Gemini CLI</strong><br>AI Engineering Agent</td>
+                <td>Pre-implementation critique (v1), thermodynamic superheat correction ($T_2$), autonomous Phase 1 build in <code>site/gemini/</code>.</td>
+              </tr>
+              <tr>
+                <td><strong>Claude Code</strong><br>AI Engineering Agent</td>
+                <td>Specification formulation (Plan v1/v2), Python reference harness, baseline Phase 1 build in <code>site/</code>.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout-box" style="margin-top: 1.5rem;">
+          <h4>Academic Citation</h4>
+          <p style="margin-bottom: 0;">
+            Seader, J. D., Henley, E. J., &amp; Roper, D. K. (2016). <em>Separation Process Principles: Chemical and Biochemical Operations</em> (4th ed.). John Wiley &amp; Sons. Chapter 17: Evaporation and Crystallization.
+          </p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <p>MVR Crystallizer Explorer &bull; UC CHE 4061 Separation Processes &bull; Gemini CLI Autonomous Build</p>
+  </footer>
+
+  <!-- App Main Scripts -->
+  <script type="module" src="js/ui.js"></script>
+
+</body>
+</html>
