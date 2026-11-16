@@ -601,3 +601,128 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 #tab-simulator .slider .row > span:first-child { min-width: 0; line-height: 1.3; }
 #tab-simulator .slider .flag { font-size: 0.56rem; padding: 0 5px; vertical-align: 2px; margin-left: 2px; letter-spacing: 0.08em; }
 #tab-simulator .slider output { font-size: 0.74rem; white-space: nowrap; }   /* units are essential: never truncate */
+
+/* =====================================================================
+   Liquid Glass simulator (G2): key results, compact rows, Explain, Help
+   ===================================================================== */
+/* explanatory text is hidden in the clean view and shown by Explain (nothing removed) */
+#tab-simulator .help-slot { display: none; }
+#tab-simulator.explain .help-slot { display: block; }
+#tab-simulator.explain .slider .help-slot { display: block; margin-top: 4px; }
+
+/* small round "?" buttons (sections, input groups, charts) */
+#tab-simulator .qhelp, #tab-simulator .rcard .help, #tab-simulator .kpi-help {
+  width: 26px; height: 26px; flex: 0 0 26px; padding: 0; border-radius: 50%;
+  display: inline-grid; place-items: center; font: 600 0.78rem/1 var(--font);
+  background: var(--chip); color: var(--muted); border: 1px solid transparent; box-shadow: none;
+  transition: background .2s var(--ease), color .2s var(--ease), transform .2s var(--ease);
+}
+#tab-simulator .qhelp:hover, #tab-simulator .rcard .help:hover, #tab-simulator .kpi-help:hover { background: var(--lime-soft); color: var(--olive); border-color: transparent; }
+#tab-simulator .sec-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s2); }
+#tab-simulator .sec-head h3 { margin: 0; }
+.sgroup > summary .qhelp { margin-left: auto; margin-right: 10px; }
+
+/* Explain switch */
+.explain-toggle {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 8px;
+  border-radius: var(--r-pill) !important; padding: 7px 14px 7px 8px !important; font-weight: 600 !important;
+}
+.explain-toggle .q { width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--chip); font-size: 0.78rem; }
+.explain-toggle[aria-pressed="true"] { background: var(--ink) !important; color: var(--ink-text) !important; }
+.explain-toggle[aria-pressed="true"] .q { background: var(--lime); color: var(--ink); }
+[data-theme="dark"] .explain-toggle[aria-pressed="true"] { background: var(--lime) !important; color: var(--ink) !important; }
+[data-theme="dark"] .explain-toggle[aria-pressed="true"] .q { background: var(--ink); color: var(--lime); }
+
+/* key-result tiles (glass, the hierarchy's top level) */
+.kpis { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s3); margin-bottom: var(--s4); }
+.kpi {
+  position: relative; padding: var(--s4) var(--s4) var(--s3); border-radius: 20px;
+  background: var(--glass-bg); -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border); box-shadow: var(--glass-hl), var(--glass-shadow); min-width: 0;
+}
+.kpi-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.kpi-label { font: 600 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.kpi-val { display: flex; align-items: baseline; gap: 6px; margin: 10px 0 4px; }
+.kpi-num { font: 300 2.6rem/1 var(--font); letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--text); border-radius: 6px; }
+.kpi-u { font-size: 0.9rem; color: var(--muted); font-weight: 500; }
+.kpi-sub { font-size: 0.8rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.kpi-num.changed { animation: val-flash 0.7s ease-out; }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { .kpi { background: var(--glass-strong); } }
+
+/* result sections: clean near-solid surfaces with compact rows */
+#cards .card-group {
+  background: var(--glass-strong); border: 1px solid var(--glass-border); border-radius: var(--r-panel);
+  box-shadow: var(--glass-hl), 0 1px 2px rgba(9, 13, 12, 0.04); padding: 4px var(--s4) var(--s2); margin-bottom: var(--s3);
+}
+#cards .card-group > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 14px 2px 10px; }
+#cards .card-group > summary::-webkit-details-marker { display: none; }
+#cards .card-group > summary h3 { margin: 0; font-size: 1rem; letter-spacing: -0.01em; }
+#cards .card-group > summary h3::before { display: none; }
+#cards .card-group > summary::after { content: ""; margin-left: 4px; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s var(--ease); }
+#cards .card-group:not([open]) > summary::after { transform: rotate(-45deg); }
+.cg-count { margin-left: auto; font: 600 var(--fs-xs)/1 var(--mono); color: var(--muted); background: var(--chip); padding: 4px 8px; border-radius: var(--r-pill); }
+#cards .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--s5); padding-bottom: var(--s2); }
+#tab-simulator .rcard {
+  background: transparent; border: 0; border-top: 1px solid var(--glass-edge); border-radius: 0; padding: 10px 2px; display: block;
+}
+#tab-simulator .rcard .head { display: grid; grid-template-columns: minmax(0, 1fr) auto 26px; align-items: center; gap: 12px; }
+#tab-simulator .rcard .name { font-size: 0.88rem; color: var(--text); font-weight: 500; line-height: 1.3; }
+#tab-simulator .rcard .name .tag { margin-right: 6px; }
+#tab-simulator .rcard .val { margin: 0; font: 600 1.02rem/1.2 var(--mono); text-align: right; white-space: nowrap; letter-spacing: -0.01em; }
+#tab-simulator .rcard .val .u { font: 400 0.76rem/1 var(--font); margin-left: 5px; }
+#tab-simulator .rcard.bad { background: var(--warn-bg); border-radius: 10px; padding-left: 8px; padding-right: 8px; }
+#tab-simulator .rcard .detail { display: none; }
+#tab-simulator.explain .rcard .detail { display: block; padding: 6px 0 2px; }
+#tab-simulator.explain .rcard .more { display: block; border-top: 0; margin-top: 2px; padding-top: 0; }
+#tab-simulator .rcard .eq { border-top: 0; margin-top: 4px; padding: 6px 10px; background: var(--chip); border-radius: 10px; }
+
+/* Help panel: floating glass (desktop), bottom sheet (phone); non-modal */
+.help-panel {
+  position: fixed; z-index: 40; right: 24px; top: calc(var(--header-h) + 76px); width: min(400px, calc(100vw - 48px));
+  max-height: calc(100vh - var(--header-h) - 100px); overflow: auto; padding: var(--s4) var(--s5) var(--s5);
+  background: var(--glass-strong); -webkit-backdrop-filter: blur(28px) saturate(170%); backdrop-filter: blur(28px) saturate(170%);
+  border: 1px solid var(--glass-border); border-radius: var(--r-panel);
+  box-shadow: var(--glass-hl), 0 24px 60px -20px rgba(9, 13, 12, 0.45);
+  animation: hp-in .22s var(--ease);
+}
+.help-panel[hidden] { display: none; }
+@keyframes hp-in { from { opacity: 0; transform: translateY(6px) scale(0.98); } to { opacity: 1; transform: none; } }
+.hp-head { display: flex; align-items: center; justify-content: space-between; }
+.hp-eyebrow { font: 600 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.hp-close { width: 30px; height: 30px; padding: 0; border-radius: 50%; border: 0; background: var(--chip); color: var(--text); font-size: 1.1rem; line-height: 1; box-shadow: none; }
+.hp-close:hover { background: var(--lime-soft); }
+.help-panel h3 { margin: 6px 0 var(--s2); font-size: 1.25rem; letter-spacing: -0.02em; }
+.help-panel h4 { margin: var(--s4) 0 6px; font: 600 var(--fs-xs)/1.3 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.help-panel p, .help-panel li { font-size: 0.94rem; line-height: 1.55; max-width: none; }
+.hp-value { font: 600 1.35rem/1.25 var(--mono); letter-spacing: -0.02em; }
+.hp-eq { background: var(--chip); border-radius: 12px; padding: 8px 12px; overflow-x: auto; }
+.hp-eq .katex-display { margin: 4px 0; }
+.hp-units { font: 0.82rem/1.5 var(--mono); color: var(--muted); }
+.hp-list { padding-left: 18px; margin: 0; }
+.hp-list li { margin-bottom: 10px; }
+
+#cards .cards { grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); }
+/* desktop: the layout makes room for the Help panel instead of hiding values under it */
+@media (min-width: 1100px) {
+  #tab-simulator .sim-layout { transition: margin-right .25s var(--ease); }
+  body.help-open #tab-simulator .sim-layout, body.help-open .sim-toolbar { margin-right: 424px; }
+  .sim-toolbar { transition: margin-right .25s var(--ease); }
+  body.help-open .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 699px) {
+  .kpis { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; gap: var(--s2); margin: 0 calc(-1 * var(--s4)) var(--s4); padding: 2px var(--s4) 8px; scrollbar-width: none; }
+  .kpis::-webkit-scrollbar { display: none; }
+  .kpi { flex: 0 0 78%; scroll-snap-align: start; }
+  .kpi-num { font-size: 2.2rem; }
+  #cards .card-group { padding: 2px var(--s3) var(--s2); }
+  #tab-simulator .rcard .head { grid-template-columns: minmax(0, 1fr) auto 26px; gap: 8px; }
+  .help-panel {
+    left: 0; right: 0; bottom: 0; top: auto; width: 100%; max-height: 72vh; border-radius: 22px 22px 0 0;
+    padding: var(--s3) var(--s4) calc(var(--s5) + env(safe-area-inset-bottom));
+    animation-name: hp-sheet;
+  }
+  .help-panel::before { content: ""; display: block; width: 40px; height: 5px; border-radius: 3px; background: var(--border-strong); margin: 0 auto var(--s2); }
+  @keyframes hp-sheet { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+  .explain-toggle { order: -1; }
+}
+@media (prefers-reduced-motion: reduce) { .help-panel { animation: none; } .kpi-num.changed { animation: none; } }

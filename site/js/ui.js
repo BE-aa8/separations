@@ -59,7 +59,7 @@ function buildSliders() {
   for (const s of SLIDERS) {
     if (s.group) {
       if (open) html += '</div></details>';
-      html += `<details class="sgroup" open><summary class="slider-group"><h4>${s.group}</h4></summary><div class="sgroup-body">`;
+      html += `<details class="sgroup" open><summary class="slider-group"><h4>${s.group}</h4><button type="button" class="qhelp" data-help-group="${esc(s.group)}" aria-label="About ${esc(s.group.toLowerCase())} inputs" aria-haspopup="dialog">?</button></summary><div class="sgroup-body">`;
       open = true;
       continue;
     }
@@ -68,7 +68,7 @@ function buildSliders() {
     const [min, max] = RANGES[s.key];
     html += `<label class="slider" id="wrap-${s.key}"><span class="row"><span>${s.label}${s.estimate ? ' <span class="flag">ESTIMATE</span>' : ''}</span><output id="out-${s.key}"></output></span>
       <input type="range" id="in-${s.key}" min="${min}" max="${max}" step="${s.step}" aria-label="${esc(s.label)}">
-      ${s.note ? `<span class="hint">${s.note}</span>` : ''}</label>`;
+      ${s.note ? `<span class="hint help-slot">${s.note}</span>` : ''}</label>`;
   }
   if (open) html += '</div></details>';
   host.innerHTML = html;
@@ -211,25 +211,26 @@ const CARDS = [
 
 function buildCards() {
   const host = document.getElementById('cards');
-  host.innerHTML = CARDS.map((g) => `<div class="card-group"><h3>${g.group}</h3><div class="cards">${g.items.map((c) => {
+  // Result sections are <details>: all open on desktop; on phones only the first starts open.
+  const phone = window.matchMedia && window.matchMedia('(max-width: 699px)').matches;
+  host.innerHTML = CARDS.map((g, gi) => `<details class="card-group" ${!phone || gi === 0 ? 'open' : ''}><summary><h3>${g.group}</h3><span class="cg-count">${g.items.length}</span></summary><div class="cards">${g.items.map((c) => {
     const e = c.eq ? EQ[c.eq] : null;
     const t = c.tex || e.tex;
     const units = e ? e.units : c.units;
+    // Clean view shows the row (name, value, units, "?"); .detail (equation, units, interpretation,
+    // worked substitution) is shown by the Explain switch and in the Help panel. Nothing is removed.
     return `<div class="rcard" id="card-${c.id}">
-      <div class="head"><span class="name">${c.eq ? `<span class="tag">${c.eq}</span>` : ''}${c.name}</span><button type="button" class="help" aria-label="Explain ${esc(c.name)}" aria-expanded="false">?</button></div>
-      <div class="val"><span class="num">—</span><span class="u">${c.units}</span></div>
-      <div class="eq">${tex(t, false)}</div>
-      <p class="units">Units: ${units}</p>
-      <p class="short interp"></p>
-      <div class="more">${c.sub ? '<div class="eq sub"></div>' : ''}${e ? `<p class="interp">${e.interp}</p>` : ''}</div>
+      <div class="head"><span class="name">${c.eq ? `<span class="tag">${c.eq}</span>` : ''}${c.name}</span>
+        <div class="val"><span class="num">—</span><span class="u">${c.units}</span></div>
+        <button type="button" class="help" data-help-card="${c.id}" aria-label="Explain ${esc(c.name)}" aria-haspopup="dialog">?</button></div>
+      <div class="detail">
+        <div class="eq">${tex(t, false)}</div>
+        <p class="units">Units: ${units}</p>
+        <p class="short interp"></p>
+        <div class="more">${c.sub ? '<div class="eq sub"></div>' : ''}${e ? `<p class="interp">${e.interp}</p>` : ''}</div>
+      </div>
     </div>`;
-  }).join('')}</div></div>`).join('');
-  host.querySelectorAll('.rcard .help').forEach((b) => b.addEventListener('click', () => {
-    const card = b.closest('.rcard');
-    card.classList.toggle('open');
-    b.setAttribute('aria-expanded', card.classList.contains('open'));
-    if (lastOut) updateCards(lastOut);
-  }));
+  }).join('')}</div></details>`).join('');
 }
 
 function updateCards(o) {
@@ -254,12 +255,157 @@ function updateCards(o) {
     card.querySelector('.short').textContent = say.replace(/NaN/g, '—');
     const bad = (c.bad && c.bad(o)) || (o.mass && !o.mass.feasible && /^(C|V|P|yield|imp|closure|Q|w|S1|EN|ann)$/.test(c.id));
     card.classList.toggle('bad', !!bad);
-    if (c.sub && card.classList.contains('open')) {
+    if (c.sub && (card.classList.contains('open') || explainOn)) {
       let s = '';
       try { s = c.sub(o); } catch { s = ''; }
       card.querySelector('.sub').innerHTML = s ? tex(s, false) : '';
     }
   }
+}
+
+// ---------- key-result tiles (values come from the same simulate() output as the cards) ----------
+const KPIS = [
+  { id: 'kwh', label: 'MVR specific energy', u: 'kWh/t water', d: 1, v: (o) => o.mvr?.kWh_per_t,
+    sub: (o) => `r = ${fmt(o.mvr?.r, 3)} · W = ${fmt(o.mvr?.Welec_kW, 0)} kW` },
+  { id: 'cMVR', label: 'Operating cost (MVR)', u: '$/t water', d: 2, v: (o) => o.econ[1]?.cost_MVR_per_t,
+    sub: (o) => `${o.inputs.N}-effect: ${fmt(o.econ[o.inputs.N]?.cost_ME_per_t, 2)} $/t` },
+  { id: 'yield', label: 'Lithium yield', u: '%', d: 1, v: (o) => (o.mass.liYield == null ? null : 100 * o.mass.liYield),
+    sub: (o) => `C = ${fmt(o.mass.C, 0)} kg/h LiOH·H₂O` },
+  { id: 'imp', label: 'Product impurity', u: 'ppm', d: 0, v: (o) => o.mass.productImpurity_ppm,
+    sub: (o) => `ε = ${fmt(o.inputs.epsilon, 3)} · purge p = ${fmt(o.inputs.purgeRatio, 3)}` },
+  { id: 'BPE', label: 'Boiling-point elevation', u: 'K', d: 2, v: (o) => o.BPE,
+    sub: (o) => `${o.inputs.useOsmotic ? 'real, φ_sat' : 'ideal × a'} · lift ${fmt(o.mvr?.lift, 1)} K` },
+  { id: 'opt', label: 'Cost-optimal heater ΔT', u: 'K', d: 1, v: (o) => o.design?.optimum?.dT,
+    sub: (o) => `current ΔT = ${fmt(o.inputs.dT_heater, 1)} K` },
+];
+function buildKPIs() {
+  const host = document.getElementById('kpis');
+  if (!host) return;
+  host.innerHTML = KPIS.map((k) => `<div class="kpi" id="kpi-${k.id}">
+    <div class="kpi-top"><span class="kpi-label">${k.label}</span><button type="button" class="kpi-help" data-help-card="${k.id}" aria-label="Explain ${esc(k.label)}" aria-haspopup="dialog">?</button></div>
+    <div class="kpi-val"><span class="kpi-num">—</span><span class="kpi-u">${k.u}</span></div>
+    <div class="kpi-sub"></div></div>`).join('');
+}
+function updateKPIs(o) {
+  for (const k of KPIS) {
+    const el = document.getElementById(`kpi-${k.id}`);
+    if (!el) continue;
+    let v = '—', sub = '';
+    try { v = fmt(k.v(o), k.d); } catch { v = '—'; }
+    try { sub = k.sub(o); } catch { sub = ''; }
+    const num = el.querySelector('.kpi-num');
+    if (num.dataset.prev !== undefined && num.dataset.prev !== v) { num.classList.remove('changed'); void num.offsetWidth; num.classList.add('changed'); }
+    num.dataset.prev = v;
+    num.textContent = v;
+    el.querySelector('.kpi-sub').textContent = sub.replace(/NaN|undefined/g, '—');
+  }
+}
+
+// ---------- Explain switch (clean view by default; remembered) ----------
+let explainOn = false;
+function setExplain(on, remember) {
+  explainOn = !!on;
+  document.getElementById('tab-simulator').classList.toggle('explain', explainOn);
+  const b = document.getElementById('explain-toggle');
+  if (b) b.setAttribute('aria-pressed', String(explainOn));
+  if (remember) { try { localStorage.setItem('explain', explainOn ? '1' : '0'); } catch { /* storage unavailable */ } }
+  if (lastOut) updateCards(lastOut);
+}
+function initExplain() {
+  let saved = null;
+  try { saved = localStorage.getItem('explain'); } catch { saved = null; }
+  setExplain(saved === '1', false);
+  const b = document.getElementById('explain-toggle');
+  if (b) b.addEventListener('click', () => setExplain(!explainOn, true));
+}
+
+// ---------- Help panel: one shared, non-modal glass panel (desktop) / bottom sheet (phone) ----------
+let help = null;               // { kind, id, trigger }
+const live = (s) => String(s ?? '').replace(/NaN|undefined/g, '—');
+function helpCard(o, id) {
+  const c = CARD_BY_ID[id];
+  if (!c) return null;
+  const e = c.eq ? EQ[c.eq] : null;
+  const group = CARDS.find((g) => g.items.includes(c))?.group || '';
+  let val = '—', say = '', sub = '';
+  try { val = fmt(c.v(o), c.d) + ` ${c.units}`; if (c.v2) val += ` · ${fmt(c.v2(o), c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d)} ${c.units2 || c.units}`; } catch { val = '—'; }
+  try { say = c.say ? c.say(o) : ''; } catch { say = ''; }
+  try { sub = c.sub ? c.sub(o) : ''; } catch { sub = ''; }
+  return {
+    eyebrow: `${c.eq ? c.eq + ' · ' : ''}${group}`, title: c.name,
+    body: `<div class="hp-value">${live(val)}</div>
+      <h4>Equation</h4><div class="hp-eq">${tex(c.tex || e.tex, true)}</div>
+      ${sub ? `<h4>With the current numbers</h4><div class="hp-eq">${tex(sub, true)}</div>` : ''}
+      <h4>Units</h4><p class="hp-units">${e ? e.units : c.units}</p>
+      ${e ? `<h4>How does that make sense?</h4><p>${e.interp}</p>` : ''}
+      ${say ? `<h4>Right now</h4><p>${esc(live(say))}</p>` : ''}`,
+  };
+}
+function helpGroup(name) {
+  const i = SLIDERS.findIndex((s) => s.group === name);
+  if (i < 0) return null;
+  const items = [];
+  for (let k = i + 1; k < SLIDERS.length && !SLIDERS[k].group; k++) items.push(SLIDERS[k]);
+  const rows = items.map((s) => {
+    if (s.fixed) return `<li>${s.fixed}</li>`;
+    if (s.toggle) return `<li>${s.label}</li>`;
+    const [lo, hi] = RANGES[s.key];
+    return `<li><strong>${s.label}</strong>${s.estimate ? ' <span class="flag">ESTIMATE</span>' : ''}<br><span class="hp-units">range ${fmt(lo, s.d)}–${fmt(hi, s.d)} ${s.units}</span>${s.note ? `<br>${s.note}` : ''}</li>`;
+  }).join('');
+  return { eyebrow: 'Inputs', title: name.charAt(0) + name.slice(1).toLowerCase(), body: `<ul class="hp-list">${rows}</ul><p class="hp-units">ESTIMATE = engineering estimate, not primary data (see References).</p>` };
+}
+function helpChart(fig) {
+  if (!fig) return null;
+  const cap = fig.querySelector('figcaption')?.cloneNode(true);
+  cap?.querySelectorAll('button').forEach((b) => b.remove());
+  const notes = [...fig.querySelectorAll('.help-slot')].map((n) => `<p>${n.innerHTML}</p>`).join('');
+  return { eyebrow: 'Chart', title: (cap?.textContent || 'Chart').trim(), body: notes || '<p>No additional notes for this chart.</p>' };
+}
+function renderHelp() {
+  const panel = document.getElementById('help-panel');
+  if (!panel || !help || !lastOut) return;
+  let h = null;
+  if (help.kind === 'card') h = helpCard(lastOut, help.id);
+  else if (help.kind === 'group') h = helpGroup(help.id);
+  else if (help.kind === 'chart') h = helpChart(document.getElementById(help.id));
+  else if (help.kind === 'pfd') h = { eyebrow: 'Process flow', title: 'Live process diagram', body: `<p>${document.getElementById('pfd-hint')?.innerHTML || ''}</p><p>Stream colors are listed under the diagram. Flow speed ∝ √(mass flow); recirculation speed is qualitative (not modelled).</p>` };
+  if (!h) return;
+  panel.querySelector('.hp-eyebrow').textContent = h.eyebrow;
+  panel.querySelector('#help-title').textContent = h.title;
+  panel.querySelector('#help-body').innerHTML = h.body;
+}
+function openHelp(kind, id, trigger) {
+  help = { kind, id, trigger };
+  const panel = document.getElementById('help-panel');
+  renderHelp();
+  panel.hidden = false;
+  document.body.classList.add('help-open');
+  panel.querySelector('.hp-close').focus({ preventScroll: true });
+}
+function closeHelp() {
+  const panel = document.getElementById('help-panel');
+  if (!panel || panel.hidden) return;
+  panel.hidden = true;
+  document.body.classList.remove('help-open');
+  const t = help?.trigger;
+  help = null;
+  if (t && document.contains(t)) t.focus({ preventScroll: true });
+}
+function initHelp() {
+  const sim = document.getElementById('tab-simulator');
+  sim.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-help-card],[data-help-group],[data-help-chart],[data-help-pfd]');
+    if (!b) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (b.dataset.helpCard) openHelp('card', b.dataset.helpCard, b);
+    else if (b.dataset.helpGroup) openHelp('group', b.dataset.helpGroup, b);
+    else if (b.dataset.helpChart) openHelp('chart', b.dataset.helpChart, b);
+    else openHelp('pfd', null, b);
+  });
+  document.getElementById('help-panel')?.querySelector('.hp-close').addEventListener('click', closeHelp);
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeHelp(); });
+  window.addEventListener('hashchange', closeHelp);
 }
 
 // ---------- clickable PFD (Phase 2) ----------
@@ -324,8 +470,10 @@ function update() {
   const w = document.getElementById('warnings');
   w.innerHTML = out.warnings.length ? `<strong>Warning</strong><ul>${out.warnings.map((m) => `<li>${esc(m)}</li>`).join('')}</ul>` : '';
   updateCards(out);
+  updateKPIs(out);
   updatePFD(out);
   renderPanel(out);
+  renderHelp();
   if (currentTab() === 'simulator' && window.Plotly) {
     const yc = renderAll(out, Tcold);
     document.getElementById('cool-yield').textContent = `Cooling ${fmt(out.inputs.T_C, 0)} → ${Tcold} °C recovers only ${fmt(100 * yc, 1)} % of the dissolved LiOH (M9).`;
@@ -439,6 +587,9 @@ function init() {
   initSubtabs();
   buildSliders();
   buildCards();
+  buildKPIs();
+  initExplain();
+  initHelp();
   mountPFD(document.getElementById('pfd'));
   initPFDClicks();
   document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => applyPreset(b.dataset.preset)));

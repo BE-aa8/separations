@@ -182,19 +182,28 @@
       <button type="button" data-preset="expensive">Expensive electricity</button>
       <button type="button" data-preset="infeasible">Infeasible purge</button>
     </div>
+    <button type="button" class="explain-toggle" id="explain-toggle" aria-pressed="false" title="Show every equation, interpretation and note inline">
+      <span class="q" aria-hidden="true">?</span> Explain
+    </button>
     <div class="sim-jump" role="group" aria-label="Jump to">
       <button type="button" data-jump="pfd">Process</button>
       <button type="button" data-jump="cards">Results</button>
       <button type="button" data-jump="plots">Charts</button>
     </div>
   </div>
+  <aside id="help-panel" class="help-panel" role="dialog" aria-modal="false" aria-labelledby="help-title" hidden>
+    <div class="hp-head"><span class="hp-eyebrow">Help</span><button type="button" class="hp-close" aria-label="Close help">×</button></div>
+    <h3 id="help-title">Help</h3>
+    <div id="help-body"></div>
+  </aside>
   <div class="sim-layout">
     <aside class="controls glass" aria-label="Inputs">
       <div id="sliders"></div>
     </aside>
     <div class="results">
       <div id="warnings" class="warnings" role="status" aria-live="polite"></div>
-      <div class="pfd-wrap glass" id="sec-pfd"><h3>Process flow (live)</h3><p class="hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
+      <div class="kpis" id="kpis" aria-label="Key results"></div>
+      <div class="pfd-wrap glass" id="sec-pfd"><div class="sec-head"><h3>Process flow (live)</h3><button type="button" class="qhelp" data-help-pfd="1" aria-label="About the process diagram" aria-haspopup="dialog">?</button></div><p class="hint" id="pfd-hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
       <div id="cards"></div>
       <h3 class="sec-title" id="sec-plots">Charts</h3>
       <div class="plots">
