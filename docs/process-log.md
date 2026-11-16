@@ -344,3 +344,5 @@ Every suite passed on the live site except the glass test: Netlify injects a "Po
 - `browser-ux.mjs` gained Overview checks: intro and headline present, hero below the intro, diagram flows animate and stop under reduced motion, CTA opens the Simulator, one-row desktop header, "What I learned" on the Video tab, and no "Cincinnati" / "CHE 4061" / "Prof. Co" on `/` or `/gemini/`.
 - `browser-hero.mjs` now scrolls the hero into view first, since it sits below the fold on phones and only animates on screen.
 - Full suite passed locally in light and dark.
+
+**Shipped and verified live:** main fast-forwarded to `635fffd` after green CI; Andrew deployed the zip. Every suite passes against https://ucseparations.netlify.app in light and dark (report: `docs/screenshots/verification/2026-11-16-live-overview/`).
