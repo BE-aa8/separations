@@ -314,3 +314,5 @@ Entry template:
 **Prompt (verbatim):** "find a fix for the phone toolbar and the tablet width and then ship and send the zip"
 
 **Phone toolbar:** below 1100 px the toolbar is a static two-row card: Explain and the Process/Results/Charts jump buttons on top, all five presets as wrapped chips below (previously they scrolled sideways out of sight, and at tablet widths Explain and the jump buttons were cut off). **Tablet (700–1099 px):** the inputs panel above the results lays its groups out in two columns (about half the height) and has a Hide/Show button, remembered in localStorage, so the results can be brought to the top. `browser-glass.mjs` gained tablet checks (no clipped toolbar buttons, slider updates a tile, Hide moves results up and is remembered, Show restores the inputs) and a phone check for clipped toolbar buttons. Full suite passed locally in light and dark.
+
+**Shipped:** GitHub CI green on `e5c867e` (both jobs, including the new glass checks in light and dark); main fast-forwarded to `e5c867e`; `dist/mvr-crystallizer-site.zip` (28 files) rebuilt and verified identical to `site/` before sending it for Netlify Drop.
