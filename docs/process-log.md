@@ -324,3 +324,23 @@ Entry template:
 Every suite passed on the live site except the glass test: Netlify injects a "Powered by Netlify" badge at the bottom-right that sits above everything, and on phones it covered half of the centred Inputs button, so taps hit the badge. Local runs and CI never see the badge. Fixed by moving the button to the bottom-left and padding the phone sheets; the glass test now adds a same-size stand-in badge. Details: `docs/screenshots/verification/2026-11-16-live-glass/report.md`.
 
 **Re-run after redeploy (main @ d4ce8fb):** every suite passes on the live site in light and dark, including the glass checks with the real Netlify badge present.
+
+## 2026-11-16 (cont.) — Overview intro redesign; course references removed
+
+**Prompt (verbatim excerpt):** "let's work on the Overview below the hero. right now, I think the information that is pesented below the hero will just be overlooked by the human eye tbh. ... get rid of the "What the Simulator shows"and everything underneath of it. ... can we also get rid of anything that relates with University of Cincinnati or class names. ... let's implement something like the photo attached. add the Hero on the bottom underneath what is seen on the photo. keep it very clean and minimalist" (with a mockup screenshot).
+
+**Plan mode** (`docs/plan-overview-intro-claude.md`). Andrew's answers: strip the names from the Gemini build too (text only, noted in `comparison.md`); move "What I learned" to the Video & Transcript tab; one-row header; neutral wording for the Prof. Co row.
+
+**Built:**
+- **Header:** one row with a lime drop-shaped logo mark, title, tabs and theme toggle; the subtitle with the course name is gone.
+- **Overview:**
+  - A two-column intro: pill eyebrow, big headline, a short accurate lead, a lime "Explore the Simulator →" button and a "How it works" link.
+  - A dark card with a new animated schematic. Its flows are drawn correctly (crystallizer vapor → compressor → hot vapor → heater; the mockup had "compressed" vapor entering the compressor). It avoids the mockup's claim that MVR improves purity; purity comes from the purge.
+  - The CRYSTALLIZE dot hero now sits below as a visual band, then three minimalist link cards and a slim AI-project note.
+  - The "What the simulator shows" list was removed, and "What I learned" moved to the Video tab.
+- **Course references removed:** meta description, footer, header subtitle, the AI Workflow "Prof. Co" justification and "as Prof. Co predicted"; in the Gemini build, text only (see `comparison.md`).
+
+**Tests:**
+- `browser-ux.mjs` gained Overview checks: intro and headline present, hero below the intro, diagram flows animate and stop under reduced motion, CTA opens the Simulator, one-row desktop header, "What I learned" on the Video tab, and no "Cincinnati" / "CHE 4061" / "Prof. Co" on `/` or `/gemini/`.
+- `browser-hero.mjs` now scrolls the hero into view first, since it sits below the fold on phones and only animates on screen.
+- Full suite passed locally in light and dark.

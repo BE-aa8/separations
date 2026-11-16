@@ -34,6 +34,8 @@ for (const vp of [{ name: 'desktop', width: 1280, height: 720 }, { name: 'mobile
     page.on('pageerror', (e) => errors.push(String(e)));
     page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
     await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+    // the hero sits below the Overview intro and only animates while on screen: bring it into view
+    await page.evaluate(() => { const r = document.getElementById('hero').getBoundingClientRect(); window.scrollTo({ top: scrollY + r.top + r.height / 2 - innerHeight / 2, behavior: 'instant' }); });
     await page.waitForTimeout(2200);                    // intro settles
     const a = await page.evaluate(probe);
     const tag = `${vp.name}-${motion}`;

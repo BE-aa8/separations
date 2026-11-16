@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MVR Crystallizer Explorer</title>
-<meta name="description" content="Interactive explorer for mechanical vapor recompression (MVR) evaporative crystallization of battery-grade LiOH·H2O. CHE 4061 Separation Processes AI project.">
+<meta name="description" content="Interactive explorer for mechanical vapor recompression (MVR) evaporative crystallization of battery-grade LiOH·H2O. An AI project.">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
 <script>
   // Theme before first paint: saved choice, else the device setting (light/dark).
@@ -25,58 +25,109 @@
 <body>
 <header class="site-header">
   <div class="wrap">
-    <h1>MVR Crystallizer Explorer</h1>
-    <p class="subtitle">Evaporative crystallization of battery-grade LiOH·H<sub>2</sub>O with mechanical vapor recompression · CHE 4061 Separation Processes · AI project</p>
+    <h1><a class="brand" href="#overview"><svg class="brand-mark" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8c3.6 4.3 6.4 7.9 6.4 11.3a6.4 6.4 0 0 1-12.8 0c0-3.4 2.8-7 6.4-11.3z"/><circle cx="12" cy="14.6" r="2.3" fill="currentColor" stroke="none"/></svg>MVR Crystallizer Explorer</a></h1>
+    <nav class="tabs" aria-label="Site sections">
+      <a href="#overview" data-tab="overview">Overview</a>
+      <a href="#industry" data-tab="industry">Industry Context</a>
+      <a href="#theory" data-tab="theory">Theory</a>
+      <a href="#simulator" data-tab="simulator">Simulator</a>
+      <a href="#ai-workflow" data-tab="ai-workflow">AI Workflow</a>
+      <a href="#video" data-tab="video">Video &amp; Transcript</a>
+      <a href="#references" data-tab="references">References</a>
+    </nav>
     <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false" title="Toggle dark/light mode">
       <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
       <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
     </button>
   </div>
-  <nav class="tabs" aria-label="Site sections">
-    <a href="#overview" data-tab="overview">Overview</a>
-    <a href="#industry" data-tab="industry">Industry Context</a>
-    <a href="#theory" data-tab="theory">Theory</a>
-    <a href="#simulator" data-tab="simulator">Simulator</a>
-    <a href="#ai-workflow" data-tab="ai-workflow">AI Workflow</a>
-    <a href="#video" data-tab="video">Video &amp; Transcript</a>
-    <a href="#references" data-tab="references">References</a>
-  </nav>
 </header>
 
 <main class="wrap">
 
 <!-- ================= 1. OVERVIEW ================= -->
 <section id="tab-overview" class="tab" data-tab="overview">
+  <div class="ov-intro">
+    <div class="ov-copy">
+      <p class="ov-pill">Battery materials <span aria-hidden="true">·</span> Evaporative crystallization</p>
+      <h2 class="ov-title">Why crystallize lithium hydroxide with a compressor?</h2>
+      <p class="ov-lead">Battery-grade LiOH·H<sub>2</sub>O is crystallized by boiling water off a purified brine, and boiling is the expensive step. Mechanical vapor recompression (MVR) compresses that vapor so it condenses hotter than the liquor it came from, re-using its own latent heat instead of fresh steam.</p>
+      <div class="ov-actions">
+        <a class="ov-cta" href="#simulator">Explore the Simulator <span aria-hidden="true">→</span></a>
+        <a class="ov-link" href="#theory">How it works</a>
+      </div>
+    </div>
+    <figure class="ov-diagram">
+      <svg viewBox="0 0 600 400" role="img" aria-labelledby="ov-dg-t" font-family="Inter, system-ui, sans-serif">
+        <title id="ov-dg-t">MVR crystallizer: vapor from the crystallizer is compressed, condenses in the heater to warm the circulating liquor, and LiOH·H2O crystals leave at the bottom</title>
+        <defs>
+          <linearGradient id="ovMetal" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#5B6560"/><stop offset=".45" stop-color="#C9D1CC"/><stop offset="1" stop-color="#4A524E"/></linearGradient>
+          <linearGradient id="ovLiq" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6FB8E0" stop-opacity=".75"/><stop offset="1" stop-color="#2F86B5" stop-opacity=".55"/></linearGradient>
+          <linearGradient id="ovHeat" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#FF8A4C" stop-opacity=".35"/><stop offset="1" stop-color="#FF8A4C" stop-opacity=".08"/></linearGradient>
+          <clipPath id="ovVessel"><rect x="207" y="167" width="106" height="151" rx="30"/></clipPath>
+          <marker id="ovArr" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="context-stroke"/></marker>
+        </defs>
+        <!-- streams (base line + animated flow) -->
+        <g class="ov-streams" fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <path class="ov-s ov-feed" d="M60,250 L203,250" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-vapor" d="M260,163 L260,110 L326,110" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-hot" d="M404,110 L470,110 L470,170" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-circ" d="M438,214 L319,214" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-circ" d="M313,290 L470,290 L470,262" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-cond" d="M502,232 L582,232" marker-end="url(#ovArr)"/>
+          <path class="ov-s ov-xtal" d="M240,322 L240,365 L172,365" marker-end="url(#ovArr)"/>
+          <path class="ov-f ov-feed" d="M60,250 L203,250"/>
+          <path class="ov-f ov-vapor" d="M260,163 L260,110 L326,110"/>
+          <path class="ov-f ov-hot" d="M404,110 L470,110 L470,170"/>
+          <path class="ov-f ov-circ" d="M438,214 L319,214"/>
+          <path class="ov-f ov-circ" d="M313,290 L470,290 L470,262"/>
+          <path class="ov-f ov-cond" d="M502,232 L582,232"/>
+          <path class="ov-f ov-xtal" d="M240,322 L240,365 L172,365"/>
+        </g>
+        <!-- compressor -->
+        <path d="M330,86 L402,100 L402,120 L330,134 Z" fill="url(#ovMetal)" stroke="#E8ECE6" stroke-opacity=".35"/>
+        <g transform="translate(352 110)"><g class="ov-spin"><circle r="13" fill="#141A17" stroke="#FF8A4C" stroke-width="1.6"/><path d="M0,-10 L0,10 M-10,0 L10,0 M-7,-7 L7,7 M-7,7 L7,-7" stroke="#FF8A4C" stroke-width="1.6" stroke-linecap="round"/></g></g>
+        <!-- crystallizer -->
+        <rect x="205" y="165" width="110" height="155" rx="32" fill="#1B2320" stroke="url(#ovMetal)" stroke-width="3"/>
+        <g clip-path="url(#ovVessel)">
+          <rect x="205" y="232" width="110" height="90" fill="url(#ovLiq)"/>
+          <path d="M205,232 q14,-5 27,0 t27,0 t27,0 t27,0" fill="none" stroke="#BFE3F5" stroke-opacity=".7" stroke-width="1.4"/>
+          <g class="ov-xtals" fill="#B5CC4E">
+            <rect x="228" y="250" width="5" height="5" style="--dl:0s"/><rect x="252" y="246" width="4" height="4" style="--dl:-.6s"/><rect x="276" y="255" width="5" height="5" style="--dl:-1.2s"/>
+            <rect x="296" y="248" width="4" height="4" style="--dl:-1.8s"/><rect x="240" y="262" width="4" height="4" style="--dl:-2.4s"/><rect x="286" y="244" width="5" height="5" style="--dl:-.9s"/>
+          </g>
+          <rect x="205" y="306" width="110" height="16" fill="#B5CC4E" fill-opacity=".35"/>
+        </g>
+        <!-- heater -->
+        <rect x="438" y="172" width="64" height="90" rx="14" fill="url(#ovHeat)" stroke="#FF8A4C" stroke-opacity=".8" stroke-width="2"/>
+        <path d="M450,195 H490 M450,212 H490 M450,229 H490 M450,246 H490" stroke="#FF8A4C" stroke-opacity=".55" stroke-width="1.5" stroke-dasharray="4 4"/>
+        <!-- label chips -->
+        <g class="ov-chip" font-size="15" font-weight="600" text-anchor="middle">
+          <rect x="310" y="42" width="112" height="30" rx="15"/><text x="366" y="62.5">Compressor</text>
+          <rect x="120" y="95" width="130" height="30" rx="15"/><text x="185" y="115.5">Vapor (low P)</text>
+          <rect x="482" y="122" width="100" height="30" rx="15"/><text x="532" y="142.5">Hot vapor</text>
+          <rect x="18" y="206" width="112" height="30" rx="15"/><text x="74" y="226.5">Feed brine</text>
+          <rect x="510" y="178" width="80" height="30" rx="15"/><text x="550" y="198.5">Heater</text>
+          <rect x="496" y="248" width="102" height="30" rx="15"/><text x="547" y="268.5">Condensate</text>
+          <rect x="270" y="330" width="120" height="30" rx="15"/><text x="330" y="350.5">Crystallizer</text>
+          <rect x="4" y="350" width="162" height="30" rx="15"/><text x="85" y="370.5">LiOH·H₂O crystals</text>
+        </g>
+      </svg>
+      <figcaption>Vapor is compressed, condenses in the heater and boils the liquor again. Detailed live version on the <a href="#simulator">Simulator</a>.</figcaption>
+    </figure>
+  </div>
+
   <div class="hero" id="hero">
     <canvas id="hero-canvas" aria-hidden="true"></canvas>
-    <div class="hero-copy">
-      <p class="hero-eyebrow">CHE 4061 · Separation Processes · University of Cincinnati</p>
-      <h2 class="visually-hidden">Crystallize</h2>
-      <p class="hero-tag">Evaporative crystallization of battery-grade LiOH·H<sub>2</sub>O with mechanical vapor recompression.</p>
-      <a class="hero-cta" href="#simulator">Open the simulator <span aria-hidden="true">→</span></a>
-    </div>
-    <p class="hero-hint" aria-hidden="true">Move to stir · scroll for the story ↓</p>
+    <h2 class="visually-hidden">Crystallize</h2>
+    <p class="hero-hint" aria-hidden="true">Move to stir</p>
   </div>
-  <div class="banner ai-banner">
-    <strong>This is an AI project.</strong> The plan was written by one AI model, critiqued by another, and the site was built by two different models so they can be compared.
-    See <a href="#ai-workflow">AI Workflow</a> for the models, prompts, decisions, and the comparison.
+
+  <div class="ov-cards">
+    <a class="ov-card" href="#industry"><span class="ov-num">01</span><h3>Significance</h3><p>Why battery makers need LiOH·H<sub>2</sub>O, and where Tesla's Robstown refinery fits.</p><span class="ov-go" aria-hidden="true">Industry context →</span></a>
+    <a class="ov-card" href="#theory"><span class="ov-num">02</span><h3>Theory</h3><p>Boiling-point elevation, steam economy, MVR as a heat pump, solubility and supersaturation, the impurity purge.</p><span class="ov-go" aria-hidden="true">Theory →</span></a>
+    <a class="ov-card" href="#simulator"><span class="ov-num">03</span><h3>Simulator</h3><p>Move the sliders and compare 1, 3, 5 effects and MVR on the same feed: energy, cost, yield and purity.</p><span class="ov-go" aria-hidden="true">Simulator →</span></a>
   </div>
-  <h2>Why crystallize lithium hydroxide with a compressor?</h2>
-  <p class="lead">High-nickel battery cathodes are made with <strong>lithium hydroxide monohydrate (LiOH·H<sub>2</sub>O)</strong>. Refineries such as Tesla's in Robstown, Texas, get it out of a purified brine by boiling off water until the hydrate crystallizes. Boiling off water is expensive. The usual way to do it cheaply is to <strong>re-use the vapor's own latent heat</strong>: either in a train of evaporator effects, or by squeezing the vapor in a compressor so it condenses hotter than the liquor it came from. That second option is <strong>mechanical vapor recompression (MVR)</strong>.</p>
-  <div class="grid-3">
-    <div class="card"><h3>1 · Significance</h3><p>Why battery makers need LiOH·H<sub>2</sub>O, and where Tesla's refinery fits. <a href="#industry">Industry Context →</a></p></div>
-    <div class="card"><h3>2 · Theory</h3><p>Boiling-point elevation, steam economy, MVR as a heat pump, solubility and supersaturation, the impurity purge. <a href="#theory">Theory →</a></p></div>
-    <div class="card"><h3>3 · Simulator</h3><p>Move the sliders and compare 1, 3, 5 effects and MVR on the same feed: energy, cost, yield and purity. <a href="#simulator">Simulator →</a></p></div>
-  </div>
-  <h3>What the simulator shows</h3>
-  <ul>
-    <li>Only the <em>lift</em> (BPE + heater ΔT) is paid for in MVR, so it moves ~20 units of heat per unit of work.</li>
-    <li>Boiling-point elevation (BPE) adds directly to that lift, so a concentrated electrolyte erodes MVR's advantage.</li>
-    <li>Where the electricity-vs-steam price crossover is, with the Texas EIA prices marked.</li>
-    <li>How the purge trades lithium yield against product purity.</li>
-  </ul>
-  <h3>What I learned / what I want to learn next</h3>
-  <div class="placeholder">PLACEHOLDER: Andrew writes this section after the build and presentation.</div>
+  <p class="ov-ai"><span class="ov-ai-dot" aria-hidden="true"></span><span><strong>An AI project.</strong> Planned by one AI model, critiqued by another, built by two different models and compared. <a href="#ai-workflow">See the AI workflow →</a></span></p>
 </section>
 
 <!-- ================= 2. INDUSTRY ================= -->
@@ -280,7 +331,7 @@
 
     <h3>What I found</h3>
     <ol>
-      <li><strong>Both got the physics right the first time.</strong> A detailed plan, exact input names and an independent test made correctness the easy part, as Prof. Co predicted.</li>
+      <li><strong>Both got the physics right the first time.</strong> A detailed plan, exact input names and an independent test made correctness the easy part.</li>
       <li><strong>The differences were in presentation.</strong> Claude showed every equation with units and a one-line interpretation on the simulator. Gemini hid them behind buttons but wrote richer Theory and Industry pages.</li>
       <li><strong>Data honesty needed enforcing for Gemini.</strong> Its plan proposed invented prices (caught at review), and its site has an uncited temperature and a hallucinated approval claim, left in place here as evidence.</li>
       <li><strong>Instruction-following:</strong> on the free tier, told to only plan, Gemini wrote a full build anyway, then ran out of daily quota. That attempt is kept on its own branch.</li>
@@ -304,7 +355,7 @@
         <tr><td>4</td><td>Show compressor discharge temperature T<sub>2</sub></td><td>Accept</td><td>Verified ≈ 113–117 °C: compression superheats steam, it isn't wet</td></tr>
         <tr><td>5</td><td>Add metastable-zone and spinodal bands; crystal-size card</td><td>Modify</td><td>Drawn as SCHEMATIC; its crystal-size cutoffs were unsourced, so rejected</td></tr>
         <tr><td>6</td><td>Rewrite three interpretations</td><td>Accept</td><td>Clearer answers to “how does that make sense?”</td></tr>
-        <tr><td>7a–c</td><td>Cut stretch goals; keep Phase 2 small</td><td>Accept, but keep a simple turndown</td><td>Prof. Co asked for operating scenarios (Lecture 10)</td></tr>
+        <tr><td>7a–c</td><td>Cut stretch goals; keep Phase 2 small</td><td>Accept, but keep a simple turndown</td><td>Operating scenarios (turndown) are a standard design question</td></tr>
         <tr><td>8a–b</td><td>Feasibility guards; exact input names</td><td>Accept (modified threshold)</td><td>Physical guards instead of an arbitrary cutoff</td></tr>
         <tr><td>9–10</td><td>Fairer comparison; fewer tabs</td><td>Accept</td><td>Same files and fresh sessions for both; 7 tabs</td></tr>
       </tbody>
@@ -322,6 +373,8 @@
   <div class="placeholder">PLACEHOLDER: The YouTube presentation (youtube-nocookie.com embed) will appear here once it is uploaded (by Fri Dec 4, 2026).</div>
   <h3>Transcript (verbatim YouTube auto-transcript)</h3>
   <div class="placeholder transcript">PLACEHOLDER: The verbatim auto-generated transcript will be pasted here after upload.</div>
+  <h3>What I learned / what I want to learn next</h3>
+  <div class="placeholder">PLACEHOLDER: Andrew writes this section after the build and presentation.</div>
 </section>
 
 <!-- ================= 7. REFERENCES ================= -->
@@ -345,6 +398,6 @@
 </section>
 
 </main>
-<footer class="site-footer"><div class="wrap">CHE 4061 Separation Processes, University of Cincinnati, Fall 2026 · AI project · Data: see <a href="#references">References</a>.</div></footer>
+<footer class="site-footer"><div class="wrap">MVR Crystallizer Explorer · AI project · Data: see <a href="#references">References</a>.</div></footer>
 </body>
 </html>

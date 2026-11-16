@@ -55,6 +55,7 @@ Why Flash, not Pro: the API key's model list offered gemini-2.5-pro, gemini-3.5-
 - **Different price tiers:** Opus is Anthropic's top tier; Gemini Flash is Google's fast tier (the key had no 3.x Pro). Google also substituted a newer Flash version than requested.
 - **One build each:** no repeated trials, so run-to-run variation is unknown.
 - **The costs are not like-for-like:** Claude's is reported by the tool; Gemini's is estimated from token counts at third-party list prices.
+- **Post-build text edit (2026-11-16):** at Andrew's request, course and university references were removed from both builds. In `site/gemini/index.html` that touched text only: the header subtitle, one sentence in the theory intro, the video caption, the footer, the "Andrew (Student) / CHE 4061 Lead" label (now "Andrew / Project lead"), and the contributions row Gemini wrote for the course instructor. No code, styling, equations or physics changed; the original is in git history before this commit.
 
 ## 5. Process lessons
 - **Tests before builds** made the comparison objective and caught a bug in my own test harness (the tab selector matched hidden panels) before it could unfairly fail a build.

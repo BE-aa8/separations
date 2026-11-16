@@ -110,8 +110,56 @@ for (const scheme of ['light', 'dark']) {
   await ctx.close();
 }
 
+// ---------- 4. Overview intro, standalone branding ----------
+for (const scheme of ['light', 'dark']) {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 }, colorScheme: scheme });
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const ov = await page.evaluate(() => {
+    const intro = document.querySelector('.ov-intro'), hero = document.getElementById('hero');
+    const flows = [...document.querySelectorAll('.ov-diagram .ov-f')];
+    return {
+      intro: !!intro, title: document.querySelector('.ov-title')?.textContent || '',
+      heroBelow: !!(intro && hero && (intro.compareDocumentPosition(hero) & Node.DOCUMENT_POSITION_FOLLOWING)),
+      flows: flows.length, running: flows.filter((f) => f.getAnimations().some((a) => a.playState === 'running')).length,
+      gone: !/What the simulator shows/i.test(document.getElementById('tab-overview').innerText),
+      learned: /What I learned/i.test(document.getElementById('tab-video').textContent),
+      header: Math.round(document.querySelector('.site-header').getBoundingClientRect().height),
+    };
+  });
+  if (!ov.intro || !/compressor/i.test(ov.title)) fail(`overview (${scheme}): intro/headline missing`);
+  if (!ov.heroBelow) fail(`overview (${scheme}): dot hero should sit below the intro`);
+  if (ov.flows < 7 || ov.running < ov.flows) fail(`overview (${scheme}): diagram flows ${ov.running}/${ov.flows} animating`);
+  if (!ov.gone) fail('overview: "What the simulator shows" should be removed');
+  if (!ov.learned) fail('"What I learned" should be on the Video & Transcript tab');
+  if (ov.header > 70) fail(`desktop header should be one row (${ov.header} px)`);
+  await page.click('.ov-cta');
+  await page.waitForTimeout(400);
+  if (!(await page.isVisible('#tab-simulator'))) fail('overview CTA did not open the Simulator');
+  await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+  await page.screenshot({ path: join(OUT, `overview-${scheme}.png`) });
+  for (const path of ['/', '/gemini/']) {
+    await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle' });
+    const hit = await page.evaluate(() => (document.documentElement.outerHTML.match(/Cincinnati|CHE\s*4061|Prof\.?\s*(Carlos\s*)?Co\b|Carlos Co/i) || [])[0]);
+    if (hit) fail(`${path}: course/university reference found ("${hit}")`);
+  }
+  if (errors.length) fail(`overview (${scheme}): console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+{
+  const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  const r = await page.evaluate(() => [...document.querySelectorAll('.ov-diagram .ov-f, .ov-spin, .ov-xtals rect')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
+  if (r) fail(`overview reduced motion: ${r} diagram animations still running`);
+  await ctx.close();
+}
+
 await browser.close();
-const report = failures.length ? failures.map((f) => `- ❌ ${f}`).join('\n') : '- ✅ all UX checks passed (theme toggle, live PFD, reduced motion, mobile)';
+const report = failures.length ? failures.map((f) => `- ❌ ${f}`).join('\n') : '- ✅ all UX checks passed (theme toggle, live PFD, reduced motion, mobile, overview intro)';
 writeFileSync(join(OUT, 'report.md'), `# UX browser checks\n\n${report}\n`);
 console.log(report);
 process.exit(failures.length ? 1 : 0);
