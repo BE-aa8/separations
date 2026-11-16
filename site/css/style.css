@@ -726,3 +726,76 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
   .explain-toggle { order: -1; }
 }
 @media (prefers-reduced-motion: reduce) { .help-panel { animation: none; } .kpi-num.changed { animation: none; } }
+
+/* =====================================================================
+   Liquid Glass simulator (G3): grouped charts on clean rounded surfaces
+   ===================================================================== */
+.charts-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--s3); flex-wrap: wrap; margin: var(--s7) 0 var(--s3); }
+.charts-head .sec-title { margin: 0 !important; }
+.chart-jump { display: flex; gap: 4px; padding: 4px; border-radius: var(--r-pill); background: var(--chip); overflow-x: auto; scrollbar-width: none; max-width: 100%; }
+.chart-jump::-webkit-scrollbar { display: none; }
+.chart-jump button { border: 0; background: transparent; border-radius: var(--r-pill); padding: 7px 12px; font-size: 0.8rem; white-space: nowrap; color: var(--muted); box-shadow: none; }
+.chart-jump button:hover { background: var(--surface); color: var(--text); border-color: transparent; }
+.chart-sec { margin-bottom: var(--s5); scroll-margin-top: calc(var(--header-h) + 84px); }
+.chart-sec-title { display: flex; align-items: center; gap: 10px; margin: var(--s4) 0 var(--s3); font-size: 1rem; letter-spacing: -0.01em; }
+#tab-simulator .plots { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: var(--s3); }
+/* charts sit on clean solid surfaces (no blur) so axes and labels stay crisp */
+#tab-simulator .plot { background: var(--surface); padding: var(--s3) var(--s3) var(--s2); }
+#tab-simulator .plot figcaption { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 0.9rem; letter-spacing: -0.005em; padding: 2px 6px 6px; }
+#tab-simulator .plot .whatif { margin: 4px 8px 2px; }
+#tab-simulator .plot .result-note { color: var(--text); font-size: 0.86rem; }
+#tab-simulator .plot .inline-slider { padding: 4px 8px 2px; }
+@media (max-width: 699px) {
+  #tab-simulator .plots { grid-template-columns: minmax(0, 1fr); }
+  .charts-head { margin-top: var(--s6); }
+}
+
+/* =====================================================================
+   Liquid Glass simulator (G4): process diagram integration, phone sheet
+   ===================================================================== */
+#tab-simulator .pfd-wrap > .hint { margin: 4px 0 6px; }
+.pfd-legend { gap: 6px; }
+.pfd-legend .lg { background: var(--chip); padding: 4px 10px; border-radius: var(--r-pill); color: var(--text); font-size: 0.72rem; }
+.pfd-legend .lg-note { background: transparent; color: var(--muted); }
+/* unit detail card: beside the diagram on desktop (never covering units), below it on smaller screens */
+#tab-simulator .pfd-panel { border-radius: 18px; border: 1px solid var(--glass-border); background: var(--glass-strong); box-shadow: var(--glass-hl), 0 8px 24px -12px rgba(9, 13, 12, 0.25); }
+#tab-simulator .pfd-panel .phead { background: transparent; color: var(--text); border-bottom: 1px solid var(--glass-edge); padding: 10px 14px; }
+#tab-simulator .pfd-panel .pclose { color: var(--muted); background: var(--chip); border-radius: 50%; width: 28px; height: 28px; padding: 0; font-size: 18px; }
+#tab-simulator .pfd-panel .prow { border-top-color: var(--glass-edge); padding: 8px 14px; }
+#tab-simulator .pfd-panel .peq { background: var(--chip); border-radius: 10px; padding: 4px 8px; }
+@media (min-width: 1100px) {
+  #tab-simulator .pfd-wrap.has-panel { display: grid; grid-template-columns: minmax(0, 1fr) 340px; column-gap: var(--s4); align-items: start; }
+  #tab-simulator .pfd-wrap.has-panel > .sec-head, #tab-simulator .pfd-wrap.has-panel > #pfd-hint { grid-column: 1 / -1; }
+  #tab-simulator .pfd-wrap.has-panel > #pfd { grid-column: 1; }
+  #tab-simulator .pfd-wrap.has-panel > #pfd-panel { grid-column: 2; margin-top: 0; max-height: 470px; overflow: auto; }
+}
+
+/* phone Inputs sheet (desktop/tablet: hidden controls, normal panel) */
+.sheet-head, .inputs-fab, .sheet-scrim { display: none; }
+@media (max-width: 699px) {
+  .inputs-fab {
+    display: inline-flex; align-items: center; gap: 8px; position: fixed; z-index: 35; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%); padding: 12px 20px; border-radius: var(--r-pill); font-weight: 650; font-size: 0.92rem;
+    background: var(--ink); color: var(--ink-text); border: 1px solid var(--ink-border); box-shadow: 0 12px 30px -10px rgba(9, 13, 12, 0.55);
+  }
+  [data-theme="dark"] .inputs-fab { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+  html:not(:has(#tab-simulator:not([hidden]))) .inputs-fab { display: none; }
+  body.sheet-open .inputs-fab, body.help-open .inputs-fab { display: none; }
+  .sheet-scrim:not([hidden]) { display: block; position: fixed; inset: 0; z-index: 36; background: rgba(9, 13, 12, 0.35); }
+  #tab-simulator .controls {
+    position: fixed !important; z-index: 37; left: 0; right: 0; bottom: 0; top: auto; max-height: 78vh !important; overflow-y: auto;
+    border-radius: 22px 22px 0 0 !important; padding: 0 var(--s3) calc(var(--s5) + env(safe-area-inset-bottom));
+    background: var(--glass-strong); transform: translateY(105%); visibility: hidden;
+    transition: transform .3s var(--ease), visibility 0s linear .3s;
+  }
+  body.sheet-open #tab-simulator .controls { transform: none; visibility: visible; transition: transform .3s var(--ease), visibility 0s; }
+  .sheet-head { display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 1; padding: 14px 4px 10px; background: inherit; border-bottom: 1px solid var(--glass-edge); margin-bottom: 4px; }
+  .sheet-head::before { content: ""; position: absolute; top: 6px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--border-strong); }
+  .sheet-title { font-weight: 650; font-size: 1.05rem; }
+  .sheet-done { border-radius: var(--r-pill); padding: 7px 16px; font-weight: 600; background: var(--ink); color: var(--ink-text); border: 0; }
+  [data-theme="dark"] .sheet-done { background: var(--lime); color: var(--ink); }
+  #tab-simulator .results { padding-bottom: 72px; }   /* room for the floating Inputs button */
+}
+@media (max-width: 699px) and (prefers-reduced-motion: reduce) { #tab-simulator .controls { transition: none; } }
+#tab-simulator .pfd-panel .tag { display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 6px; background: var(--chip); color: var(--muted); font: 600 0.68rem/1.4 var(--mono, ui-monospace, monospace); vertical-align: 1px; }
+@media (min-width: 1100px) { #tab-simulator .pfd-wrap.has-panel .pfd-panel .prow { grid-template-columns: minmax(0, 1fr); } }

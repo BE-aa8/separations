@@ -408,6 +408,24 @@ function initHelp() {
   window.addEventListener('hashchange', closeHelp);
 }
 
+// ---------- phone: Inputs bottom sheet (sliders stay in the DOM) ----------
+function setSheet(open) {
+  const btn = document.getElementById('inputs-toggle');
+  const scrim = document.getElementById('sheet-scrim');
+  document.body.classList.toggle('sheet-open', open);
+  if (btn) btn.setAttribute('aria-expanded', String(open));
+  if (scrim) scrim.hidden = !open;
+  if (open) document.getElementById('inputs-close')?.focus({ preventScroll: true });
+  else if (btn && document.activeElement && document.getElementById('inputs-panel')?.contains(document.activeElement)) btn.focus({ preventScroll: true });
+}
+function initSheet() {
+  document.getElementById('inputs-toggle')?.addEventListener('click', () => setSheet(!document.body.classList.contains('sheet-open')));
+  document.getElementById('inputs-close')?.addEventListener('click', () => setSheet(false));
+  document.getElementById('sheet-scrim')?.addEventListener('click', () => setSheet(false));
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.body.classList.contains('sheet-open')) setSheet(false); });
+  window.addEventListener('hashchange', () => setSheet(false));
+}
+
 // ---------- clickable PFD (Phase 2) ----------
 const UNIT_CARDS = {
   feed: { title: 'Feed', ids: ['s', 'zML', 'xL'] },
@@ -431,7 +449,7 @@ function selectUnit(u) {
 function renderPanel(o) {
   const panel = document.getElementById('pfd-panel');
   if (!panel) return;
-  if (!selectedUnit) { panel.hidden = true; panel.innerHTML = ''; return; }
+  if (!selectedUnit) { panel.hidden = true; panel.innerHTML = ''; document.getElementById('sec-pfd')?.classList.remove('has-panel'); return; }
   const u = UNIT_CARDS[selectedUnit];
   const rows = u.ids.map((id) => CARD_BY_ID[id]).filter(Boolean).map((c) => {
     const e = c.eq ? EQ[c.eq] : null;
@@ -445,6 +463,7 @@ function renderPanel(o) {
   }).join('');
   panel.innerHTML = `<div class="phead"><h4>${u.title}</h4><button type="button" class="pclose" aria-label="Close">×</button></div>${rows}`;
   panel.hidden = false;
+  document.getElementById('sec-pfd')?.classList.add('has-panel');   // desktop: panel sits beside the diagram
   panel.querySelector('.pclose').addEventListener('click', () => selectUnit(selectedUnit));
 }
 function initPFDClicks() {
@@ -590,11 +609,17 @@ function init() {
   buildKPIs();
   initExplain();
   initHelp();
+  initSheet();
   mountPFD(document.getElementById('pfd'));
   initPFDClicks();
   document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
   // toolbar jump buttons: scroll within the Simulator tab (buttons, not #hash links, which would switch tabs)
   const JUMP = { pfd: 'sec-pfd', cards: 'cards', plots: 'sec-plots' };
+  document.querySelectorAll('[data-jump-sec]').forEach((b) => b.addEventListener('click', () => {
+    const el = document.getElementById(b.dataset.jumpSec);
+    const smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+  }));
   document.querySelectorAll('[data-jump]').forEach((b) => b.addEventListener('click', () => {
     const el = document.getElementById(JUMP[b.dataset.jump]);
     const smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);

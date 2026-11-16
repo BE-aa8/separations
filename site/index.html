@@ -197,31 +197,47 @@
     <div id="help-body"></div>
   </aside>
   <div class="sim-layout">
-    <aside class="controls glass" aria-label="Inputs">
+    <aside class="controls glass" id="inputs-panel" aria-label="Inputs">
+      <div class="sheet-head"><span class="sheet-title">Inputs</span><button type="button" class="sheet-done" id="inputs-close">Done</button></div>
       <div id="sliders"></div>
     </aside>
+    <div class="sheet-scrim" id="sheet-scrim" hidden></div>
+    <button type="button" class="inputs-fab" id="inputs-toggle" aria-controls="inputs-panel" aria-expanded="false">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg>
+      Inputs
+    </button>
     <div class="results">
       <div id="warnings" class="warnings" role="status" aria-live="polite"></div>
       <div class="kpis" id="kpis" aria-label="Key results"></div>
       <div class="pfd-wrap glass" id="sec-pfd"><div class="sec-head"><h3>Process flow (live)</h3><button type="button" class="qhelp" data-help-pfd="1" aria-label="About the process diagram" aria-haspopup="dialog">?</button></div><p class="hint" id="pfd-hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
       <div id="cards"></div>
-      <h3 class="sec-title" id="sec-plots">Charts</h3>
+      <div class="charts-head"><h3 class="sec-title" id="sec-plots">Charts</h3>
+      <div class="chart-jump" role="group" aria-label="Chart groups"><button type="button" data-jump-sec="cs-energy">Energy &amp; cost</button><button type="button" data-jump-sec="cs-bpe">BPE &amp; compressor</button><button type="button" data-jump-sec="cs-purity">Purity &amp; mass balance</button><button type="button" data-jump-sec="cs-xtal">Crystallization</button></div></div>
+      <section class="chart-sec" id="cs-energy" aria-labelledby="cs-energy-t"><h4 class="chart-sec-title" id="cs-energy-t">Energy &amp; cost <span class="cg-count">5</span></h4>
       <div class="plots">
-        <figure class="plot"><figcaption>P5 · Energy comparison: 1 / 3 / 5 effects vs MVR</figcaption><div id="p5" class="chart"></div><p class="whatif small" id="p5-note"></p><p class="whatif">What if? Which uses least fuel and least money per tonne of water?</p></figure>
-        <figure class="plot"><figcaption>P6 · Electricity vs steam price crossover</figcaption><div id="p6" class="chart"></div><p class="whatif">What if electricity prices change? Above a line (expensive steam), MVR is cheaper; below it, that multi-effect train is cheaper.</p></figure>
-        <figure class="plot"><figcaption>P3 · What the compressor lifts</figcaption><div id="p3" class="chart chart-short"></div><p class="whatif">How much of the compressor's job is BPE?</p></figure>
-        <figure class="plot"><figcaption>P4 · Compressor vs BPE</figcaption><div id="p4" class="chart"></div><p class="whatif">Why does BPE hurt MVR?</p></figure>
-        <figure class="plot"><figcaption>P2 · BPE vs molality</figcaption><div id="p2" class="chart"></div><p class="whatif">More concentrated liquor? Ideal vs real electrolyte?</p></figure>
-        <figure class="plot"><figcaption>P11 · Multi-effect feasibility</figcaption><div id="p11" class="chart"></div><p class="whatif">How many effects can this brine support?</p></figure>
-        <figure class="plot"><figcaption>P7 · Purge trade-off: yield vs purity</figcaption><div id="p7" class="chart"></div><p class="whatif">Purity vs yield? Try ε (washing) and the purge ratio.</p></figure>
-        <figure class="plot"><figcaption>P8 · Where the feed goes</figcaption><div id="p8" class="chart"></div><p class="whatif">Where does it go?</p></figure>
-        <figure class="plot"><figcaption>P1 · LiOH solubility and cooling yield</figcaption><div id="p1" class="chart"></div>
-          <label class="inline-slider">Cooling to T<sub>cold</sub> = <output id="tcold-out">20</output> °C <input id="tcold" type="range" min="0" max="95" step="1" value="20"></label>
-          <p class="whatif">Cool instead of evaporate? <span id="cool-yield"></span></p></figure>
-        <figure class="plot"><figcaption>P9 · Heater ΔT: capital vs energy (total annualized cost)</figcaption><div id="p9" class="chart"></div><p class="whatif">Why not just use a tiny ΔT? Try U, electricity price, and interest. Capital: DOE/NETL installed costs (1998) × CEPCI 797.9/389.5; compressor cost is a proxy (ESTIMATE, ±50 %).</p></figure>
-        <figure class="plot"><figcaption>P10 · Turndown at fixed heater area</figcaption><div id="p10" class="chart"></div><p class="whatif">Does the unit still work at part load? With the heater already built, less heat needs less ΔT, so less lift. (No compressor surge map: beyond course level.)</p></figure>
-        <figure class="plot"><figcaption>P1b · Metastable zone (SCHEMATIC)</figcaption><div id="p1b" class="chart"></div><p class="whatif">Where should the liquor operate? Inside the metastable zone, with seeds.</p></figure>
-      </div>
+        <figure class="plot" id="fig-p5"><figcaption><span>P5 · Energy comparison: 1 / 3 / 5 effects vs MVR</span><button type="button" class="qhelp" data-help-chart="fig-p5" aria-label="About P5" aria-haspopup="dialog">?</button></figcaption><div id="p5" class="chart"></div><p class="whatif small" id="p5-note"></p><p class="whatif help-slot">What if? Which uses least fuel and least money per tonne of water?</p></figure>
+        <figure class="plot" id="fig-p6"><figcaption><span>P6 · Electricity vs steam price crossover</span><button type="button" class="qhelp" data-help-chart="fig-p6" aria-label="About P6" aria-haspopup="dialog">?</button></figcaption><div id="p6" class="chart"></div><p class="whatif help-slot">What if electricity prices change? Above a line (expensive steam), MVR is cheaper; below it, that multi-effect train is cheaper.</p></figure>
+        <figure class="plot" id="fig-p9"><figcaption><span>P9 · Heater ΔT: capital vs energy (total annualized cost)</span><button type="button" class="qhelp" data-help-chart="fig-p9" aria-label="About P9" aria-haspopup="dialog">?</button></figcaption><div id="p9" class="chart"></div><p class="whatif small">Capital: DOE/NETL installed costs (1998) × CEPCI 797.9/389.5; compressor cost is a proxy (<span class="flag">ESTIMATE</span>, ±50 %).</p><p class="whatif help-slot">Why not just use a tiny ΔT? Try U, electricity price, and interest.</p></figure>
+        <figure class="plot" id="fig-p10"><figcaption><span>P10 · Turndown at fixed heater area</span><button type="button" class="qhelp" data-help-chart="fig-p10" aria-label="About P10" aria-haspopup="dialog">?</button></figcaption><div id="p10" class="chart"></div><p class="whatif help-slot">Does the unit still work at part load? With the heater already built, less heat needs less ΔT, so less lift. (No compressor surge map: beyond course level.)</p></figure>
+        <figure class="plot" id="fig-p11"><figcaption><span>P11 · Multi-effect feasibility</span><button type="button" class="qhelp" data-help-chart="fig-p11" aria-label="About P11" aria-haspopup="dialog">?</button></figcaption><div id="p11" class="chart"></div><p class="whatif help-slot">How many effects can this brine support?</p></figure>
+      </div></section>
+      <section class="chart-sec" id="cs-bpe" aria-labelledby="cs-bpe-t"><h4 class="chart-sec-title" id="cs-bpe-t">BPE &amp; compressor <span class="cg-count">3</span></h4>
+      <div class="plots">
+        <figure class="plot" id="fig-p2"><figcaption><span>P2 · BPE vs molality</span><button type="button" class="qhelp" data-help-chart="fig-p2" aria-label="About P2" aria-haspopup="dialog">?</button></figcaption><div id="p2" class="chart"></div><p class="whatif help-slot">More concentrated liquor? Ideal vs real electrolyte?</p></figure>
+        <figure class="plot" id="fig-p3"><figcaption><span>P3 · What the compressor lifts</span><button type="button" class="qhelp" data-help-chart="fig-p3" aria-label="About P3" aria-haspopup="dialog">?</button></figcaption><div id="p3" class="chart chart-short"></div><p class="whatif help-slot">How much of the compressor's job is BPE?</p></figure>
+        <figure class="plot" id="fig-p4"><figcaption><span>P4 · Compressor vs BPE</span><button type="button" class="qhelp" data-help-chart="fig-p4" aria-label="About P4" aria-haspopup="dialog">?</button></figcaption><div id="p4" class="chart"></div><p class="whatif help-slot">Why does BPE hurt MVR?</p></figure>
+      </div></section>
+      <section class="chart-sec" id="cs-purity" aria-labelledby="cs-purity-t"><h4 class="chart-sec-title" id="cs-purity-t">Purity &amp; mass balance <span class="cg-count">2</span></h4>
+      <div class="plots">
+        <figure class="plot" id="fig-p7"><figcaption><span>P7 · Purge trade-off: yield vs purity</span><button type="button" class="qhelp" data-help-chart="fig-p7" aria-label="About P7" aria-haspopup="dialog">?</button></figcaption><div id="p7" class="chart"></div><p class="whatif help-slot">Purity vs yield? Try ε (washing) and the purge ratio.</p></figure>
+        <figure class="plot" id="fig-p8"><figcaption><span>P8 · Where the feed goes</span><button type="button" class="qhelp" data-help-chart="fig-p8" aria-label="About P8" aria-haspopup="dialog">?</button></figcaption><div id="p8" class="chart"></div><p class="whatif help-slot">Where does it go?</p></figure>
+      </div></section>
+      <section class="chart-sec" id="cs-xtal" aria-labelledby="cs-xtal-t"><h4 class="chart-sec-title" id="cs-xtal-t">Crystallization <span class="cg-count">2</span></h4>
+      <div class="plots">
+        <figure class="plot" id="fig-p1"><figcaption><span>P1 · LiOH solubility and cooling yield</span><button type="button" class="qhelp" data-help-chart="fig-p1" aria-label="About P1" aria-haspopup="dialog">?</button></figcaption><div id="p1" class="chart"></div>
+          <label class="inline-slider">Cooling to T<sub>cold</sub> = <output id="tcold-out">20</output> °C <input id="tcold" type="range" min="0" max="95" step="1" value="20"></label><p class="whatif result-note"><span id="cool-yield"></span></p><p class="whatif help-slot">Cool instead of evaporate?</p></figure>
+        <figure class="plot" id="fig-p1b"><figcaption><span>P1b · Metastable zone (SCHEMATIC)</span><button type="button" class="qhelp" data-help-chart="fig-p1b" aria-label="About P1b" aria-haspopup="dialog">?</button></figcaption><div id="p1b" class="chart"></div><p class="whatif help-slot">Where should the liquor operate? Inside the metastable zone, with seeds.</p></figure>
+      </div></section>
     </div>
   </div>
 </section>
