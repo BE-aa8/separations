@@ -282,3 +282,9 @@ Entry template:
 **Done:** waited for GitHub CI on `2b09249` (data + hand-calc job and browser job, now covering the light and dark smoke tests, Phase 2 in both themes, the hero and UX checks): all green. Fast-forwarded main to `2b09249` (the pre-redesign checkpoint `2fe4d1f` is still in history). Built `dist/mvr-crystallizer-site.zip` (28 files) and verified its contents byte-for-byte against the committed `site/` before sending it for Netlify Drop.
 
 **Still open (by choice, for later):** Simulator layout (key-results strip, chart groups, mobile inputs panel), the Overview area below the hero (live headline numbers, cards), Theory TOC, placeholders. My "conclusions" section in comparison.md.
+
+## 2026-11-16 — live-site verification of the redesign
+
+**Prompt (verbatim):** "deployed, run the tests on the live site"
+
+**Results against https://ucseparations.netlify.app:** every deployed file matches the repo byte-for-byte (index.html differs only by Netlify's injected lines); npm 23/23; smoke test light and dark: `/` 7 tabs, 22 sliders, 0 failures; `/gemini/` 7 tabs, 16 sliders, 0 failures; Phase 2 check pass in both themes; hero check pass; UX check (theme toggle and persistence, live PFD flows, reduced motion, mobile) pass. Reports and key screenshots: `docs/screenshots/verification/2026-11-16-live/` (the full ~32 MB set was kept out of the repo).
