@@ -288,3 +288,11 @@ Entry template:
 **Prompt (verbatim):** "deployed, run the tests on the live site"
 
 **Results against https://ucseparations.netlify.app:** every deployed file matches the repo byte-for-byte (index.html differs only by Netlify's injected lines); npm 23/23; smoke test light and dark: `/` 7 tabs, 22 sliders, 0 failures; `/gemini/` 7 tabs, 16 sliders, 0 failures; Phase 2 check pass in both themes; hero check pass; UX check (theme toggle and persistence, live PFD flows, reduced motion, mobile) pass. Reports and key screenshots: `docs/screenshots/verification/2026-11-16-live/` (the full ~32 MB set was kept out of the repo).
+
+## 2026-11-16 — Liquid Glass simulator: plan (approved) and phase G1
+
+**Prompt:** Andrew attached three reference screenshots (Airglow weather app glass UI; Lumare landing page and journal) with a detailed brief: plan an Apple-inspired Liquid Glass redesign of the Simulator, hide explanatory text behind a "?" toggle without deleting it, keep all engineering information, physics, data, IDs and tests intact, plan first and wait for approval.
+
+**Plan mode:** measured the current Simulator (≈2,330 visible words, ~700 of them explanation; 35 cards, 21 sliders, 12 charts starting 4,479 px down). Andrew's decisions: **clean by default with an Explain switch and per-item "?"** (satisfies the CLAUDE.md "equation, units, interpretation" rule on demand; nothing deleted); **glass on the Simulator first**; **charts grouped, all visible**. Plan saved as `docs/plan-glass-simulator-claude.md` (phases G1–G5, each with a checkpoint).
+
+**G1 (this commit):** glass tokens for light and dark, atmospheric backdrop while the Simulator is open, a sticky glass toolbar (presets as a segmented control, Process/Results/Charts jump buttons using `scrollIntoView`, not hash links), a glass inputs panel with collapsible groups (`<details>`, open by default), Apple-style sliders (filled track via `--pct`, white thumb, value pills), rounded process and chart surfaces. Presentation-only changes in `index.html`, `style.css`, `ui.js`; physics, data, equations and Gemini untouched. Review fix: an attempt to truncate long value pills hid units, so it was reverted (units are essential) and the inputs panel widened instead.

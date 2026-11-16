@@ -173,23 +173,30 @@
 <!-- ================= 4. SIMULATOR ================= -->
 <section id="tab-simulator" class="tab" data-tab="simulator" hidden>
   <h2>Simulator</h2>
+  <div class="sim-toolbar glass" role="toolbar" aria-label="Simulator tools">
+    <div class="seg" role="group" aria-label="Presets">
+      <span class="seg-label">Presets</span>
+      <button type="button" data-preset="handcalc">Hand-calc case</button>
+      <button type="button" data-preset="highbpe">High BPE</button>
+      <button type="button" data-preset="cheap">Cheap electricity (Texas)</button>
+      <button type="button" data-preset="expensive">Expensive electricity</button>
+      <button type="button" data-preset="infeasible">Infeasible purge</button>
+    </div>
+    <div class="sim-jump" role="group" aria-label="Jump to">
+      <button type="button" data-jump="pfd">Process</button>
+      <button type="button" data-jump="cards">Results</button>
+      <button type="button" data-jump="plots">Charts</button>
+    </div>
+  </div>
   <div class="sim-layout">
-    <aside class="controls" aria-label="Inputs">
-      <div class="presets">
-        <span class="label">Presets</span>
-        <button type="button" data-preset="handcalc">Hand-calc case</button>
-        <button type="button" data-preset="highbpe">High BPE</button>
-        <button type="button" data-preset="cheap">Cheap electricity (Texas)</button>
-        <button type="button" data-preset="expensive">Expensive electricity</button>
-        <button type="button" data-preset="infeasible">Infeasible purge</button>
-      </div>
+    <aside class="controls glass" aria-label="Inputs">
       <div id="sliders"></div>
     </aside>
     <div class="results">
       <div id="warnings" class="warnings" role="status" aria-live="polite"></div>
-      <div class="pfd-wrap"><h3>Process flow (live)</h3><p class="hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
+      <div class="pfd-wrap glass" id="sec-pfd"><h3>Process flow (live)</h3><p class="hint">Click a unit (or Tab to it and press Enter) to see its equations and live values.</p><div id="pfd"></div><div id="pfd-panel" class="pfd-panel" role="region" aria-live="polite" hidden></div></div>
       <div id="cards"></div>
-      <h3>Plots</h3>
+      <h3 class="sec-title" id="sec-plots">Charts</h3>
       <div class="plots">
         <figure class="plot"><figcaption>P5 · Energy comparison: 1 / 3 / 5 effects vs MVR</figcaption><div id="p5" class="chart"></div><p class="whatif small" id="p5-note"></p><p class="whatif">What if? Which uses least fuel and least money per tonne of water?</p></figure>
         <figure class="plot"><figcaption>P6 · Electricity vs steam price crossover</figcaption><div id="p6" class="chart"></div><p class="whatif">What if electricity prices change? Above a line (expensive steam), MVR is cheaper; below it, that multi-effect train is cheaper.</p></figure>

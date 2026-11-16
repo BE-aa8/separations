@@ -447,3 +447,157 @@ section.tab:not([hidden]) { animation: tab-in 0.22s ease-out; }
   #pfd svg .xtal { opacity: 0.8; }
   section.tab:not([hidden]), .rcard .num.changed { animation: none !important; }
 }
+
+/* =====================================================================
+   Liquid Glass simulator (G1): tokens, backdrop, shell, toolbar, inputs
+   Scoped to #tab-simulator; other tabs keep the Phase 1 look.
+   ===================================================================== */
+:root {
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-strong: rgba(255, 255, 255, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.72);
+  --glass-edge: rgba(23, 27, 25, 0.07);
+  --glass-hl: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --glass-shadow: 0 12px 32px -14px rgba(9, 13, 12, 0.22), 0 1px 2px rgba(9, 13, 12, 0.04);
+  --glass-blur: blur(22px) saturate(160%);
+  --track: rgba(23, 27, 25, 0.13);
+  --chip: rgba(23, 27, 25, 0.055);
+  --r-panel: 24px; --r-tile: 16px; --r-pill: 999px;
+  --ease: cubic-bezier(.2, .8, .2, 1);
+  --sim-bg:
+    radial-gradient(1100px 620px at 8% -6%, rgba(166, 187, 67, 0.16), transparent 62%),
+    radial-gradient(900px 640px at 100% 18%, rgba(30, 140, 140, 0.11), transparent 60%),
+    radial-gradient(800px 500px at 40% 110%, rgba(183, 121, 31, 0.07), transparent 60%),
+    #EEF1EC;
+}
+[data-theme="dark"] {
+  --glass-bg: rgba(26, 33, 29, 0.56);
+  --glass-strong: rgba(30, 38, 34, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.09);
+  --glass-edge: rgba(255, 255, 255, 0.04);
+  --glass-hl: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --glass-shadow: 0 16px 40px -16px rgba(0, 0, 0, 0.7);
+  --track: rgba(255, 255, 255, 0.14);
+  --chip: rgba(255, 255, 255, 0.07);
+  --sim-bg:
+    radial-gradient(1100px 620px at 8% -6%, rgba(166, 187, 67, 0.13), transparent 62%),
+    radial-gradient(900px 640px at 100% 18%, rgba(76, 195, 190, 0.09), transparent 60%),
+    radial-gradient(800px 500px at 40% 110%, rgba(224, 164, 58, 0.06), transparent 60%),
+    #0B100E;
+}
+
+/* atmospheric backdrop while the Simulator tab is open */
+html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); background-attachment: fixed; }
+
+/* glass surface (used sparingly: toolbar, inputs, process panel, chart cards) */
+#tab-simulator .glass {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur); backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-hl), var(--glass-shadow);
+  border-radius: var(--r-panel);
+}
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  #tab-simulator .glass { background: var(--glass-strong); }
+}
+
+#tab-simulator > h2 { font-size: clamp(2rem, 3.2vw, 2.75rem); letter-spacing: -0.035em; font-weight: 650; margin-bottom: var(--s4); }
+
+/* toolbar: sticky pill under the header */
+.sim-toolbar {
+  position: sticky; top: calc(var(--header-h) + 10px); z-index: 15;
+  display: flex; align-items: center; gap: var(--s3); padding: 6px; margin-bottom: var(--s5);
+  border-radius: var(--r-pill) !important; overflow-x: auto; scrollbar-width: none;
+}
+.sim-toolbar::-webkit-scrollbar { display: none; }
+.seg, .sim-jump { display: flex; align-items: center; gap: 4px; flex: 0 0 auto; }
+.sim-jump { margin-left: auto; padding-left: var(--s3); border-left: 1px solid var(--glass-edge); }
+.seg-label { font: 600 var(--fs-xs)/1 var(--mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); padding: 0 8px 0 12px; }
+.sim-toolbar button {
+  border: 0; background: transparent; color: var(--text); border-radius: var(--r-pill);
+  padding: 8px 14px; font-size: 0.84rem; font-weight: 500; white-space: nowrap; box-shadow: none;
+  transition: background .2s var(--ease), color .2s var(--ease);
+}
+.sim-toolbar button:hover { background: var(--chip); border-color: transparent; }
+.sim-toolbar .seg button.active {
+  background: var(--surface); color: var(--text);
+  box-shadow: 0 1px 2px rgba(9, 13, 12, 0.1), 0 4px 12px -4px rgba(9, 13, 12, 0.18), inset 0 0 0 1px var(--glass-edge);
+}
+[data-theme="dark"] .sim-toolbar .seg button.active { background: rgba(255, 255, 255, 0.12); color: var(--text); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1); }
+.sim-jump button { color: var(--muted); }
+.sim-jump button:hover { color: var(--text); }
+
+/* layout shell */
+#tab-simulator .sim-layout { grid-template-columns: 340px minmax(0, 1fr); gap: var(--s5); }
+#tab-simulator .controls {
+  top: calc(var(--header-h) + 76px); max-height: calc(100vh - var(--header-h) - 92px);
+  padding: var(--s3) var(--s3) var(--s2); border-radius: var(--r-panel);
+}
+#sec-pfd, #cards, #sec-plots { scroll-margin-top: calc(var(--header-h) + 84px); }
+#tab-simulator .sec-title { font-size: 1.35rem; letter-spacing: -0.02em; margin: var(--s7) 0 var(--s3); }
+
+/* input groups: collapsible, quiet */
+.sgroup { border-radius: var(--r-tile); padding: 0 var(--s2); }
+.sgroup + .sgroup { margin-top: 2px; }
+.sgroup > summary { list-style: none; cursor: pointer; display: flex; align-items: center; justify-content: space-between; padding: 10px 4px 6px; border: 0; }
+.sgroup > summary::-webkit-details-marker { display: none; }
+.sgroup > summary::after { content: ""; width: 7px; height: 7px; border-right: 1.5px solid var(--muted); border-bottom: 1.5px solid var(--muted); transform: rotate(45deg) translateY(-2px); transition: transform .2s var(--ease); margin-right: 4px; }
+.sgroup:not([open]) > summary::after { transform: rotate(-45deg); }
+#tab-simulator .slider-group h4 { margin: 0; padding: 0; border: 0; }
+.sgroup-body { padding: 0 2px 6px; }
+.sgroup + .sgroup > summary { border-top: 1px solid var(--glass-edge); }
+
+/* sliders: refined, Apple-like */
+#tab-simulator .slider { margin: 4px 0 14px; }
+#tab-simulator .slider .row { font-size: 0.85rem; align-items: center; color: var(--text); }
+#tab-simulator .slider output {
+  font: 600 0.78rem/1 var(--mono); background: var(--chip); padding: 5px 9px; border-radius: var(--r-pill); color: var(--text);
+}
+#tab-simulator input[type=range] {
+  -webkit-appearance: none; appearance: none; width: 100%; height: 22px; margin: 6px 0 0; background: transparent; cursor: pointer;
+  --pct: 50%;
+}
+#tab-simulator input[type=range]::-webkit-slider-runnable-track {
+  height: 4px; border-radius: var(--r-pill);
+  background: linear-gradient(to right, var(--olive) 0 var(--pct), var(--track) var(--pct) 100%);
+}
+#tab-simulator input[type=range]::-moz-range-track { height: 4px; border-radius: var(--r-pill); background: var(--track); }
+#tab-simulator input[type=range]::-moz-range-progress { height: 4px; border-radius: var(--r-pill); background: var(--olive); }
+#tab-simulator input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 20px; height: 20px; margin-top: -8px; border-radius: 50%;
+  background: #fff; border: 1px solid rgba(9, 13, 12, 0.12); box-shadow: 0 2px 6px rgba(9, 13, 12, 0.22), 0 0 0 0 transparent;
+  transition: transform .15s var(--ease), box-shadow .15s var(--ease);
+}
+#tab-simulator input[type=range]::-moz-range-thumb {
+  width: 20px; height: 20px; border-radius: 50%; background: #fff; border: 1px solid rgba(9, 13, 12, 0.12); box-shadow: 0 2px 6px rgba(9, 13, 12, 0.22);
+}
+#tab-simulator input[type=range]:hover::-webkit-slider-thumb { transform: scale(1.08); }
+#tab-simulator input[type=range]:active::-webkit-slider-thumb { transform: scale(1.15); }
+#tab-simulator input[type=range]:focus-visible { outline: none; box-shadow: none; }
+#tab-simulator input[type=range]:focus-visible::-webkit-slider-thumb { box-shadow: 0 2px 6px rgba(9, 13, 12, 0.22), 0 0 0 4px rgba(166, 187, 67, 0.45); }
+#tab-simulator input[type=range]:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px rgba(166, 187, 67, 0.45); }
+#tab-simulator .toggle { padding: 8px 10px; border-radius: var(--r-tile); background: var(--chip); }
+#tab-simulator .slider.hint { padding: 0 2px; }
+
+/* shell surfaces that G2/G3 will refine */
+#tab-simulator .pfd-wrap { padding: var(--s4) var(--s5) var(--s4); margin-bottom: var(--s4); }
+#tab-simulator .plot { border-radius: var(--r-panel); border: 1px solid var(--glass-border); background: var(--glass-strong); box-shadow: var(--glass-hl), var(--glass-shadow); padding: var(--s4) var(--s3) var(--s3); }
+#tab-simulator .rcard { border-radius: var(--r-tile); }
+#tab-simulator .warnings { border-radius: var(--r-tile); }
+
+@media (max-width: 1100px) {
+  #tab-simulator .sim-layout { grid-template-columns: minmax(0, 1fr); }
+  #tab-simulator .controls { position: static; max-height: none; }
+}
+@media (max-width: 640px) {
+  .sim-toolbar { top: calc(var(--header-h) + 6px); border-radius: var(--r-tile) !important; }
+  .seg-label { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #tab-simulator input[type=range]::-webkit-slider-thumb { transition: none; }
+}
+/* G1 polish: slider label row (label + ESTIMATE tag wrap together; value pill never squeezes the label) */
+#tab-simulator .slider .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; align-items: center; }
+#tab-simulator .slider .row > span:first-child { min-width: 0; line-height: 1.3; }
+#tab-simulator .slider .flag { font-size: 0.56rem; padding: 0 5px; vertical-align: 2px; margin-left: 2px; letter-spacing: 0.08em; }
+#tab-simulator .slider output { font-size: 0.74rem; white-space: nowrap; }   /* units are essential: never truncate */

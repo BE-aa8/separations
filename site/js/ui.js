@@ -55,8 +55,14 @@ const SLIDERS = [
 function buildSliders() {
   const host = document.getElementById('sliders');
   let html = '';
+  let open = false;                         // each input group is a <details> (open by default)
   for (const s of SLIDERS) {
-    if (s.group) { html += `<div class="slider-group"><h4>${s.group}</h4></div>`; continue; }
+    if (s.group) {
+      if (open) html += '</div></details>';
+      html += `<details class="sgroup" open><summary class="slider-group"><h4>${s.group}</h4></summary><div class="sgroup-body">`;
+      open = true;
+      continue;
+    }
     if (s.fixed) { html += `<p class="slider hint">${s.fixed}</p>`; continue; }
     if (s.toggle) { html += `<label class="toggle"><input type="checkbox" id="in-${s.toggle}"> ${s.label}</label>`; continue; }
     const [min, max] = RANGES[s.key];
@@ -64,6 +70,7 @@ function buildSliders() {
       <input type="range" id="in-${s.key}" min="${min}" max="${max}" step="${s.step}" aria-label="${esc(s.label)}">
       ${s.note ? `<span class="hint">${s.note}</span>` : ''}</label>`;
   }
+  if (open) html += '</div></details>';
   host.innerHTML = html;
   for (const s of SLIDERS) {
     if (s.key) document.getElementById(`in-${s.key}`).addEventListener('input', (e) => { state[s.key] = parseFloat(e.target.value); schedule(); });
@@ -75,6 +82,8 @@ function syncSliders() {
     if (s.key) {
       const el = document.getElementById(`in-${s.key}`);
       el.value = state[s.key];
+      const [lo, hi] = RANGES[s.key];
+      el.style.setProperty('--pct', `${(100 * (state[s.key] - lo) / (hi - lo)).toFixed(1)}%`);   // filled track
       document.getElementById(`out-${s.key}`).textContent = `${fmt(state[s.key], s.d)} ${s.units}`.trim();
       if (s.dependsOff) document.getElementById(`wrap-${s.key}`).classList.toggle('disabled', !!state[s.dependsOff]);
     }
@@ -433,8 +442,17 @@ function init() {
   mountPFD(document.getElementById('pfd'));
   initPFDClicks();
   document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
+  // toolbar jump buttons: scroll within the Simulator tab (buttons, not #hash links, which would switch tabs)
+  const JUMP = { pfd: 'sec-pfd', cards: 'cards', plots: 'sec-plots' };
+  document.querySelectorAll('[data-jump]').forEach((b) => b.addEventListener('click', () => {
+    const el = document.getElementById(JUMP[b.dataset.jump]);
+    const smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
+  }));
   const tc = document.getElementById('tcold');
-  tc.addEventListener('input', () => { Tcold = parseFloat(tc.value); document.getElementById('tcold-out').textContent = Tcold; schedule(); });
+  const tcFill = () => tc.style.setProperty('--pct', `${(100 * (tc.value - tc.min) / (tc.max - tc.min)).toFixed(1)}%`);
+  tcFill();
+  tc.addEventListener('input', () => { Tcold = parseFloat(tc.value); document.getElementById('tcold-out').textContent = Tcold; tcFill(); schedule(); });
   window.addEventListener('hashchange', route);
   route();
   schedule();
