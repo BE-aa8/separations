@@ -145,6 +145,8 @@ const bad = (page, sel) => page.$eval(sel, (el) => /NaN|undefined|Infinity/.test
   const errors = []; watch(page, errors);
   await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1000);
+  // the live host injects a fixed 201x64 "Powered by Netlify" badge at the bottom-right; stand one in locally so overlaps are caught
+  await page.evaluate(() => { if (document.getElementById('nl-badge-frame')) return; const f = document.createElement('iframe'); f.id = 'nl-badge-frame'; Object.assign(f.style, { position: 'fixed', right: '0', bottom: '0', width: '201px', height: '64px', zIndex: '2147483645', border: '0' }); document.body.appendChild(f); });
   // results come first: key tiles are near the top, inputs live in a sheet
   const kpiTop = await page.$eval('#kpis', (el) => el.getBoundingClientRect().top + scrollY);
   if (kpiTop > 700) fail(`phone: key results start too low (${Math.round(kpiTop)} px)`);

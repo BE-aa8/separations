@@ -774,8 +774,8 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 .sheet-head, .inputs-fab, .sheet-scrim { display: none; }
 @media (max-width: 699px) {
   .inputs-fab {
-    display: inline-flex; align-items: center; gap: 8px; position: fixed; z-index: 35; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
-    transform: translateX(-50%); padding: 12px 20px; border-radius: var(--r-pill); font-weight: 650; font-size: 0.92rem;
+    display: inline-flex; align-items: center; gap: 8px; position: fixed; z-index: 35; left: calc(16px + env(safe-area-inset-left)); bottom: calc(18px + env(safe-area-inset-bottom));
+    padding: 12px 20px; border-radius: var(--r-pill); font-weight: 650; font-size: 0.92rem;
     background: var(--ink); color: var(--ink-text); border: 1px solid var(--ink-border); box-shadow: 0 12px 30px -10px rgba(9, 13, 12, 0.55);
   }
   [data-theme="dark"] .inputs-fab { background: var(--lime); color: var(--ink); border-color: var(--lime); }
@@ -830,4 +830,9 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 @media (min-width: 700px) and (max-width: 1099px) {
   .sim-toolbar .seg { align-items: center; }
   .sim-toolbar .seg .seg-label { flex: 0 0 auto; }
+}
+/* Netlify injects a ~64 px "Powered by Netlify" badge at the bottom-right: let phone sheets scroll their last rows above it */
+@media (max-width: 699px) {
+  #tab-simulator .controls { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .help-panel { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
 }
