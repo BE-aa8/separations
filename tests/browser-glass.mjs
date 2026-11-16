@@ -110,6 +110,34 @@ const bad = (page, sel) => page.$eval(sel, (el) => /NaN|undefined|Infinity/.test
   await ctx.close();
 }
 
+// ---------- tablet: inputs panel folds away (remembered); toolbar never clips a control ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 820, height: 1180 }, colorScheme: SCHEME });
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(900);
+  const clipped = await page.evaluate(() => { const t = document.querySelector('.sim-toolbar').getBoundingClientRect(); return [...document.querySelectorAll('.sim-toolbar button')].filter((b) => { const r = b.getBoundingClientRect(); return r.right > t.right + 1 || r.left < t.left - 1; }).length; });
+  if (clipped) fail(`tablet: ${clipped} toolbar buttons cut off`);
+  const before = await page.$eval('#kpi-yield .kpi-num', (e) => e.textContent);
+  await page.$eval('#in-purgeRatio', (el) => { el.value = '0.15'; el.dispatchEvent(new Event('input', { bubbles: true })); });
+  await page.waitForTimeout(300);
+  if (before === await page.$eval('#kpi-yield .kpi-num', (e) => e.textContent)) fail('tablet: slider did not update the key results');
+  const top0 = await page.$eval('#kpis', (e) => e.getBoundingClientRect().top + scrollY);
+  await page.click('#inputs-collapse');
+  await page.waitForTimeout(250);
+  const top1 = await page.$eval('#kpis', (e) => e.getBoundingClientRect().top + scrollY);
+  if (!(top1 < top0 - 300)) fail(`tablet: hiding inputs should bring results up (${Math.round(top0)} -> ${Math.round(top1)})`);
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  if ((await page.getAttribute('#inputs-collapse', 'aria-expanded')) !== 'false') fail('tablet: hidden inputs not remembered');
+  await page.click('#inputs-collapse');
+  await page.waitForTimeout(200);
+  if (!(await page.isVisible('#in-F'))) fail('tablet: Show did not bring the inputs back');
+  if (errors.length) fail(`tablet console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+
 // ---------- phone ----------
 {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, colorScheme: SCHEME });
@@ -137,6 +165,8 @@ const bad = (page, sel) => page.$eval(sel, (el) => /NaN|undefined|Infinity/.test
     await page.waitForTimeout(300);
     if (await page.evaluate(() => document.body.classList.contains('sheet-open'))) fail('phone: Esc did not close the Inputs sheet');
   }
+  const pclip = await page.evaluate(() => { const t = document.querySelector('.sim-toolbar').getBoundingClientRect(); return [...document.querySelectorAll('.sim-toolbar button')].filter((b) => { const r = b.getBoundingClientRect(); return r.right > t.right + 1 || r.left < t.left - 1; }).length; });
+  if (pclip) fail(`phone: ${pclip} toolbar buttons cut off`);
   await page.$eval('#kpi-yield .kpi-help', (b) => b.click());
   await page.waitForTimeout(350);
   const sheet = await page.$eval('#help-panel', (el) => { const r = el.getBoundingClientRect(); return { shown: !el.hidden, bottom: Math.round(r.bottom), w: Math.round(r.width) }; });

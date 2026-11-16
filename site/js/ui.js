@@ -424,6 +424,17 @@ function initSheet() {
   document.getElementById('sheet-scrim')?.addEventListener('click', () => setSheet(false));
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && document.body.classList.contains('sheet-open')) setSheet(false); });
   window.addEventListener('hashchange', () => setSheet(false));
+  // tablet (700-1099 px): the inputs panel above the results can be folded away; choice remembered
+  const col = document.getElementById('inputs-collapse');
+  const setCollapsed = (c) => {
+    document.body.classList.toggle('inputs-collapsed', c);
+    if (col) { col.setAttribute('aria-expanded', String(!c)); col.textContent = c ? 'Show' : 'Hide'; }
+    try { localStorage.setItem('inputsCollapsed', c ? '1' : '0'); } catch (e) { /* storage blocked: fine */ }
+  };
+  let saved = false;
+  try { saved = localStorage.getItem('inputsCollapsed') === '1'; } catch (e) { /* ignore */ }
+  setCollapsed(saved);
+  col?.addEventListener('click', () => setCollapsed(!document.body.classList.contains('inputs-collapsed')));
 }
 
 // ---------- clickable PFD (Phase 2) ----------

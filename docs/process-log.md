@@ -308,3 +308,9 @@ Entry template:
 **G4:** the unit detail card now sits beside the live PFD on desktop (it no longer pushes the diagram down) and below it on smaller screens; legend items are pill chips. On phones a floating **Inputs** button opens the sliders as a bottom sheet (Done, scrim tap or Esc closes it), so results come first. Review fix: the equation tag in the detail card ran into its title ("C1Suction"); it was given its own chip style.
 
 **G5:** projector (1280×720) and dark-mode review; new `tests/browser-glass.mjs` (clean view, nothing lost from the DOM, KPI tiles equal their rows, Help open/update/Esc/focus, Explain persistence, 4 chart groups with 12 rendered charts, phone sheet changes a KPI, help bottom sheet, no horizontal scroll, no console errors) added to CI in light and dark.
+
+## 2026-11-16 (cont.) — phone toolbar, tablet inputs, ship
+
+**Prompt (verbatim):** "find a fix for the phone toolbar and the tablet width and then ship and send the zip"
+
+**Phone toolbar:** below 1100 px the toolbar is a static two-row card: Explain and the Process/Results/Charts jump buttons on top, all five presets as wrapped chips below (previously they scrolled sideways out of sight, and at tablet widths Explain and the jump buttons were cut off). **Tablet (700–1099 px):** the inputs panel above the results lays its groups out in two columns (about half the height) and has a Hide/Show button, remembered in localStorage, so the results can be brought to the top. `browser-glass.mjs` gained tablet checks (no clipped toolbar buttons, slider updates a tile, Hide moves results up and is remembered, Show restores the inputs) and a phone check for clipped toolbar buttons. Full suite passed locally in light and dark.

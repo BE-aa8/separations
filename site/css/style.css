@@ -799,3 +799,35 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 @media (max-width: 699px) and (prefers-reduced-motion: reduce) { #tab-simulator .controls { transition: none; } }
 #tab-simulator .pfd-panel .tag { display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 6px; background: var(--chip); color: var(--muted); font: 600 0.68rem/1.4 var(--mono, ui-monospace, monospace); vertical-align: 1px; }
 @media (min-width: 1100px) { #tab-simulator .pfd-wrap.has-panel .pfd-panel .prow { grid-template-columns: minmax(0, 1fr); } }
+
+/* =====================================================================
+   Liquid Glass simulator: phone toolbar and tablet inputs panel
+   ===================================================================== */
+.inputs-collapse { display: none; }
+/* tablet: inputs sit above the results in a foldable panel, groups in two columns */
+@media (min-width: 700px) and (max-width: 1099px) {
+  #tab-simulator .controls { padding: 0 var(--s4) var(--s2); }
+  #tab-simulator .sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px 10px; }
+  #tab-simulator .sheet-title { font-weight: 650; font-size: 1.05rem; }
+  #tab-simulator .sheet-done { display: none; }
+  .inputs-collapse { display: inline-block; border-radius: var(--r-pill); padding: 6px 16px; font-weight: 600; font-size: 0.84rem; background: var(--chip); color: var(--text); border: 0; box-shadow: none; }
+  #tab-simulator #sliders { columns: 2; column-gap: var(--s5); border-top: 1px solid var(--glass-edge); padding-top: 4px; }
+  #tab-simulator #sliders > * { break-inside: avoid; }
+  #tab-simulator .sgroup + .sgroup > summary { border-top: 0; }
+  body.inputs-collapsed #tab-simulator #sliders { display: none; }
+  body.inputs-collapsed #tab-simulator .sheet-head { padding-bottom: 14px; }
+}
+/* phone and tablet: toolbar is a static two-row card: Explain + jump on top, every preset visible as a wrapped chip below */
+@media (max-width: 1099px) {
+  .sim-toolbar { position: static; flex-wrap: wrap; overflow: visible; gap: 6px; padding: 8px; border-radius: 20px !important; }
+  .sim-toolbar .explain-toggle { order: 0; }
+  .sim-toolbar .sim-jump { order: 1; margin-left: auto; padding-left: 0; border-left: 0; gap: 2px; }
+  .sim-toolbar .sim-jump button { padding: 8px 10px; }
+  .sim-toolbar .seg { order: 2; flex: 1 1 100%; flex-wrap: wrap; gap: 6px; padding-top: 8px; border-top: 1px solid var(--glass-edge); }
+  .sim-toolbar .seg .seg-label { display: block; flex: 1 1 100%; padding: 2px 4px 2px; }
+  .sim-toolbar .seg button { background: var(--chip); padding: 7px 12px; font-size: 0.8rem; }
+}
+@media (min-width: 700px) and (max-width: 1099px) {
+  .sim-toolbar .seg { align-items: center; }
+  .sim-toolbar .seg .seg-label { flex: 0 0 auto; }
+}
