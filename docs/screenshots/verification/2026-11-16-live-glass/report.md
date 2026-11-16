@@ -9,3 +9,7 @@ Target: https://ucseparations.netlify.app
 - **Glass (light and dark): FAILED on the live site.** Netlify's free tier injects a fixed "Powered by Netlify" badge (201×64 px, bottom-right, z-index 2147483645). On a 375 px phone it covered the right half of the centred Inputs button, so the tap landed on the badge (`live-phone-badge-overlap.png`). Locally there is no badge, which is why CI passed.
 
 **Fix:** the Inputs button moved to the bottom-left (`fixed-inputs-button-left.png`); phone sheets get extra bottom padding so their last rows scroll above the badge; `browser-glass.mjs` now inserts a stand-in badge of the same size so CI catches any overlap. Full suite passed locally afterwards; re-run on the live site after redeploying.
+
+## Re-run after redeploying main @ d4ce8fb
+
+Deployed files match `site/` (only Netlify's injected lines differ). npm 23/23; smoke light and dark (`/` 22 sliders, `/gemini/` 16 sliders, 0 failures); Phase 2 light and dark, hero, UX: pass; **glass light and dark: pass** with the real Netlify badge present. Tapping Inputs on a 375 px phone opens the sheet (`live-phone-fixed.png`).

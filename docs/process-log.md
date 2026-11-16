@@ -322,3 +322,5 @@ Entry template:
 **Prompt (verbatim):** "deployed, run the tests on the live site"
 
 Every suite passed on the live site except the glass test: Netlify injects a "Powered by Netlify" badge at the bottom-right that sits above everything, and on phones it covered half of the centred Inputs button, so taps hit the badge. Local runs and CI never see the badge. Fixed by moving the button to the bottom-left and padding the phone sheets; the glass test now adds a same-size stand-in badge. Details: `docs/screenshots/verification/2026-11-16-live-glass/report.md`.
+
+**Re-run after redeploy (main @ d4ce8fb):** every suite passes on the live site in light and dark, including the glass checks with the real Netlify badge present.
