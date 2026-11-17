@@ -266,3 +266,15 @@ export function renderAll(out, Tcold) {
   return p1(out, Tcold);
 }
 export { nn };
+
+// Industry tab: Tesla's stated crystal rate vs one simulated crystallizer (hand-calc case)
+export function pIndustry(teslaKgH, simKgH) {
+  const ok = nn(teslaKgH) != null && nn(simKgH) != null;
+  if (!ok) return;
+  draw('p-ind', [{
+    type: 'bar', orientation: 'h', y: ['One simulated<br>crystallizer', 'Tesla refinery<br>(stated)'], x: [simKgH, teslaKgH],
+    marker: { color: [C.grey, C.mvr] }, text: [`${Math.round(simKgH).toLocaleString('en-US')} kg/h`, `${Math.round(teslaKgH).toLocaleString('en-US')} kg/h`],
+    textposition: 'auto', insidetextanchor: 'end', hovertemplate: '%{x:,.0f} kg/h<extra></extra>', showlegend: false,
+  }], base({ margin: { l: 110, r: 16, t: 6, b: 40 }, showlegend: false, xaxis: ax('kg/h LiOH·H₂O', { rangemode: 'tozero' }), yaxis: { automargin: true } }));
+}
+

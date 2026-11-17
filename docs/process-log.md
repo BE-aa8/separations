@@ -346,3 +346,38 @@ Every suite passed on the live site except the glass test: Netlify injects a "Po
 - Full suite passed locally in light and dark.
 
 **Shipped and verified live:** main fast-forwarded to `635fffd` after green CI; Andrew deployed the zip. Every suite passes against https://ucseparations.netlify.app in light and dark (report: `docs/screenshots/verification/2026-11-16-live-overview/`).
+
+## 2026-11-17 — Industry Context tab: Tesla video band, red flags resolved, cleanup
+
+**Prompt (verbatim excerpt):** "let's work on the Industry context tab next ... I would like to remove the source needed and estimate red zones though ... I would like to imbed Tesla's video (https://www.youtube.com/watch?v=rxYTx6aj96k) into this tab ... something as seen on https://codepen.io/dudleystorey/pen/PZyMrd would be AWESOME. It could be buggy though so make sure you look into that intensely. ... clean things up similarly to what we did on the overview".
+
+**Plan mode** (`docs/plan-industry-claude.md`). CodePen, YouTube and tesla.com were blocked from the cloud environment, so I asked instead of guessing. Andrew's answers:
+- **Video effect:** a full-width, muted background video behind a headline.
+- **Product rate:** use Tesla's stated output, 20,000 t/yr, instead of the unsourced lithium-intensity estimate.
+- **MVR market share:** keep it, with soft grey styling.
+- **Refining-dominance paragraph:** remove it.
+
+Andrew approved adding www.youtube.com and www.tesla.com to the environment.
+- YouTube oEmbed confirmed the video ("Tesla Lithium Refinery", channel Tesla, embeddable).
+- tesla.com returns 403 to automated requests. The 20,000 t/yr ≈ 30 GWh figure is therefore cited as the 2025 Impact Report via its press coverage (Mining.com.au, EVwire). The 50 GWh figure is now labeled as the earlier announced target.
+
+**Built:**
+- **Video band:** a background-video band (`site/js/industry-video.js`), hardened against the usual bugs:
+  - nothing loads from YouTube until the tab is opened, and it uses the nocookie host;
+  - the player stays hidden over a poster until it actually plays, so a blocked autoplay never shows a big play button;
+  - there is no background video under reduced motion, on phones, or with Save-Data;
+  - it pauses on other tabs, when scrolled away, when the page is hidden, or while the dialog is open;
+  - it loops manually, so YouTube's end screen never shows;
+  - any failure falls back to the poster.
+  - "Watch with sound" opens a `<dialog>` with the normal player; Esc closes it, the audio stops, and focus returns.
+- **Tab cleanup:** product intro with fact chips; a stat strip (20,000 t/yr, 30 GWh, 2,500 kg/h); the 5-step process as a timeline with the crystallization step highlighted; "How much product?" rewritten as ṁ = 20,000/8,000 × 1000 = 2,500 kg/h and N = ṁ/C_sim ≈ 2.7 simulator-size crystallizers (C from `simulate()`), with a bar chart; the vendor paragraph with a grey "market estimate" chip; the operating-problem cards.
+- **Data:** `tools/build_data.py` gained the `tesla-impact-2025`, `tesla-video` and `mvr-market` sources and the `teslaOutput`, `teslaCapacity` (30) and `mvrShare` values. The unsourced `lceIntensity` was removed.
+
+**Bugs found by testing and fixed:**
+1. Loading `#industry` directly drew the Plotly chart in a hidden div at its 700 px default width. On phones that widened the layout to 733 px and the browser zoomed out. The scrollWidth check missed it, because it measures after the zoom. Fix: draw only when visible. The UX and Industry tests now also check `innerWidth` on phones, for every tab.
+2. The dialog overflowed 1280×720 projector screens; its width is now capped by the screen height.
+3. The smoke and UX tests now stub YouTube, so CI never depends on YouTube's network or its console noise.
+
+**New test:** `tests/browser-industry.mjs`, in CI for light and dark. It uses a stub IFrame API and covers: lazy loading, plays only once PLAYING is reported, inert iframe that covers the band, pause on tab change and when scrolled away, the dialog and focus, blocked autoplay → poster, YouTube unreachable → poster, reduced motion and phone, product arithmetic against the model, no red flags.
+
+**Not testable here:** real playback (YouTube's video hosts and codecs aren't available in the container). Andrew will check that on his laptop and phone after deploying.

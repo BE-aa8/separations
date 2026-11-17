@@ -23,6 +23,12 @@ mkdirSync(OUT, { recursive: true });
 
 // Tab controls only (not panels): ARIA tabs, in-page nav links, or buttons/links carrying data-tab.
 const TAB_SELECTOR = '[role="tab"], nav a[href^="#"], button[data-tab], a[data-tab]';
+// Embedded YouTube (Industry tab) is third-party: stub it so the smoke test never depends on YouTube's network or its own console noise.
+const PIXEL = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkqK//DwAEgQJ/lYq3pQAAAABJRU5ErkJggg==', 'base64');
+const stubVideo = (pg) => pg.route(/(youtube\.com|youtube-nocookie\.com|ytimg\.com|googlevideo\.com)/, (r) => (
+  /iframe_api/.test(r.request().url()) ? r.fulfill({ status: 200, contentType: 'text/javascript', body: '' })
+    : /ytimg/.test(r.request().url()) ? r.fulfill({ status: 200, contentType: 'image/png', body: PIXEL })
+      : r.fulfill({ status: 200, contentType: 'text/html', body: '<!doctype html><title>stub</title>' })));
 
 async function listTabs(page) {
   return page.$$eval(TAB_SELECTOR, (els) => {
@@ -77,6 +83,7 @@ async function testBuild(browser, path) {
 
   // ---------- desktop ----------
   const page = await browser.newPage({ colorScheme: SCHEME,  viewport: { width: 1280, height: 800 }, deviceScaleFactor: 1 });
+  await stubVideo(page);
   page.on('console', (m) => m.type() === 'error' && result.consoleErrors.push(m.text()));
   page.on('pageerror', (e) => result.consoleErrors.push(String(e)));
   const resp = await page.goto(BASE + path, { waitUntil: 'networkidle' }).catch((e) => ({ status: () => 0, err: e }));
@@ -135,6 +142,7 @@ async function testBuild(browser, path) {
 
   // ---------- mobile 375 px ----------
   const m = await browser.newPage({ colorScheme: SCHEME,  viewport: { width: 375, height: 812 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+  await stubVideo(m);
   await m.goto(BASE + path, { waitUntil: 'networkidle' });
   await m.waitForTimeout(1000);
   for (const [idx, t] of (await listTabs(m)).entries()) {

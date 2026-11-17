@@ -91,17 +91,21 @@ for (const scheme of ['light', 'dark']) {
 // ---------- 3. reduced motion and mobile, both themes ----------
 for (const scheme of ['light', 'dark']) {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce', colorScheme: scheme });
+  // the Industry tab's poster comes from YouTube's image host; stub it so the run does not depend on that network
+  await ctx.route(/(youtube\.com|youtube-nocookie\.com|ytimg\.com)/, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkqK//DwAEgQJ/lYq3pQAAAABJRU5ErkJggg==', 'base64') }));
   const page = await ctx.newPage();
   const errors = []; watch(page, errors);
   await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
   const running = await page.evaluate(() => [...document.querySelectorAll('#pfd svg .flow, #pfd svg .spin, #pfd svg .xtal')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
   if (running) fail(`reduced motion (${scheme}): ${running} PFD animations still running`);
-  for (const tab of ['overview', 'theory', 'simulator', 'ai-workflow', 'references']) {
+  for (const tab of ['overview', 'industry', 'theory', 'simulator', 'ai-workflow', 'video', 'references']) {
     await page.evaluate((t) => { location.hash = `#${t}`; }, tab);
     await page.waitForTimeout(250);
     const sw = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (sw > 1) fail(`mobile ${scheme} #${tab}: horizontal scroll ${sw}px`);
+    const iw = await page.evaluate(() => innerWidth);
+    if (iw > 376) fail(`mobile ${scheme} #${tab}: layout widened to ${iw}px (phone would zoom out)`);
   }
   await page.evaluate(() => { location.hash = '#simulator'; });
   await page.waitForTimeout(300);

@@ -2,7 +2,7 @@
 import { DATA } from './data.js';
 import { simulate, DEFAULT_INPUTS, RANGES, solubility, phiSat, bpe, hfg, F_LI } from './model.js';
 import { EQ, THEORY_GROUPS } from './content.js';
-import { renderAll, setChartTheme } from './charts.js';
+import { renderAll, setChartTheme, pIndustry } from './charts.js';
 import { mountPFD, updatePFD } from './pfd.js';
 
 // ---------- formatting (never shows NaN) ----------
@@ -510,6 +510,32 @@ function update() {
   }
 }
 
+// ---------- Industry tab: Tesla's stated output vs one simulated crystallizer (hand-calc case) ----------
+let industryDone = false;
+function renderIndustry(force) {
+  if (industryDone && !force) return;
+  const t = DATA.industry.teslaOutput.value;          // t/yr
+  const h = DEFAULT_INPUTS.hours;                        // h/yr
+  const rate = (1000 * t) / h;                           // kg/h
+  let C = null;
+  try { C = simulate({ ...DEFAULT_INPUTS }).mass.C; } catch (e) { C = null; }
+  const n = ok(C) && C > 0 ? rate / C : null;
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  set('ind-out', fmt(t, 0)); set('ind-rate', fmt(rate, 0)); set('ind-hours', fmt(h, 0));
+  const e1 = document.getElementById('ind-eq-rate');
+  if (e1) e1.innerHTML = tex(String.raw`\dot m = \dfrac{${fmt(t, 0)}\ \tfrac{\text{t}}{\text{yr}}}{${fmt(h, 0)}\ \tfrac{\text{h}}{\text{yr}}} \times 1000\ \tfrac{\text{kg}}{\text{t}} = ${fmt(rate, 0)}\ \tfrac{\text{kg}}{\text{h}}`, true);
+  const e2 = document.getElementById('ind-eq-n');
+  if (e2) e2.innerHTML = tex(String.raw`N = \dfrac{\dot m}{C_{\text{sim}}} = \dfrac{${fmt(rate, 0)}}{${fmt(C, 0)}} = ${fmt(n, 1)}\ \text{crystallizers}`, true);
+  set('ind-n-interp', ok(n) ? `One crystallizer in the simulator's hand-calc case (10,000 kg/h of feed) makes ${fmt(C, 0)} kg/h of crystals, so Tesla's output needs the capacity of about ${fmt(n, 1)} of them. A real plant would use larger or parallel units; the point is the scale.` : '—');
+  const chart = document.getElementById('p-ind');
+  // draw only when visible: Plotly sizes a hidden div at its 700 px default, which widens the phone layout
+  if (chart && chart.offsetParent !== null && window.Plotly) {
+    pIndustry(rate, C);
+    try { window.Plotly.Plots.resize(chart); } catch (e) { /* not drawn */ }
+    industryDone = true;
+  }
+}
+
 // ---------- router ----------
 const TABS = ['overview', 'industry', 'theory', 'simulator', 'ai-workflow', 'video', 'references'];
 function currentTab() { const h = location.hash.replace('#', ''); return TABS.includes(h) ? h : 'overview'; }
@@ -520,6 +546,7 @@ function route() {
   const active = document.querySelector(`.tabs a[data-tab="${t}"]`);
   if (active) active.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   if (t === 'simulator') schedule();
+  if (t === 'industry') requestAnimationFrame(() => renderIndustry(true));
 }
 
 // ---------- static content ----------
@@ -563,7 +590,6 @@ function renderReferences() {
     }
     for (const [k, v] of Object.entries(o)) if (k !== 'sources' && k !== 'meta') walk(v, path ? `${path}.${k}` : k);
   })(DATA, '');
-  rows.push(`<tr><td>MVR market share</td><td>55–60 % <span class="flag">ESTIMATE</span></td><td>% of market</td><td>Meticulous Research (market estimate, from the project plan; not in data.js)</td><td>Industry tab only; not used in calculations.</td></tr>`);
   document.querySelector('#value-table tbody').innerHTML = rows.join('');
   // inline citations and values elsewhere
   document.querySelectorAll('.cite[data-src]').forEach((el) => { el.innerHTML = citeLabel(el.dataset.src); });
@@ -597,6 +623,7 @@ function setTheme(t, remember) {
   if (remember) { try { localStorage.setItem('theme', t); } catch { /* storage unavailable: still works this visit */ } }
   applyThemeUI();
   schedule();                               // re-render charts in the new palette
+  if (currentTab() === 'industry') renderIndustry(true);
 }
 function initTheme() {
   applyThemeUI();
@@ -614,6 +641,7 @@ function init() {
   initTheme();
   renderTheory();
   renderReferences();
+  renderIndustry();
   initSubtabs();
   buildSliders();
   buildCards();

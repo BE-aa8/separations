@@ -21,6 +21,7 @@
 <script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js" crossorigin="anonymous"></script>
 <script type="module" src="js/ui.js"></script>
 <script type="module" src="js/hero.js"></script>
+<script type="module" src="js/industry-video.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -132,35 +133,88 @@
 
 <!-- ================= 2. INDUSTRY ================= -->
 <section id="tab-industry" class="tab" data-tab="industry" hidden>
-  <h2>Industry context</h2>
-  <h3>What LiOH·H<sub>2</sub>O is for</h3>
-  <p>Lithium hydroxide is the lithium source used for high-nickel cathodes (for example NMC and NCA). It is sold as the crystalline monohydrate, LiOH·H<sub>2</sub>O, and "battery grade" means tight limits on sodium and other metal impurities.</p>
+  <div class="vband" id="ind-video" data-video="poster">
+    <div class="vband-poster" aria-hidden="true"></div>
+    <div class="vband-media" id="ind-video-media" aria-hidden="true"></div>
+    <div class="vband-scrim" aria-hidden="true"></div>
+    <div class="vband-copy">
+      <p class="ov-pill vband-pill">Industry context</p>
+      <h2 class="vband-title">Inside Tesla's Texas lithium refinery</h2>
+      <p class="vband-lead">Spodumene ore goes in; battery-grade LiOH·H<sub>2</sub>O crystals come out. The last step is the evaporative crystallizer this site models.</p>
+      <div class="ov-actions">
+        <button type="button" class="ov-cta" id="ind-watch"><svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg> Watch with sound</button>
+        <button type="button" class="vband-link" id="ind-jump">See the crystallization step ↓</button>
+      </div>
+    </div>
+    <p class="vband-credit">Video: Tesla, “Tesla Lithium Refinery” <span class="cite" data-src="tesla-video"></span></p>
+  </div>
+  <dialog class="vdialog" id="ind-dialog" aria-labelledby="ind-dialog-title">
+    <div class="vdialog-head"><h3 id="ind-dialog-title">Tesla Lithium Refinery</h3><button type="button" class="vdialog-close" id="ind-dialog-close" aria-label="Close video">×</button></div>
+    <div class="vdialog-frame" id="ind-dialog-frame"></div>
+    <p class="vdialog-foot">Video by Tesla. <a href="https://www.youtube.com/watch?v=rxYTx6aj96k" target="_blank" rel="noopener">Open on YouTube ↗</a></p>
+  </dialog>
 
-  <h3>Tesla's Robstown, TX refinery</h3>
-  <p>Tesla's lithium refinery near Corpus Christi converts spodumene concentrate into battery-grade LiOH·H<sub>2</sub>O. Reported target: about <strong><span data-value="industry.teslaCapacity"></span> GWh/yr</strong> of battery capacity <span class="cite" data-src="tesla-robstown"></span>.</p>
-  <ol class="steps">
-    <li><strong>Spodumene</strong> concentrate (a lithium aluminosilicate ore) arrives.</li>
-    <li><strong>Kiln</strong>: roasting converts it to a leachable form.</li>
-    <li><strong>Alkaline leach</strong>: lithium goes into solution.</li>
-    <li><strong>Purification</strong>: calcium, magnesium and other metals are removed.</li>
-    <li><strong>Crystallization</strong>: water is evaporated until LiOH·H<sub>2</sub>O crystallizes; the crystals are centrifuged, washed and dried. <em>This site models this step.</em></li>
-  </ol>
-
-  <h3>How much product? (arithmetic shown)</h3>
-  <div class="eq-card">
-    <div class="eq" data-tex="\dot m_{LiOH\cdot H_2O} = \underbrace{50\ \tfrac{\text{GWh}}{\text{yr}}}_{\text{Tesla target}} \times \underbrace{I_{LCE}\ \tfrac{\text{kg LCE}}{\text{kWh}}}_{\text{SOURCE NEEDED}} \times \underbrace{1.1358\ \tfrac{\text{t LiOH·H}_2\text{O}}{\text{t LCE}}}_{2\times 41.962/73.89}"></div>
-    <p class="units">Units: t LiOH·H<sub>2</sub>O/yr (GWh × kg/kWh = 10<sup>6</sup> kg = 1000 t)</p>
-    <p class="interp">The lithium intensity of a battery (kg lithium-carbonate-equivalent per kWh) sets how much hydrate the refinery must crystallize. <span class="flag">SOURCE NEEDED</span> for I<sub>LCE</sub> (IEA Global Critical Minerals Outlook), so no number is shown yet.</p>
+  <div class="ind-sec ind-intro">
+    <div>
+      <p class="ind-eyebrow">The product</p>
+      <h3 class="ind-h">What LiOH·H<sub>2</sub>O is for</h3>
+    </div>
+    <div>
+      <p class="ind-p">Lithium hydroxide is the lithium source used for high-nickel cathodes (for example NMC and NCA). It is sold as the crystalline monohydrate, LiOH·H<sub>2</sub>O, and "battery grade" means tight limits on sodium and other metal impurities.</p>
+      <ul class="ind-chips"><li>High-nickel cathodes (NMC, NCA)</li><li>Sold as the monohydrate crystal</li><li>Battery grade = tight Na limits</li></ul>
+    </div>
   </div>
 
-  <h3>Who builds the crystallizers</h3>
-  <p>Veolia is one of the vendors of evaporators and crystallizers for lithium hydroxide; its patent US 10,961,126 B2 describes MVR, thermal vapor recompression and multi-effect options for LiOH evaporators <span class="cite" data-src="us10961126"></span>. MVR is reported to hold a <strong>55–60 %</strong> share of the industrial evaporator/crystallizer market <span class="flag">ESTIMATE</span> (Meticulous Research market estimate; not a primary source).</p>
-  <p>Which countries and companies dominate lithium refining, and why the US wants domestic refining: <span class="flag">SOURCE NEEDED</span> (IEA, USGS Mineral Commodity Summaries). No shares are quoted until sourced.</p>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The refinery</p>
+    <h3 class="ind-h">Tesla's Robstown, TX refinery</h3>
+    <p class="ind-p">Tesla's lithium refinery near Corpus Christi converts spodumene concentrate into battery-grade LiOH·H<sub>2</sub>O with an alkaline leach process <span class="cite" data-src="tesla-impact-2025"></span>.</p>
+    <div class="ind-stats">
+      <div class="ind-stat"><span class="ind-num">≈ <span id="ind-out">20,000</span><small> t/yr</small></span><span class="ind-lbl">LiOH·H<sub>2</sub>O, stated output <span class="cite" data-src="tesla-impact-2025"></span></span></div>
+      <div class="ind-stat"><span class="ind-num">≈ <span data-value="industry.teslaCapacity"></span><small> GWh/yr</small></span><span class="ind-lbl">of batteries it supplies <span class="cite" data-src="tesla-impact-2025"></span>; the earlier announced target was 50 GWh <span class="cite" data-src="tesla-robstown"></span></span></div>
+      <div class="ind-stat"><span class="ind-num"><span id="ind-rate">—</span><small> kg/h</small></span><span class="ind-lbl">of crystals, running <span id="ind-hours">—</span> h/yr (worked out below)</span></div>
+    </div>
+    <ol class="ind-steps" id="ind-steps">
+      <li><span class="ind-step-n">01</span><strong>Spodumene</strong><span>Concentrate of a lithium aluminosilicate ore arrives.</span></li>
+      <li><span class="ind-step-n">02</span><strong>Kiln</strong><span>Roasting converts it to a leachable form.</span></li>
+      <li><span class="ind-step-n">03</span><strong>Alkaline leach</strong><span>Lithium goes into solution.</span></li>
+      <li><span class="ind-step-n">04</span><strong>Purification</strong><span>Calcium, magnesium and other metals are removed.</span></li>
+      <li class="is-modeled"><span class="ind-step-n">05</span><strong>Crystallization</strong><span>Water is evaporated until LiOH·H<sub>2</sub>O crystallizes; the crystals are centrifuged, washed and dried.</span><a href="#simulator">This site models this step →</a></li>
+    </ol>
+  </div>
 
-  <h3>Operating problems</h3>
-  <div class="grid-2">
-    <div class="callout"><h4>Foaming</h4><p>Concentrated caustic liquor can foam. Foam and mist carried up with the vapor put LiOH into the condensate (product loss, corrosive condensate) and send liquid droplets into the compressor suction, which erodes the impeller. Remedies: vapor-space height, demisters, antifoam.</p></div>
-    <div class="callout"><h4>Li<sub>2</sub>CO<sub>3</sub> scaling</h4><p>LiOH absorbs CO<sub>2</sub>, and lithium carbonate is far less soluble than the hydroxide, so it deposits on heater tubes. Scale lowers the overall heat-transfer coefficient U, so the same duty needs a larger ΔT, which means more compressor lift and more power <span class="cite" data-src="us10961126"></span>.</p></div>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The arithmetic</p>
+    <h3 class="ind-h">How much product?</h3>
+    <div class="ind-calc">
+      <div class="eq-card">
+        <div class="eq" id="ind-eq-rate"></div>
+        <p class="units">Units: t/yr ÷ h/yr = t/h; × 1000 kg/t = kg/h. Operating hours are the simulator's default.</p>
+        <p class="interp">Spread over a year of running, Tesla's stated output is about two and a half tonnes of crystals every hour.</p>
+        <div class="eq" id="ind-eq-n"></div>
+        <p class="units">Units: (kg/h) ÷ (kg/h) = dimensionless number of crystallizers.</p>
+        <p class="interp" id="ind-n-interp">—</p>
+      </div>
+      <figure class="ind-chart">
+        <figcaption>Crystal production rate, kg/h LiOH·H<sub>2</sub>O</figcaption>
+        <div id="p-ind" class="chart chart-short" role="img" aria-label="Bar chart: Tesla refinery stated rate vs one simulated crystallizer"></div>
+      </figure>
+    </div>
+  </div>
+
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The equipment</p>
+    <h3 class="ind-h">Who builds the crystallizers</h3>
+    <p class="ind-p">Veolia is one of the vendors of evaporators and crystallizers for lithium hydroxide; its patent US 10,961,126 B2 describes MVR, thermal vapor recompression and multi-effect options for LiOH evaporators <span class="cite" data-src="us10961126"></span>. MVR is reported to hold about <strong>55–60 %</strong> of the industrial evaporator/crystallizer market <span class="est-chip">market estimate</span> <span class="cite" data-src="mvr-market"></span>.</p>
+  </div>
+
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The hard parts</p>
+    <h3 class="ind-h">Operating problems</h3>
+    <div class="ind-cards">
+      <div class="ind-card"><span class="ind-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="8" cy="14" r="3.2"/><circle cx="15.5" cy="9" r="4"/><circle cx="16" cy="17.5" r="2.2"/><circle cx="7" cy="6.5" r="1.6"/></svg></span><h4>Foaming</h4><p>Concentrated caustic liquor can foam. Foam and mist carried up with the vapor put LiOH into the condensate (product loss, corrosive condensate) and send liquid droplets into the compressor suction, which erodes the impeller. Remedies: vapor-space height, demisters, antifoam.</p></div>
+      <div class="ind-card"><span class="ind-ico" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="5.2" stroke-dasharray="2.5 2.2"/><circle cx="12" cy="12" r="2"/></svg></span><h4>Li<sub>2</sub>CO<sub>3</sub> scaling</h4><p>LiOH absorbs CO<sub>2</sub>, and lithium carbonate is far less soluble than the hydroxide, so it deposits on heater tubes. Scale lowers the overall heat-transfer coefficient U, so the same duty needs a larger ΔT, which means more compressor lift and more power <span class="cite" data-src="us10961126"></span>.</p></div>
+    </div>
   </div>
 </section>
 

@@ -54,7 +54,7 @@ export const DATA = {
       "accessed": "2026-11-13"
     },
     "tesla-robstown": {
-      "citation": "Tesla Robstown, TX lithium refinery: EnergyX blog 'Tesla's Lithium Refinery in Texas'; Spectrum News (Jan 21, 2026) 'Tesla lithium refinery in Texas is now fully operational'; Electrek. Target about 50 GWh/yr of battery capacity.",
+      "citation": "Tesla Robstown, TX lithium refinery: EnergyX blog 'Tesla's Lithium Refinery in Texas'; Spectrum News (Jan 21, 2026) 'Tesla lithium refinery in Texas is now fully operational'; Electrek. Earlier announced target: about 50 GWh/yr of battery capacity (superseded by the 2025 Impact Report figure, see tesla-impact-2025).",
       "url": "https://mynews13.com/fl/orlando/news/2026/01/21/tesla-lithium-refinery-in-texas-is-now-fully-operational",
       "accessed": "2026-10-23"
     },
@@ -67,6 +67,21 @@ export const DATA = {
       "citation": "Chemical Engineering magazine, Economic Indicators, September 2024, p. 45: CEPCI annual index 2023 = 797.9 (1957-59 = 100); June 2024 preliminary 798.8. The 2024 and 2025 annual averages are behind the publisher's paywall (2025 reported 1.6 % above 2024).",
       "url": "https://www.chemengonline.com/wp-content/uploads/2024/08/19_CHE_0924_EconInd_p45.pdf",
       "accessed": "2026-11-15"
+    },
+    "tesla-impact-2025": {
+      "citation": "Tesla, 2025 Impact Report: the Gulf Coast (Robstown, TX) refinery is to produce about 20,000 t/yr of battery-grade LiOH.H2O, enough for about 30 GWh of batteries, using an alkaline leach process. Read via Mining.com.au, 'Tesla's 2025 Impact Report outlines lithium refinery focus', and EVwire, 'Tesla 2025 Impact Report: highlights'; tesla.com blocks automated download, so the figure was not read from the PDF itself.",
+      "url": "https://mining.com.au/teslas-2025-impact-report-outlines-lithium-refinery-focus/",
+      "accessed": "2026-11-17"
+    },
+    "tesla-video": {
+      "citation": "Tesla. 'Tesla Lithium Refinery' (video), YouTube channel @tesla. Embedded on the Industry Context tab; title and channel confirmed with YouTube oEmbed.",
+      "url": "https://www.youtube.com/watch?v=rxYTx6aj96k",
+      "accessed": "2026-11-17"
+    },
+    "mvr-market": {
+      "citation": "Meticulous Research, evaporator/crystallizer market estimate (MVR share 55-60 %). A paid market-research estimate, not a primary source; quoted only as context.",
+      "url": "",
+      "accessed": "2026-11-13"
     },
     "us10961126": {
       "citation": "US Patent 10,961,126 B2, Process for reducing fouling in evaporators in lithium hydroxide recovery (Veolia). Lithium carbonate scaling in LiOH evaporators; MVR, TVR and multi-effect options.",
@@ -669,26 +684,26 @@ export const DATA = {
     }
   },
   "industry": {
+    "teslaOutput": {
+      "value": 20000,
+      "units": "t LiOH.H2O / yr",
+      "sourceId": "tesla-impact-2025",
+      "estimate": false,
+      "note": "About 20,000 t/yr (2025 Impact Report)."
+    },
     "teslaCapacity": {
-      "value": 50,
+      "value": 30,
       "units": "GWh/yr battery capacity",
-      "sourceId": "tesla-robstown",
+      "sourceId": "tesla-impact-2025",
       "estimate": false,
-      "note": ""
+      "note": "About 30 GWh/yr (2025 Impact Report); 50 GWh was the earlier announced target (tesla-robstown)."
     },
-    "lceToHydrate": {
-      "value": 1.1358,
-      "units": "t LiOH.H2O per t LCE",
-      "sourceId": "iupac-mw",
-      "estimate": false,
-      "note": "2 x 41.962 / 73.89 (Li2CO3)."
-    },
-    "lceIntensity": {
-      "value": null,
-      "units": "kg LCE / kWh",
-      "sourceId": "estimate",
+    "mvrShare": {
+      "value": "55-60",
+      "units": "% of evaporator/crystallizer market",
+      "sourceId": "mvr-market",
       "estimate": true,
-      "note": "SOURCE NEEDED (IEA Global Critical Minerals Outlook). Not used until sourced."
+      "note": "Market-research estimate, not a primary source."
     }
   },
   "capital": {
