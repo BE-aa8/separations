@@ -402,3 +402,16 @@ Andrew approved adding www.youtube.com and www.tesla.com to the environment.
   - Added phone (375) and tablet (820) checks that both diagrams move and that the background video plays with its iframe rendered.
 
 **Limit:** the container only has Chromium. Phone and tablet emulation is not real Safari, so Andrew verifies on his iPhone/iPad after deploying.
+
+## 2026-11-17 (cont.) — mobile fix did not work; diagnostics first
+
+**Prompt (verbatim):** "nothing was fixed, it remains the same as the old zip file."
+
+I checked the live site: every new file is deployed byte-for-byte, so the fix did not help on Andrew's devices and my diagnosis was a guess. I stopped guessing and added `site/diag.html`, an unlinked, noindex page that reports what the device actually does:
+- Reduce Motion, Save-Data and container-unit support;
+- the animation frame rate (Low Power Mode hint);
+- whether CSS keyframes run on SVG, and whether visibility events fire for SVG;
+- the real site's hero and diagram frame counters, measured in hidden on-screen frames;
+- the video state, and a plain muted-autoplay test.
+
+It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now observes the diagram's HTML wrapper instead of the `<svg>`, and assumes the diagram is visible if no visibility event arrives within 1.5 s.

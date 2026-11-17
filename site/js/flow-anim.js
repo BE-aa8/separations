@@ -24,8 +24,11 @@ function register(svg, spec) {
   };
   diagrams.push(d);
   stats.diagrams = diagrams.length;
+  // observe the HTML wrapper, not the <svg>: some WebKit builds never report intersections for SVG elements
+  const host = svg.parentElement || svg;
   if ('IntersectionObserver' in window) {
-    new IntersectionObserver((es) => { for (const e of es) d.inView = e.isIntersecting; kick(); }).observe(svg);
+    new IntersectionObserver((es) => { for (const e of es) { d.inView = e.isIntersecting; d.seen = true; } kick(); }).observe(host);
+    setTimeout(() => { if (!d.seen) { d.inView = true; kick(); } }, 1500);   // never heard back: assume visible
   } else d.inView = true;
   paintStatic(d);
   kick();
