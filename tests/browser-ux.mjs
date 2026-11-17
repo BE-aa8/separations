@@ -17,6 +17,13 @@ const watch = (page, errors) => {
   page.on('pageerror', (e) => errors.push(String(e)));
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()));
 };
+// flows are driven by js/flow-anim.js (requestAnimationFrame): sample stroke-dashoffset twice
+const moving = (page, sel) => page.evaluate(async (q) => {
+  const els = [...document.querySelectorAll(q)];
+  const a = els.map((e) => e.style.strokeDashoffset);
+  await new Promise((r) => setTimeout(r, 450));
+  return { n: els.length, moved: els.filter((e, i) => e.style.strokeDashoffset !== a[i]).length };
+}, sel);
 const paperBg = (page) => page.$eval('#p5 .main-svg', (svg) => getComputedStyle(svg).backgroundColor || svg.style.background).catch(() => null);
 
 // ---------- 1. theme: default follows the device, toggle flips and persists ----------
@@ -54,12 +61,15 @@ for (const scheme of ['light', 'dark']) {
   const errors = []; watch(page, errors);
   await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(900);
+  await page.evaluate(() => document.getElementById('sec-pfd').scrollIntoView({ block: 'center' }));
+  const mv = await moving(page, '#pfd svg .flow');
   const info = await page.evaluate(() => {
     const svg = document.querySelector('#pfd svg');
-    const flows = [...svg.querySelectorAll('.flow')];
-    const running = flows.filter((f) => f.getAnimations().some((a) => a.playState === 'running')).length;
-    return { n: flows.length, running, vapor: +svg.dataset.flowVapor, purge: +svg.dataset.flowPurge, legend: !!document.querySelector('.pfd-legend') };
+    return { vapor: +svg.dataset.flowVapor, purge: +svg.dataset.flowPurge, legend: !!document.querySelector('.pfd-legend'), imp: document.querySelector('#pfd .impeller .spin').getAttribute('transform') };
   });
+  info.n = mv.n; info.running = mv.moved;
+  await page.waitForTimeout(150);
+  if (info.imp === await page.$eval('#pfd .impeller .spin', (e) => e.getAttribute('transform'))) fail('impeller is not spinning');
   if (info.n < 7) fail(`expected >= 7 animated streams, found ${info.n}`);
   if (info.running < info.n) fail(`only ${info.running}/${info.n} streams animating`);
   if (!(info.vapor < info.purge)) fail(`vapor (${info.vapor}s) should flow faster than purge (${info.purge}s)`);
@@ -97,8 +107,10 @@ for (const scheme of ['light', 'dark']) {
   const errors = []; watch(page, errors);
   await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(700);
-  const running = await page.evaluate(() => [...document.querySelectorAll('#pfd svg .flow, #pfd svg .spin, #pfd svg .xtal')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
-  if (running) fail(`reduced motion (${scheme}): ${running} PFD animations still running`);
+  await page.evaluate(() => document.getElementById('sec-pfd').scrollIntoView({ block: 'center' }));
+  const rm = await moving(page, '#pfd svg .flow');
+  const css = await page.evaluate(() => [...document.querySelectorAll('#pfd svg .flow, #pfd svg .spin, #pfd svg .xtal')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
+  if (rm.moved || css) fail(`reduced motion (${scheme}): PFD still moving (${rm.moved} flows, ${css} CSS animations)`);
   for (const tab of ['overview', 'industry', 'theory', 'simulator', 'ai-workflow', 'video', 'references']) {
     await page.evaluate((t) => { location.hash = `#${t}`; }, tab);
     await page.waitForTimeout(250);
@@ -127,7 +139,7 @@ for (const scheme of ['light', 'dark']) {
     return {
       intro: !!intro, title: document.querySelector('.ov-title')?.textContent || '',
       heroBelow: !!(intro && hero && (intro.compareDocumentPosition(hero) & Node.DOCUMENT_POSITION_FOLLOWING)),
-      flows: flows.length, running: flows.filter((f) => f.getAnimations().some((a) => a.playState === 'running')).length,
+      flows: flows.length,
       gone: !/What the simulator shows/i.test(document.getElementById('tab-overview').innerText),
       learned: /What I learned/i.test(document.getElementById('tab-video').textContent),
       header: Math.round(document.querySelector('.site-header').getBoundingClientRect().height),
@@ -135,7 +147,8 @@ for (const scheme of ['light', 'dark']) {
   });
   if (!ov.intro || !/compressor/i.test(ov.title)) fail(`overview (${scheme}): intro/headline missing`);
   if (!ov.heroBelow) fail(`overview (${scheme}): dot hero should sit below the intro`);
-  if (ov.flows < 7 || ov.running < ov.flows) fail(`overview (${scheme}): diagram flows ${ov.running}/${ov.flows} animating`);
+  const om = await moving(page, '.ov-diagram .ov-f');
+  if (ov.flows < 7 || om.moved < om.n) fail(`overview (${scheme}): diagram flows ${om.moved}/${om.n} moving`);
   if (!ov.gone) fail('overview: "What the simulator shows" should be removed');
   if (!ov.learned) fail('"What I learned" should be on the Video & Transcript tab');
   if (ov.header > 70) fail(`desktop header should be one row (${ov.header} px)`);
@@ -152,13 +165,27 @@ for (const scheme of ['light', 'dark']) {
   if (errors.length) fail(`overview (${scheme}): console errors: ${errors.slice(0, 3).join(' | ')}`);
   await ctx.close();
 }
+for (const vp of [{ width: 375, height: 812 }, { width: 820, height: 1180 }]) {
+  const ctx = await browser.newContext({ viewport: vp, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+  await page.evaluate(() => document.querySelector('.ov-diagram').scrollIntoView({ block: 'center' }));
+  const o = await moving(page, '.ov-diagram .ov-f');
+  if (o.moved < o.n) fail(`mobile ${vp.width}px: overview flows ${o.moved}/${o.n} moving`);
+  await page.evaluate(() => { location.hash = '#simulator'; });
+  await page.waitForTimeout(700);
+  await page.evaluate(() => document.getElementById('sec-pfd').scrollIntoView({ block: 'center' }));
+  const p = await moving(page, '#pfd svg .flow');
+  if (p.moved < p.n) fail(`mobile ${vp.width}px: PFD flows ${p.moved}/${p.n} moving`);
+  await ctx.close();
+}
 {
   const ctx = await browser.newContext({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
   const page = await ctx.newPage();
   await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(500);
-  const r = await page.evaluate(() => [...document.querySelectorAll('.ov-diagram .ov-f, .ov-spin, .ov-xtals rect')].filter((e) => e.getAnimations().some((a) => a.playState === 'running')).length);
-  if (r) fail(`overview reduced motion: ${r} diagram animations still running`);
+  const r = await moving(page, '.ov-diagram .ov-f');
+  if (r.moved) fail(`overview reduced motion: ${r.moved} diagram flows still moving`);
   await ctx.close();
 }
 

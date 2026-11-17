@@ -381,3 +381,24 @@ Andrew approved adding www.youtube.com and www.tesla.com to the environment.
 **New test:** `tests/browser-industry.mjs`, in CI for light and dark. It uses a stub IFrame API and covers: lazy loading, plays only once PLAYING is reported, inert iframe that covers the band, pause on tab change and when scrolled away, the dialog and focus, blocked autoplay → poster, YouTube unreachable → poster, reduced motion and phone, product arithmetic against the model, no red flags.
 
 **Not testable here:** real playback (YouTube's video hosts and codecs aren't available in the container). Andrew will check that on his laptop and phone after deploying.
+
+## 2026-11-17 (cont.) — mobile/tablet motion and video fix
+
+**Prompt (verbatim):** "the video is currently working as intended on a laptop/desktop. it is not working on phone or tablet. along with this, the hero does flow on tablet/mobile and the overview process and the simulator process doesn't flow as intended. ... everything is working right on laptop/desktop rn."
+
+**Diagnosis:** the hero (canvas driven by requestAnimationFrame) moved on phones and tablets, but both process diagrams (CSS keyframe animations on SVG stroke-dashoffset and transforms) did not. Every iPhone/iPad browser runs WebKit, which can leave SVG keyframe animations frozen. Separately, the background video hid the player with `opacity: 0` while it started. WebKit will not autoplay a muted video it considers hidden, and phones were excluded on purpose (below 700 px).
+
+**Fix:**
+- New `site/js/flow-anim.js` drives the dashed flows, the impeller and the settling crystals for both diagrams with requestAnimationFrame, the same mechanism as the hero.
+  - PFD speeds still follow the live mass flows (`--d-*` variables from `pfd.js`).
+  - Motion pauses off screen and on hidden tabs, freezes for the infeasible case, and is static under reduced motion.
+  - The CSS keyframes were removed.
+- Video: the player is never hidden. The poster now sits on top and fades away once the player reports PLAYING.
+  - Phones and tablets get the background video; only reduced motion and Save-Data turn it off.
+  - The start timeout went from 8 s to 15 s.
+  - Added a size fallback for iPads without container-query units (iOS < 16).
+- Tests:
+  - UX and Industry now sample `stroke-dashoffset` over time instead of reading CSS animations.
+  - Added phone (375) and tablet (820) checks that both diagrams move and that the background video plays with its iframe rendered.
+
+**Limit:** the container only has Chromium. Phone and tablet emulation is not real Safari, so Andrew verifies on his iPhone/iPad after deploying.

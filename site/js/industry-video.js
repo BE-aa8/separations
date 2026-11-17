@@ -2,12 +2,13 @@
 //  - Background band: a muted, chrome-less YouTube player behind the headline (the "full-width background
 //    video" effect). It is hardened against the usual problems:
 //      * nothing from YouTube loads until the Industry tab is opened (lazy, youtube-nocookie host);
-//      * the player stays invisible over a poster until the IFrame API reports PLAYING, so a blocked
-//        autoplay (iOS Low Power, Data Saver, browser policy) never shows a big play button;
-//      * no background video under reduced motion, below 700 px, or with Save-Data;
+//      * a poster sits ON TOP of the player until the IFrame API reports PLAYING, then fades away, so a
+//        blocked autoplay (iOS Low Power Mode, browser policy) never shows a big play button. The player
+//        itself is never made invisible: mobile Safari will not start a muted video it considers hidden;
+//      * phones and tablets get the video too; none under reduced motion or with Save-Data;
 //      * it pauses on other tabs, when scrolled out of view, when the page is hidden or the dialog is open;
 //      * manual loop (seek to 0 just before the end) instead of loop=1, so the end screen never shows;
-//      * any failure (API blocked, error, no PLAYING within 8 s) leaves the poster; no console errors.
+//      * any failure (API blocked, error, no PLAYING within 15 s) leaves the poster; no console errors.
 //  - "Watch with sound": a <dialog> with the normal player (controls + audio). Closing it removes the
 //    iframe so audio stops, and focus returns to the button.
 const VIDEO_ID = 'rxYTx6aj96k';
@@ -32,9 +33,8 @@ let lastFocus = null;
 
 const mq = (q) => (window.matchMedia ? window.matchMedia(q) : { matches: false, addEventListener() {} });
 const reduce = mq('(prefers-reduced-motion: reduce)');
-const narrow = mq('(max-width: 699px)');
 const saveData = () => !!(navigator.connection && navigator.connection.saveData);
-const bgAllowed = () => !reduce.matches && !narrow.matches && !saveData();
+const bgAllowed = () => !reduce.matches && !saveData();
 const tabVisible = () => !!band && band.offsetParent !== null;
 const dialogOpen = () => !!dialog && dialog.open;
 
@@ -114,7 +114,7 @@ function start() {
         onError: fail,
       },
     });
-    failTimer = setTimeout(() => { if (stats.state !== 'playing') fail(); }, 8000);
+    failTimer = setTimeout(() => { if (stats.state !== 'playing') fail(); }, 15000);   // phones can be slow to start
   }).catch(fail);
 }
 
@@ -174,5 +174,4 @@ window.addEventListener('hashchange', () => {
 document.addEventListener('visibilitychange', sync);
 const onPolicy = () => { if (!bgAllowed() && player) { try { player.pauseVideo(); } catch (e) { /* ignore */ } } sync(); };
 if (reduce.addEventListener) reduce.addEventListener('change', onPolicy);
-if (narrow.addEventListener) narrow.addEventListener('change', onPolicy);
 requestAnimationFrame(sync);

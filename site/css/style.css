@@ -400,7 +400,7 @@ p.small { font-size: 0.85rem; color: var(--muted); }
 #pfd svg .liquor { fill: var(--pfd-liquor); }
 #pfd svg .l { fill: var(--pfd-text); } #pfd svg .n { fill: var(--pfd-muted); font-size: 11px; } #pfd svg .k { font-weight: 700; }
 #pfd svg .s { fill: none; stroke-width: 2.2; opacity: 0.55; }
-#pfd svg .flow { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 10; animation: pfd-flow 1s linear infinite; }
+#pfd svg .flow { fill: none; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 2 10; }   /* motion: js/flow-anim.js */
 #pfd svg .mk { stroke: none; }
 @keyframes pfd-flow { to { stroke-dashoffset: -12; } }
 #pfd svg .st-feed, #pfd svg .fl-feed { stroke: var(--st-feed); } #pfd svg .mk-feed { fill: var(--st-feed); } #pfd svg .fl-feed { animation-duration: var(--d-feed, 1.2s); } .pfd-legend .sw-feed { background: var(--st-feed); }
@@ -411,10 +411,10 @@ p.small { font-size: 0.85rem; color: var(--muted); }
 #pfd svg .st-cond, #pfd svg .fl-cond { stroke: var(--st-cond); } #pfd svg .mk-cond { fill: var(--st-cond); } #pfd svg .fl-cond { animation-duration: var(--d-cond, 1.2s); } .pfd-legend .sw-cond { background: var(--st-cond); }
 #pfd svg .st-xtal, #pfd svg .fl-xtal { stroke: var(--st-xtal); } #pfd svg .mk-xtal { fill: var(--st-xtal); } #pfd svg .fl-xtal { animation-duration: var(--d-xtal, 1.2s); } .pfd-legend .sw-xtal { background: var(--st-xtal); }
 #pfd svg .st-purge, #pfd svg .fl-purge { stroke: var(--st-purge); } #pfd svg .mk-purge { fill: var(--st-purge); } #pfd svg .fl-purge { animation-duration: var(--d-purge, 1.2s); } .pfd-legend .sw-purge { background: var(--st-purge); }
-#pfd svg .impeller .spin { animation: pfd-spin var(--d-imp, 0.8s) linear infinite; transform-box: fill-box; transform-origin: center; }
+/* impeller spin and crystal settling: js/flow-anim.js */
 #pfd svg .imp-ring { fill: none; stroke: var(--st-hot); stroke-width: 1.5; } #pfd svg .imp-blade { stroke: var(--st-hot); stroke-width: 1.5; }
 @keyframes pfd-spin { to { transform: rotate(360deg); } }
-#pfd svg .xtal { fill: var(--st-xtal); animation: pfd-settle var(--d-xtal, 2.4s) linear infinite; }
+#pfd svg .xtal { fill: var(--st-xtal); }
 #pfd svg .xtal:nth-child(2) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.15); } #pfd svg .xtal:nth-child(3) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.3); }
 #pfd svg .xtal:nth-child(4) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.45); } #pfd svg .xtal:nth-child(5) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.6); }
 #pfd svg .xtal:nth-child(6) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.75); } #pfd svg .xtal:nth-child(7) { animation-delay: calc(var(--d-xtal, 2.4s) * -0.9); }
@@ -883,13 +883,10 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 .ov-chip rect { fill: rgba(255, 255, 255, 0.06); stroke: rgba(255, 255, 255, 0.14); }
 .ov-chip text { fill: #E8ECE6; }
 .ov-s { stroke-width: 2.4; opacity: 0.9; }
-.ov-f { stroke-width: 3; stroke-dasharray: 2 10; animation: pfd-flow 1s linear infinite; }
+.ov-f { stroke-width: 3; stroke-dasharray: 2 10; }   /* motion: js/flow-anim.js */
 .ov-feed { stroke: #E0A43A; } .ov-vapor { stroke: #6FB8E0; } .ov-hot { stroke: #FF8A4C; } .ov-circ { stroke: #C9AE78; }
 .ov-cond { stroke: #4CC3BE; } .ov-xtal { stroke: #B5CC4E; }
-.ov-f.ov-vapor { animation-duration: .7s; } .ov-f.ov-hot { animation-duration: .6s; } .ov-f.ov-feed, .ov-f.ov-circ { animation-duration: 1.2s; } .ov-f.ov-xtal { animation-duration: 2s; }
-.ov-spin { animation: ov-spin 1.6s linear infinite; transform-box: fill-box; transform-origin: center; }
 @keyframes ov-spin { to { rotate: 360deg; } }
-.ov-xtals rect { animation: ov-settle 3s linear infinite; animation-delay: var(--dl, 0s); }
 @keyframes ov-settle { 0% { transform: translateY(-6px); opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { transform: translateY(50px); opacity: 0; } }
 
 /* dot hero now sits below the intro as a visual band */
@@ -931,15 +928,17 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
    ===================================================================== */
 .vband { position: relative; overflow: hidden; display: flex; align-items: flex-end; min-height: clamp(460px, 66vh, 620px);
   margin: calc(-1 * var(--s6)) calc(-1 * var(--s5)) var(--s7); background: var(--ink); color: var(--ink-text); border-bottom: 1px solid var(--ink-border); }
-.vband-poster { position: absolute; inset: -2%; background: #0D1210 url("https://i.ytimg.com/vi/rxYTx6aj96k/hqdefault.jpg") center / cover no-repeat; filter: saturate(0.9) brightness(0.75); }
-.vband-media { position: absolute; inset: 0; container-type: size; overflow: hidden; pointer-events: none; }
+.vband-media { position: absolute; inset: 0; z-index: 0; container-type: size; overflow: hidden; pointer-events: none; }
+/* the poster covers the player until it really plays (the player is never hidden: iOS won't autoplay a hidden video) */
+.vband-poster { position: absolute; inset: -2%; z-index: 1; background: #0D1210 url("https://i.ytimg.com/vi/rxYTx6aj96k/hqdefault.jpg") center / cover no-repeat; filter: saturate(0.9) brightness(0.75); transition: opacity 0.9s ease; }
+.vband[data-video="playing"] .vband-poster { opacity: 0; }
 .vband-media iframe { position: absolute; top: 50%; left: 50%; border: 0; pointer-events: none;
+  width: 100vw; height: 56.25vw; min-height: 100%; min-width: 177.78vh;     /* fallback: browsers without container units (iOS < 16) */
   width: max(100cqw, 177.78cqh); height: max(56.25cqw, 100cqh); transform: translate(-50%, -50%) scale(1.14);
-  opacity: 0; transition: opacity 0.9s ease; }
-.vband[data-video="playing"] .vband-media iframe { opacity: 1; }
-.vband-scrim { position: absolute; inset: 0; pointer-events: none;
+}
+.vband-scrim { position: absolute; inset: 0; z-index: 2; pointer-events: none;
   background: linear-gradient(90deg, rgba(9, 13, 12, 0.9) 0%, rgba(9, 13, 12, 0.62) 42%, rgba(9, 13, 12, 0.12) 100%), linear-gradient(0deg, rgba(9, 13, 12, 0.75) 0%, rgba(9, 13, 12, 0) 55%); }
-.vband-copy { position: relative; z-index: 2; padding: var(--s7) var(--s5) var(--s6); max-width: 720px; }
+.vband-copy { position: relative; z-index: 3; padding: var(--s7) var(--s5) var(--s6); max-width: 720px; }
 .vband-pill { color: var(--ink-text); }
 .vband-title { font-size: clamp(2.3rem, 4.8vw, 4.2rem); line-height: 1.03; letter-spacing: -0.04em; font-weight: 700; margin: 0 0 var(--s4); color: #F4F6F2; max-width: 14ch; }
 .vband-lead { font-size: clamp(1.02rem, 1.35vw, 1.2rem); line-height: 1.55; color: #C9D0CB; max-width: 46ch; margin: 0 0 var(--s5); }
@@ -947,7 +946,7 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
 button.ov-cta { border: 0; cursor: pointer; font: inherit; font-weight: 650; }
 .vband-link { background: transparent; border: 0; padding: 4px 0 2px; color: #E8ECE6; font: inherit; font-weight: 600; cursor: pointer; border-bottom: 1px solid rgba(232, 236, 230, 0.4); border-radius: 0; box-shadow: none; }
 .vband-link:hover { border-bottom-color: var(--lime); background: transparent; color: #fff; }
-.vband-credit { position: absolute; z-index: 2; right: var(--s5); bottom: var(--s3); margin: 0; font: 500 var(--fs-xs)/1.4 var(--mono); letter-spacing: 0.04em; color: #9AA59F; }
+.vband-credit { position: absolute; z-index: 3; right: var(--s5); bottom: var(--s3); margin: 0; font: 500 var(--fs-xs)/1.4 var(--mono); letter-spacing: 0.04em; color: #9AA59F; }
 .vband-credit a { color: #C9DB6E; }
 
 .vdialog { width: min(1040px, calc(100vw - 32px)); max-width: none; padding: 0; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 22px; background: #0D1210; color: #E8ECE6; overflow: hidden; box-shadow: 0 40px 80px -30px rgba(0, 0, 0, 0.7); }
@@ -1016,7 +1015,7 @@ button.ov-cta { border: 0; cursor: pointer; font: inherit; font-weight: 650; }
   .vband-scrim { background: linear-gradient(0deg, rgba(9, 13, 12, 0.92) 0%, rgba(9, 13, 12, 0.55) 60%, rgba(9, 13, 12, 0.35) 100%); }
   .vdialog { width: calc(100vw - 16px); border-radius: 16px; }
 }
-@media (prefers-reduced-motion: reduce) { .vband-media iframe { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .vband-poster { transition: none; } }
 /* keep the 16:9 player plus its header and footer inside short screens (projectors at 1280x720) */
 .vdialog { width: min(1040px, calc(100vw - 32px), calc((100vh - 150px) * 16 / 9)); }
 @media (max-width: 640px) { .vdialog { width: calc(100vw - 16px); } }

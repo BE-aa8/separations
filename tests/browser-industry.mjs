@@ -132,7 +132,7 @@ const st = (page) => page.evaluate(() => ({ ...window.__indVideo, ds: document.g
   await page.goto(`${BASE}/#industry`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1500);
   if ((await st(page)).ds === 'playing') fail('should not show the player before PLAYING');
-  await page.waitForTimeout(8200);
+  await page.waitForTimeout(14500);
   const b = await st(page);
   if (b.ds !== 'poster' || b.iframes) fail(`blocked autoplay should fall back to the poster (${JSON.stringify(b)})`);
   if (errors.length) fail(`blocked autoplay: console errors: ${errors.slice(0, 3).join(' | ')}`);
@@ -150,13 +150,20 @@ const st = (page) => page.evaluate(() => ({ ...window.__indVideo, ds: document.g
   await ctx.close();
 }
 
-// ---------- D. reduced motion and phone: no background video; Watch still works ----------
-for (const [name, opts] of [['reduced-motion', { reducedMotion: 'reduce' }], ['phone', { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true }]]) {
+// ---------- D. reduced motion: no background video; phone and tablet: background video plays ----------
+for (const [name, opts] of [['reduced-motion', { reducedMotion: 'reduce' }], ['phone', { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true }], ['tablet', { viewport: { width: 820, height: 1180 }, isMobile: true, hasTouch: true }]]) {
   const { ctx, page, yt, errors } = await setup({ play: true, ...opts });
   await page.goto(`${BASE}/#industry`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(1200);
   const s = await st(page);
-  if (s.apiRequested || s.iframes || yt.some((u) => /iframe_api|embed/.test(u))) fail(`${name}: background video should not load`);
+  if (name === 'reduced-motion') {
+    if (s.apiRequested || s.iframes || yt.some((u) => /iframe_api|embed/.test(u))) fail(`${name}: background video should not load`);
+  } else {
+    if (s.ds !== 'playing' || s.iframes !== 1) fail(`${name}: background video should play (${JSON.stringify(s)})`);
+    // the player must never be hidden itself (iOS will not start a hidden muted video); the poster covers it instead
+    const vis = await page.evaluate(() => { const f = document.querySelector('#ind-video-media iframe'); const cs = f && getComputedStyle(f); return f ? { op: cs.opacity, vis: cs.visibility, disp: cs.display, poster: getComputedStyle(document.querySelector('.vband-poster')).opacity } : null; });
+    if (!vis || vis.op !== '1' || vis.vis !== 'visible' || vis.disp === 'none') fail(`${name}: player iframe must stay rendered (${JSON.stringify(vis)})`);
+  }
   await page.click('#ind-watch');
   await page.waitForTimeout(300);
   if (!(await page.evaluate(() => document.getElementById('ind-dialog').open && !!document.querySelector('#ind-dialog-frame iframe')))) fail(`${name}: Watch with sound did not open the player`);

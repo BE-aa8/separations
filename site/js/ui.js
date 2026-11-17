@@ -4,6 +4,7 @@ import { simulate, DEFAULT_INPUTS, RANGES, solubility, phiSat, bpe, hfg, F_LI } 
 import { EQ, THEORY_GROUPS } from './content.js';
 import { renderAll, setChartTheme, pIndustry } from './charts.js';
 import { mountPFD, updatePFD } from './pfd.js';
+import { registerPFD } from './flow-anim.js';
 
 // ---------- formatting (never shows NaN) ----------
 const ok = (v) => typeof v === 'number' && Number.isFinite(v);
@@ -650,6 +651,7 @@ function init() {
   initHelp();
   initSheet();
   mountPFD(document.getElementById('pfd'));
+  registerPFD(document.querySelector('#pfd svg'));
   initPFDClicks();
   document.querySelectorAll('[data-preset]').forEach((b) => b.addEventListener('click', () => applyPreset(b.dataset.preset)));
   // toolbar jump buttons: scroll within the Simulator tab (buttons, not #hash links, which would switch tabs)
