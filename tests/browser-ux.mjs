@@ -189,6 +189,42 @@ for (const vp of [{ width: 375, height: 812 }, { width: 820, height: 1180 }]) {
   await ctx.close();
 }
 
+// ---------- 5. motion toggle: Reduce Motion device -> still by default; the header toggle turns motion on and is remembered ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, reducedMotion: 'reduce' });
+  await ctx.route(/(youtube\.com|youtube-nocookie\.com|ytimg\.com)/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
+  const page = await ctx.newPage();
+  const errors = []; watch(page, errors);
+  await page.goto(`${BASE}/#overview`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(500);
+  const m0 = await page.evaluate(() => ({ m: document.documentElement.dataset.motion, pressed: document.getElementById('motion-toggle').getAttribute('aria-pressed') }));
+  if (m0.m !== 'off' || m0.pressed !== 'false') fail(`motion should default to off under Reduce Motion (${JSON.stringify(m0)})`);
+  await page.evaluate(() => document.querySelector('.ov-diagram').scrollIntoView({ block: 'center' }));
+  if ((await moving(page, '.ov-diagram .ov-f')).moved) fail('motion off: overview flows should be still');
+  await page.click('#motion-toggle');
+  await page.waitForTimeout(200);
+  const o = await moving(page, '.ov-diagram .ov-f');
+  if (o.moved < o.n) fail(`motion toggled on: overview flows ${o.moved}/${o.n} moving`);
+  await page.evaluate(() => document.getElementById('hero').scrollIntoView({ block: 'center' }));
+  const h0 = await page.evaluate(() => (window.__heroStats || {}).frames || 0);
+  await page.waitForTimeout(600);
+  const h1 = await page.evaluate(() => (window.__heroStats || {}).frames || 0);
+  if (!(h1 > h0)) fail(`motion toggled on: hero not animating (${h0} -> ${h1})`);
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.waitForTimeout(400);
+  if (await page.evaluate(() => document.documentElement.dataset.motion) !== 'on') fail('motion choice not remembered after reload');
+  await page.evaluate(() => { location.hash = '#simulator'; });
+  await page.waitForTimeout(700);
+  await page.evaluate(() => document.getElementById('sec-pfd').scrollIntoView({ block: 'center' }));
+  const p = await moving(page, '#pfd svg .flow');
+  if (p.moved < p.n) fail(`motion on (remembered): PFD flows ${p.moved}/${p.n} moving`);
+  await page.click('#motion-toggle');
+  await page.waitForTimeout(200);
+  if ((await moving(page, '#pfd svg .flow')).moved) fail('motion toggled off: PFD flows should stop');
+  if (errors.length) fail(`motion toggle: console errors: ${errors.slice(0, 3).join(' | ')}`);
+  await ctx.close();
+}
+
 await browser.close();
 const report = failures.length ? failures.map((f) => `- ❌ ${f}`).join('\n') : '- ✅ all UX checks passed (theme toggle, live PFD, reduced motion, mobile, overview intro)';
 writeFileSync(join(OUT, 'report.md'), `# UX browser checks\n\n${report}\n`);

@@ -11,7 +11,8 @@ if (host && canvas && canvas.getContext) start();
 
 function start() {
   const ctx = canvas.getContext('2d', { alpha: false });
-  const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  // motion setting: <html data-motion> (device Reduce Motion by default, or the header toggle)
+  const isReduce = () => document.documentElement.dataset.motion === 'off';
   const COLORS = { bg: '#090D0C', dot: '#F0F1EB', fast: '#A6BB43' };
 
   // ---- state ----
@@ -80,7 +81,7 @@ function start() {
     hx = Float32Array.from(homesX); hy = Float32Array.from(homesY);
     px = new Float32Array(N); py = new Float32Array(N); vx = new Float32Array(N); vy = new Float32Array(N);
     for (let k = 0; k < N; k++) {
-      if (reduce) { px[k] = hx[k]; py[k] = hy[k]; continue; }
+      if (isReduce()) { px[k] = hx[k]; py[k] = hy[k]; continue; }
       // "supersaturated cloud": scattered start, settles onto the lattice
       const a = Math.random() * Math.PI * 2, rr = (0.15 + Math.random() * 0.6) * Math.max(W, H);
       px[k] = hx[k] + Math.cos(a) * rr * 0.35;
@@ -95,7 +96,7 @@ function start() {
     const n = nx * ny;
     u = new Float32Array(n); v = new Float32Array(n); u0 = new Float32Array(n); v0 = new Float32Array(n);
     p = new Float32Array(n); dv = new Float32Array(n); curl = new Float32Array(n);
-    introT = reduce ? 1 : 0;
+    introT = isReduce() ? 1 : 0;
     built = true;
     return true;
   }
@@ -232,14 +233,14 @@ function start() {
 
   function update() {
     if (host.offsetParent === null) visible = false;         // its tab is hidden
-    const shouldRun = visible && !document.hidden && !reduce;
+    const shouldRun = visible && !document.hidden && !isReduce();
     if (!built || canvas.width !== Math.round(host.getBoundingClientRect().width * Math.min(2, window.devicePixelRatio || 1))) {
       if (!build()) return;
-      if (reduce) draw();
+      if (isReduce()) draw();
     }
     if (shouldRun && !running) { running = true; pointer.last = performance.now(); if (!raf) raf = requestAnimationFrame(frame); }
     if (!shouldRun) running = false;
-    if (reduce && built) draw();
+    if (isReduce() && built) draw();
   }
 
   // ---- events ----
@@ -258,6 +259,7 @@ function start() {
     }, { threshold: 0.01 }).observe(host);
   } else { visible = true; }
   document.addEventListener('visibilitychange', update);
+  document.addEventListener('motionchange', () => { if (!isReduce()) introT = 1; update(); });
   window.addEventListener('hashchange', () => setTimeout(update, 0));
   let rt = 0;
   window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { built = false; update(); }, 150); });

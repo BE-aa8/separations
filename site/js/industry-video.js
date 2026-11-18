@@ -5,7 +5,8 @@
 //      * a poster sits ON TOP of the player until the IFrame API reports PLAYING, then fades away, so a
 //        blocked autoplay (iOS Low Power Mode, browser policy) never shows a big play button. The player
 //        itself is never made invisible: mobile Safari will not start a muted video it considers hidden;
-//      * phones and tablets get the video too; none under reduced motion or with Save-Data;
+//      * phones and tablets get the video too; none when motion is off (device Reduce Motion or the
+//        header toggle) or with Save-Data;
 //      * it pauses on other tabs, when scrolled out of view, when the page is hidden or the dialog is open;
 //      * manual loop (seek to 0 just before the end) instead of loop=1, so the end screen never shows;
 //      * any failure (API blocked, error, no PLAYING within 15 s) leaves the poster; no console errors.
@@ -32,9 +33,9 @@ let loopTimer = 0;
 let lastFocus = null;
 
 const mq = (q) => (window.matchMedia ? window.matchMedia(q) : { matches: false, addEventListener() {} });
-const reduce = mq('(prefers-reduced-motion: reduce)');
+const motionOff = () => document.documentElement.dataset.motion === 'off';   // device Reduce Motion, or the header toggle
 const saveData = () => !!(navigator.connection && navigator.connection.saveData);
-const bgAllowed = () => !reduce.matches && !saveData();
+const bgAllowed = () => !motionOff() && !saveData();
 const tabVisible = () => !!band && band.offsetParent !== null;
 const dialogOpen = () => !!dialog && dialog.open;
 
@@ -155,7 +156,7 @@ if (watchBtn) watchBtn.addEventListener('click', openDialog);
 if (closeBtn) closeBtn.addEventListener('click', closeDialog);
 if (jumpBtn) jumpBtn.addEventListener('click', () => {
   const el = document.getElementById('ind-steps');
-  if (el) el.scrollIntoView({ behavior: reduce.matches ? 'auto' : 'smooth', block: 'start' });
+  if (el) el.scrollIntoView({ behavior: motionOff() ? 'auto' : 'smooth', block: 'start' });
 });
 
 // ---------- visibility wiring ----------
@@ -172,6 +173,7 @@ window.addEventListener('hashchange', () => {
   requestAnimationFrame(sync);                       // after ui.js has shown/hidden the tab
 });
 document.addEventListener('visibilitychange', sync);
-const onPolicy = () => { if (!bgAllowed() && player) { try { player.pauseVideo(); } catch (e) { /* ignore */ } } sync(); };
-if (reduce.addEventListener) reduce.addEventListener('change', onPolicy);
+// motion turned off: drop the player and show the poster; turned on: start (if the band is visible)
+const onPolicy = () => { if (!bgAllowed()) { if (started) { fail(); started = false; } } sync(); };
+document.addEventListener('motionchange', onPolicy);
 requestAnimationFrame(sync);

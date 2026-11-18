@@ -2,9 +2,10 @@
 // dashed "flow" overlays, the compressor impeller and settling crystals.
 // Driven by requestAnimationFrame, like the hero, instead of CSS keyframes on SVG: mobile Safari
 // (every iPhone/iPad browser) can leave SVG keyframe animations frozen, while rAF runs everywhere.
-// Pauses when a diagram is off screen or on a hidden tab; static under prefers-reduced-motion.
+// Pauses when a diagram is off screen or on a hidden tab; static when motion is off (device Reduce Motion
+// by default, or the header toggle).
 const DASH = 12;                                   // stroke-dasharray "2 10" repeats every 12 units
-const reduceMQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
+const motionOff = () => document.documentElement.dataset.motion === 'off';   // device Reduce Motion, or the header toggle
 const diagrams = [];
 const stats = { frames: 0, diagrams: 0 };
 window.__flowStats = stats;                        // read-only counters for the browser tests
@@ -72,12 +73,12 @@ function step(now) {
     }
   }
   if (any) stats.frames++;
-  if (any && !reduceMQ.matches) raf = requestAnimationFrame(step);
+  if (any && !motionOff()) raf = requestAnimationFrame(step);
   else last = 0;
 }
 
 function kick() {
-  if (reduceMQ.matches) { diagrams.forEach(paintStatic); return; }
+  if (motionOff()) { diagrams.forEach(paintStatic); return; }
   if (!raf) raf = requestAnimationFrame(step);
 }
 
@@ -111,5 +112,5 @@ export function registerOverview(svg) {
 
 window.addEventListener('hashchange', () => requestAnimationFrame(kick));
 document.addEventListener('visibilitychange', kick);
-if (reduceMQ.addEventListener) reduceMQ.addEventListener('change', kick);
+document.addEventListener('motionchange', kick);
 registerOverview(document.querySelector('.ov-diagram svg'));

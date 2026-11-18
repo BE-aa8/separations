@@ -415,3 +415,20 @@ I checked the live site: every new file is deployed byte-for-byte, so the fix di
 - the video state, and a plain muted-autoplay test.
 
 It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now observes the diagram's HTML wrapper instead of the `<svg>`, and assumes the diagram is visible if no visibility event arrives within 1.5 s.
+
+## 2026-11-18 — the real cause: Reduce Motion; motion toggle added
+
+**Diagnostics from Andrew's iPhone** (iOS 18.7, Safari 26.6): **Reduce Motion ON**. The hero, both diagrams and the background video had 0 frames because the site honours that setting. CSS-on-SVG animation runs, visibility events fire, and muted YouTube autoplay plays. So nothing was broken: the earlier WebKit theory was wrong, and the diagnostics page settled it in one round instead of more guessing.
+
+**Decision (Andrew):** add a motion toggle rather than ignore the setting.
+
+**Built:**
+- `<html data-motion="on|off">` is set before first paint from the saved choice, otherwise from the device's Reduce Motion setting.
+- A header button (waves / struck-through waves, `aria-pressed`) switches it, remembers the choice, and fires a `motionchange` event.
+- The hero, `flow-anim.js`, the background video and smooth scrolling all follow `data-motion`. Every former `@media (prefers-reduced-motion)` CSS block is now an `html[data-motion="off"]` rule.
+- Default behaviour is unchanged for everyone: Reduce Motion still means still, until the visitor opts in.
+
+**Tests:**
+- UX: under Reduce Motion, motion starts off; the toggle starts the overview flows and the hero; the choice survives a reload; the PFD moves; toggling off stops it.
+- Industry: the toggle starts the background video and stops it again.
+- Full suite passes.

@@ -158,6 +158,15 @@ for (const [name, opts] of [['reduced-motion', { reducedMotion: 'reduce' }], ['p
   const s = await st(page);
   if (name === 'reduced-motion') {
     if (s.apiRequested || s.iframes || yt.some((u) => /iframe_api|embed/.test(u))) fail(`${name}: background video should not load`);
+    // the header toggle turns motion on: the background video then starts
+    await page.click('#motion-toggle');
+    await page.waitForTimeout(800);
+    const on = await st(page);
+    if (on.ds !== 'playing') fail(`${name}: motion toggle on should start the background video (${JSON.stringify(on)})`);
+    await page.click('#motion-toggle');
+    await page.waitForTimeout(300);
+    const off = await st(page);
+    if (off.ds !== 'poster' || off.iframes) fail(`${name}: motion toggle off should return to the poster (${JSON.stringify(off)})`);
   } else {
     if (s.ds !== 'playing' || s.iframes !== 1) fail(`${name}: background video should play (${JSON.stringify(s)})`);
     // the player must never be hidden itself (iOS will not start a hidden muted video); the poster covers it instead

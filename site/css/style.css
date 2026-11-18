@@ -306,9 +306,8 @@ p.small { font-size: 0.85rem; color: var(--muted); }
 }
 
 /* ---------- motion and print ---------- */
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
-}
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] *, html[data-motion="off"] *::before, html[data-motion="off"] *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 @media print {
   .site-header, .controls, .rcard .help, .subtabs, .site-footer { display: none !important; }
   body { background: #fff; }
@@ -442,11 +441,10 @@ p.small { font-size: 0.85rem; color: var(--muted); }
 section.tab:not([hidden]) { animation: tab-in 0.22s ease-out; }
 @keyframes tab-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-@media (prefers-reduced-motion: reduce) {
-  #pfd svg .flow, #pfd svg .spin, #pfd svg .xtal { animation: none !important; }
-  #pfd svg .xtal { opacity: 0.8; }
-  section.tab:not([hidden]), .rcard .num.changed { animation: none !important; }
-}
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] #pfd svg .flow, html[data-motion="off"] #pfd svg .spin, html[data-motion="off"] #pfd svg .xtal { animation: none !important; }
+html[data-motion="off"] #pfd svg .xtal { opacity: 0.8; }
+html[data-motion="off"] section.tab:not([hidden]), html[data-motion="off"] .rcard .num.changed { animation: none !important; }
 
 /* =====================================================================
    Liquid Glass simulator (G1): tokens, backdrop, shell, toolbar, inputs
@@ -593,9 +591,8 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
   .sim-toolbar { top: calc(var(--header-h) + 6px); border-radius: var(--r-tile) !important; }
   .seg-label { display: none; }
 }
-@media (prefers-reduced-motion: reduce) {
-  #tab-simulator input[type=range]::-webkit-slider-thumb { transition: none; }
-}
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] #tab-simulator input[type=range]::-webkit-slider-thumb { transition: none; }
 /* G1 polish: slider label row (label + ESTIMATE tag wrap together; value pill never squeezes the label) */
 #tab-simulator .slider .row { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 10px; align-items: center; }
 #tab-simulator .slider .row > span:first-child { min-width: 0; line-height: 1.3; }
@@ -725,7 +722,9 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
   @keyframes hp-sheet { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
   .explain-toggle { order: -1; }
 }
-@media (prefers-reduced-motion: reduce) { .help-panel { animation: none; } .kpi-num.changed { animation: none; } }
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] .help-panel { animation: none; }
+html[data-motion="off"] .kpi-num.changed { animation: none; }
 
 /* =====================================================================
    Liquid Glass simulator (G3): grouped charts on clean rounded surfaces
@@ -796,7 +795,7 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
   [data-theme="dark"] .sheet-done { background: var(--lime); color: var(--ink); }
   #tab-simulator .results { padding-bottom: 72px; }   /* room for the floating Inputs button */
 }
-@media (max-width: 699px) and (prefers-reduced-motion: reduce) { #tab-simulator .controls { transition: none; } }
+@media (max-width: 699px) { html[data-motion="off"] #tab-simulator .controls { transition: none; } }
 #tab-simulator .pfd-panel .tag { display: inline-block; margin-right: 6px; padding: 1px 6px; border-radius: 6px; background: var(--chip); color: var(--muted); font: 600 0.68rem/1.4 var(--mono, ui-monospace, monospace); vertical-align: 1px; }
 @media (min-width: 1100px) { #tab-simulator .pfd-wrap.has-panel .pfd-panel .prow { grid-template-columns: minmax(0, 1fr); } }
 
@@ -917,10 +916,9 @@ html:has(#tab-simulator:not([hidden])) body { background: var(--sim-bg); backgro
   .ov-diagram { padding: var(--s3) var(--s2) var(--s2); border-radius: 22px; }
   .ov-ai { border-radius: 18px; align-items: flex-start; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .ov-f, .ov-spin, .ov-xtals rect { animation: none; }
-  .ov-cta, .ov-card { transition: none; }
-}
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] .ov-f, html[data-motion="off"] .ov-spin, html[data-motion="off"] .ov-xtals rect { animation: none; }
+html[data-motion="off"] .ov-cta, html[data-motion="off"] .ov-card { transition: none; }
 @media (max-width: 640px) { .ov-diagram { margin: 0 calc(-1 * var(--s3)); } }
 
 /* =====================================================================
@@ -1015,7 +1013,17 @@ button.ov-cta { border: 0; cursor: pointer; font: inherit; font-weight: 650; }
   .vband-scrim { background: linear-gradient(0deg, rgba(9, 13, 12, 0.92) 0%, rgba(9, 13, 12, 0.55) 60%, rgba(9, 13, 12, 0.35) 100%); }
   .vdialog { width: calc(100vw - 16px); border-radius: 16px; }
 }
-@media (prefers-reduced-motion: reduce) { .vband-poster { transition: none; } }
+/* motion off (device Reduce Motion by default, or the header toggle) */
+html[data-motion="off"] .vband-poster { transition: none; }
 /* keep the 16:9 player plus its header and footer inside short screens (projectors at 1280x720) */
 .vdialog { width: min(1040px, calc(100vw - 32px), calc((100vh - 150px) * 16 / 9)); }
 @media (max-width: 640px) { .vdialog { width: calc(100vw - 16px); } }
+
+/* motion toggle (header, next to the theme toggle) */
+.site-header .motion-toggle { margin-left: auto; }
+.site-header .motion-toggle + .theme-toggle { margin-left: 0; }
+.motion-toggle .m-off { display: none; }
+html[data-motion="off"] .motion-toggle .m-on { display: none; }
+html[data-motion="off"] .motion-toggle .m-off { display: block; }
+.motion-toggle[aria-pressed="true"] { color: var(--lime); border-color: rgba(166, 187, 67, 0.55); }
+.site-header .motion-toggle + .theme-toggle { margin-left: calc(8px - var(--s4)); }

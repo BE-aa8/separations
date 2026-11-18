@@ -626,6 +626,29 @@ function setTheme(t, remember) {
   schedule();                               // re-render charts in the new palette
   if (currentTab() === 'industry') renderIndustry(true);
 }
+// ---------- motion on/off: <html data-motion>; default = device Reduce Motion; header toggle overrides ----------
+function applyMotionUI() {
+  const on = document.documentElement.dataset.motion !== 'off';
+  const b = document.getElementById('motion-toggle');
+  if (b) { b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-label', on ? 'Turn animations off' : 'Turn animations on'); }
+}
+function setMotion(m, remember) {
+  document.documentElement.setAttribute('data-motion', m);
+  if (remember) { try { localStorage.setItem('motion', m); } catch { /* storage unavailable: still works this visit */ } }
+  applyMotionUI();
+  document.dispatchEvent(new Event('motionchange'));
+}
+function initMotion() {
+  applyMotionUI();
+  const b = document.getElementById('motion-toggle');
+  if (b) b.addEventListener('click', () => setMotion(document.documentElement.dataset.motion === 'off' ? 'on' : 'off', true));
+  const mq = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  if (mq && mq.addEventListener) mq.addEventListener('change', (e) => {
+    let saved = null;
+    try { saved = localStorage.getItem('motion'); } catch { saved = null; }
+    if (saved !== 'on' && saved !== 'off') setMotion(e.matches ? 'off' : 'on', false);
+  });
+}
 function initTheme() {
   applyThemeUI();
   const b = document.getElementById('theme-toggle');
@@ -640,6 +663,7 @@ function initTheme() {
 
 function init() {
   initTheme();
+  initMotion();
   renderTheory();
   renderReferences();
   renderIndustry();
@@ -658,12 +682,12 @@ function init() {
   const JUMP = { pfd: 'sec-pfd', cards: 'cards', plots: 'sec-plots' };
   document.querySelectorAll('[data-jump-sec]').forEach((b) => b.addEventListener('click', () => {
     const el = document.getElementById(b.dataset.jumpSec);
-    const smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const smooth = document.documentElement.dataset.motion !== 'off';
     if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
   }));
   document.querySelectorAll('[data-jump]').forEach((b) => b.addEventListener('click', () => {
     const el = document.getElementById(JUMP[b.dataset.jump]);
-    const smooth = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const smooth = document.documentElement.dataset.motion !== 'off';
     if (el) el.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto', block: 'start' });
   }));
   const tc = document.getElementById('tcold');
