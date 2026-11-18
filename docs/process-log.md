@@ -432,3 +432,5 @@ It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now 
 - UX: under Reduce Motion, motion starts off; the toggle starts the overview flows and the hero; the choice survives a reload; the PFD moves; toggling off stops it.
 - Industry: the toggle starts the background video and stops it again.
 - Full suite passes.
+
+**Shipped (2026-11-18):** main fast-forwarded to `5471470` (CI green, deployed by Andrew). The live suite passes (`docs/screenshots/verification/2026-11-18-live-motion/`); one transient 502 in the first light smoke run was clean on re-run. Afterwards `site/diag.html` was removed from the repo; it leaves the live site with the next deploy.
