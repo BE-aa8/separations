@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Site Name</title>
+<meta name="description" content="Interactive explorer: replace with one sentence about the topic. An AI project.">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+<script>
+  // theme and motion before first paint: saved choice, else the device setting
+  (function () {
+    var t = null, m = null;
+    try { t = localStorage.getItem('theme'); m = localStorage.getItem('motion'); } catch (e) {}
+    if (t !== 'light' && t !== 'dark') t = (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light';
+    if (m !== 'on' && m !== 'off') m = (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) ? 'off' : 'on';
+    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.setAttribute('data-motion', m);
+  })();
+</script>
+<link rel="stylesheet" href="css/base.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js" crossorigin="anonymous"></script>
+<script type="module" src="js/app.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <div class="wrap">
+    <h1><a class="brand" href="#overview"><svg class="brand-mark" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/></svg><span class="brand-text">Site Name</span></a></h1>
+    <nav class="tabs" aria-label="Site sections">
+      <a href="#overview" data-tab="overview">Overview</a>
+      <a href="#context" data-tab="context">Context</a>
+      <a href="#theory" data-tab="theory">Theory</a>
+      <a href="#simulator" data-tab="simulator">Simulator</a>
+      <a href="#ai-workflow" data-tab="ai-workflow">AI Workflow</a>
+      <a href="#video" data-tab="video">Video &amp; Transcript</a>
+      <a href="#references" data-tab="references">References</a>
+    </nav>
+    <button type="button" class="icon-btn" id="motion-toggle" aria-pressed="true" aria-label="Turn animations off" title="Animations on/off">
+      <svg class="m-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8c3-3 6 3 9 0s6 3 9 0M3 16c3-3 6 3 9 0s6 3 9 0"/></svg>
+      <svg class="m-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 8c3-3 6 3 9 0s6 3 9 0M3 16c3-3 6 3 9 0s6 3 9 0" opacity="0.55"/><path d="M4 21L20 3"/></svg>
+    </button>
+    <button type="button" class="icon-btn" id="theme-toggle" aria-pressed="false" aria-label="Switch to dark mode" title="Light/dark">
+      <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M4.9 19.1l1.8-1.8M17.3 6.7l1.8-1.8"/></svg>
+      <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="wrap">
+<!-- ================= OVERVIEW: the intro pattern ================= -->
+<section id="tab-overview" class="tab" data-tab="overview">
+  <div class="intro">
+    <div>
+      <p class="pill">Topic area · Subtopic</p>
+      <h2 class="title">A big question your project answers?</h2>
+      <p class="lead">Two or three sentences: what the process is, why it matters, and what the simulator lets you explore.</p>
+      <div class="actions">
+        <a class="cta" href="#simulator">Explore the Simulator <span aria-hidden="true">→</span></a>
+        <button type="button" class="link-btn" data-jump="ov-cards">What's inside ↓</button>
+      </div>
+    </div>
+    <aside class="glance" aria-label="At a glance">
+      <p class="glance-h">At a glance <span>example case, live from the model</span></p>
+      <dl>
+        <div><dt>Time constant τ</dt><dd><span data-live="tau"></span><small> min</small></dd></div>
+        <div><dt>Dead time θ</dt><dd><span data-live="theta"></span><small> min</small></dd></div>
+        <div><dt>Time to 63 % (θ + τ)</dt><dd><span data-live="t63"></span><small> min</small></dd></div>
+      </dl>
+    </aside>
+  </div>
+  <div class="sec" id="ov-cards">
+    <p class="eyebrow">Inside</p>
+    <h3 class="h">What this site covers</h3>
+    <div class="cards">
+      <a class="card link-card" href="#context"><span class="num">01</span><h4>Context</h4><p>Why the topic matters in industry.</p><span class="go">Context →</span></a>
+      <a class="card link-card" href="#theory"><span class="num">02</span><h4>Theory</h4><p>The equations, each with units and a one-line interpretation.</p><span class="go">Theory →</span></a>
+      <a class="card link-card" href="#simulator"><span class="num">03</span><h4>Simulator</h4><p>Move the sliders; every result has a chart.</p><span class="go">Simulator →</span></a>
+    </div>
+  </div>
+  <p class="ai-note"><span class="dot" aria-hidden="true"></span><span><strong>An AI project.</strong> Planned by one model, critiqued by another, built and compared. <a href="#ai-workflow">See the AI workflow →</a></span></p>
+</section>
+
+<section id="tab-context" class="tab" data-tab="context" hidden>
+  <div class="sec">
+    <p class="eyebrow">Context</p>
+    <h2 class="h">Why it matters</h2>
+    <p class="lead">Industry context goes here, every number cited <span class="cite" data-src="example-source"></span>.</p>
+  </div>
+</section>
+
+<!-- ================= THEORY: concept card + dropdown pattern ================= -->
+<section id="tab-theory" class="tab" data-tab="theory" hidden>
+  <div class="sec">
+    <p class="eyebrow">The ideas</p>
+    <h2 class="h">Theory</h2>
+    <div class="cards two">
+      <article class="card">
+        <span class="num">01</span>
+        <h4>First-order-plus-dead-time response (example)</h4>
+        <p class="take">After the dead time θ, the output rises exponentially and reaches 63 % of its final change one time constant τ later.</p>
+        <div class="eq" data-tex="y(t) = K\,\Delta u\left[1 - e^{-(t-\theta)/\tau}\right],\quad t \ge \theta"></div>
+        <p class="units">Units: y in output units; K in output/input units; t, θ, τ in min</p>
+        <details class="more"><summary>Read more</summary><div class="more-body"><p>Longer explanation lives here, folded by default. Keep every sentence; just fold it.</p></div></details>
+      </article>
+    </div>
+  </div>
+  <div class="sec">
+    <p class="eyebrow">The fine print</p>
+    <details class="acc"><summary><span class="acc-t">Simplifications we made</span><span class="chip">to be added</span></summary><div class="acc-body"><ul><li>List every assumption here.</li></ul></div></details>
+  </div>
+</section>
+
+<!-- ================= SIMULATOR: sliders -> results -> chart ================= -->
+<section id="tab-simulator" class="tab" data-tab="simulator" hidden>
+  <div class="sec">
+    <p class="eyebrow">Simulator</p>
+    <h2 class="h">Step response (example)</h2>
+    <div class="sim">
+      <div class="controls card">
+        <label class="slider">Process gain K <output id="out-K"></output><input type="range" id="in-K" min="0.2" max="3" step="0.1" value="1.5"></label>
+        <label class="slider">Time constant τ (min) <output id="out-tau"></output><input type="range" id="in-tau" min="0.5" max="20" step="0.5" value="5"></label>
+        <label class="slider"><span>Dead time θ (min) <span class="chip">estimate</span></span><output id="out-theta"></output><input type="range" id="in-theta" min="0" max="10" step="0.5" value="2"></label>
+      </div>
+      <div class="results">
+        <div class="kpis"><div class="kpi"><span class="kpi-l">Time to 63 %</span><span class="kpi-v" id="kpi-t63"></span></div><div class="kpi"><span class="kpi-l">Final value</span><span class="kpi-v" id="kpi-yinf"></span></div></div>
+        <figure class="plot card"><figcaption>Output after a unit step at t = 0</figcaption><div id="p-step" class="chart"></div></figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tab-ai-workflow" class="tab" data-tab="ai-workflow" hidden>
+  <div class="sec"><p class="eyebrow">AI Workflow</p><h2 class="h">One plan, a critic, and the builds</h2><p class="lead">Models, prompts, decisions and the comparison go here (built from docs/process-log.md).</p></div>
+</section>
+
+<section id="tab-video" class="tab" data-tab="video" hidden>
+  <div class="sec"><p class="eyebrow">Video &amp; transcript</p><h2 class="h">The presentation</h2><div class="video-card"><p>Video coming soon</p></div>
+    <details class="acc"><summary><span class="acc-t">Transcript (verbatim YouTube auto-transcript)</span><span class="chip">to be added</span></summary><div class="acc-body"><p>Paste the transcript here.</p></div></details></div>
+</section>
+
+<section id="tab-references" class="tab" data-tab="references" hidden>
+  <div class="sec"><p class="eyebrow">References</p><h2 class="h">Every number has a source</h2><ol id="source-list" class="sources"></ol></div>
+</section>
+</main>
+<footer class="site-footer"><div class="wrap">Site Name · AI project · Data: see <a href="#references">References</a>.</div></footer>
+</body>
+</html>

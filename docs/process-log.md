@@ -502,3 +502,19 @@ The test also confirmed a detail: 22 values are estimates, and one of them (`spe
 **Left as is (flagged to Andrew):** the two Phase 1 comparison screenshots still show the old course subtitle inside the images.
 
 **Shipped (2026-11-18):** main fast-forwarded to `1e6074c` after green CI; Andrew deployed it. Every suite passes on the live site (`docs/screenshots/verification/2026-11-18-live-pages/`). The pages test needed a harness fix for remote runs: its video-hook check no longer fetches from Node.
+
+## 2026-11-18 (cont.) — starter kit for the next course website
+
+**Prompt (verbatim):** "yes, make the starter kit and send me the zip. Would chromatography make sense for Process Dynamics and Controls"
+
+**Answer on the topic:** chromatography as a separation belongs to a separations course. As **composition control with an online GC analyzer** it fits a controls course well:
+- the analyzer brings dead time and sampled measurements;
+- that leads to FOPDT models, PID tuning, stability margins, and the Smith predictor or cascade control.
+
+**Built:** `starter-kit/`:
+- `README.md`, `PLAYBOOK.md` (the workflow, design pattern, lessons and prompts from this project), `CLAUDE.template.md`, the `context/` guide and a process-log template;
+- a working 7-tab site skeleton: one-row header with theme and motion toggles, Overview-style intro with a live at-a-glance card, cards, dropdowns, grey chips, and an FOPDT step-response demo with sliders, KPIs, a Plotly chart, a KaTeX equation and a data.js-driven References list;
+- tests: a hand-calc pattern (`npm test`), the generic smoke test (now with `--min-tabs`), and a new basics test (toggles remembered, dropdowns, 375/320 px phones without zoom-out, header on one row);
+- a CI workflow.
+
+Verified as a fresh project: npm 4/4; smoke 7 tabs, 3 sliders, 0 failures in light and dark; basics pass. Zipped as `dist/starter-kit.zip`.

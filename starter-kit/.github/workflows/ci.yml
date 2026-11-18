@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    name: Model tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm test
+  browser:
+    name: Browser tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Install Playwright + Chromium
+        run: |
+          npm install --no-save playwright@1.65.0
+          npx playwright install --with-deps chromium
+      - name: Serve site/ and run the browser tests
+        run: |
+          python3 -m http.server 8000 -d site >/dev/null 2>&1 &
+          sleep 2
+          node tests/browser-smoke.mjs --base http://localhost:8000 --paths / --out results/smoke
+          node tests/browser-smoke.mjs --base http://localhost:8000 --paths / --out results/smoke-dark --scheme dark
+          node tests/browser-basics.mjs --base http://localhost:8000 --out results/basics
+      - name: Upload screenshots and reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: results/
+          retention-days: 30
