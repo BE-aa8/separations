@@ -537,6 +537,23 @@ function renderIndustry(force) {
   }
 }
 
+// Theory tab: expand/collapse all equation groups; jump to the reference (button, not a hash link)
+function initTheoryControls() {
+  const btn = document.getElementById('th-expand');
+  const groups = () => [...document.querySelectorAll('#theory-equations details')];
+  const sync = () => {
+    const all = groups().length > 0 && groups().every((d) => d.open);
+    if (btn) { btn.textContent = all ? 'Collapse all' : 'Expand all'; btn.setAttribute('aria-pressed', String(all)); }
+  };
+  if (btn) btn.addEventListener('click', () => { const open = !groups().every((d) => d.open); groups().forEach((d) => { d.open = open; }); sync(); });
+  groups().forEach((d) => d.addEventListener('toggle', sync));
+  const jump = document.getElementById('th-jump');
+  if (jump) jump.addEventListener('click', () => {
+    const el = document.getElementById('th-equations');
+    if (el) el.scrollIntoView({ behavior: document.documentElement.dataset.motion !== 'off' ? 'smooth' : 'auto', block: 'start' });
+  });
+}
+
 // ---------- router ----------
 const TABS = ['overview', 'industry', 'theory', 'simulator', 'ai-workflow', 'video', 'references'];
 function currentTab() { const h = location.hash.replace('#', ''); return TABS.includes(h) ? h : 'overview'; }
@@ -552,18 +569,28 @@ function route() {
 
 // ---------- static content ----------
 function renderTheory() {
+  // equation reference: one closed accordion per group (cards unchanged)
   const host = document.getElementById('theory-equations');
-  host.innerHTML = THEORY_GROUPS.map((g) => `<div class="eq-group"><h3>${g.title}</h3><div class="eq-list">${g.ids.map((id) => {
+  host.innerHTML = THEORY_GROUPS.map((g) => `<details class="eq-group th-acc"><summary><span class="th-acc-t">${g.title}</span><span class="th-ids">${g.ids.map((id) => `<span class="tag">${id}</span>`).join('')}</span><span class="th-acc-n">${g.ids.length}</span></summary><div class="eq-list">${g.ids.map((id) => {
     const e = EQ[id];
     return `<div class="eq-card"><h4><span class="tag">${id}</span>${e.title}</h4><div class="eq">${tex(e.tex, true)}</div><p class="units">Units: ${e.units}</p><p class="interp">${e.interp}</p></div>`;
-  }).join('')}</div></div>`).join('');
+  }).join('')}</div></details>`).join('');
+  // concept cards: each shows its key equation, straight from content.js
+  document.querySelectorAll('.th-eq[data-eq]').forEach((el) => {
+    const e = EQ[el.dataset.eq];
+    if (e) el.innerHTML = `${tex(e.tex, true)}<p class="units"><span class="tag">${el.dataset.eq}</span> Units: ${e.units}</p>`;
+  });
   // live numbers in Theory text (hand-calc state)
   const s60 = solubility(60);
+  let hc = null;
+  try { hc = simulate({ ...DEFAULT_INPUTS }); } catch (e) { hc = null; }
   const live = {
     phi60: fmt(phiSat(60), 3),
     bpeReal: fmt(bpe({ s: s60, T_C: 60, i: 2, activityFactor: phiSat(60) }), 2),
     bpeIdeal: fmt(bpe({ s: s60, T_C: 60, i: 2, activityFactor: 1 }), 2),
     s20: fmt(solubility(20), 1), s100: fmt(solubility(100), 1),
+    lift: fmt(hc && hc.mvr ? hc.mvr.lift : null, 1),
+    cop: fmt(hc && hc.mvr ? hc.mvr.COP : null, 0),
   };
   document.querySelectorAll('[data-live]').forEach((el) => { el.textContent = live[el.dataset.live] ?? '—'; });
 }
@@ -668,6 +695,7 @@ function init() {
   renderReferences();
   renderIndustry();
   initSubtabs();
+  initTheoryControls();
   buildSliders();
   buildCards();
   buildKPIs();

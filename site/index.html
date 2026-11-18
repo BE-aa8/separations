@@ -31,7 +31,7 @@
 <body>
 <header class="site-header">
   <div class="wrap">
-    <h1><a class="brand" href="#overview"><svg class="brand-mark" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8c3.6 4.3 6.4 7.9 6.4 11.3a6.4 6.4 0 0 1-12.8 0c0-3.4 2.8-7 6.4-11.3z"/><circle cx="12" cy="14.6" r="2.3" fill="currentColor" stroke="none"/></svg>MVR Crystallizer Explorer</a></h1>
+    <h1><a class="brand" href="#overview"><svg class="brand-mark" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.8c3.6 4.3 6.4 7.9 6.4 11.3a6.4 6.4 0 0 1-12.8 0c0-3.4 2.8-7 6.4-11.3z"/><circle cx="12" cy="14.6" r="2.3" fill="currentColor" stroke="none"/></svg><span class="brand-text">MVR Crystallizer Explorer</span></a></h1>
     <nav class="tabs" aria-label="Site sections">
       <a href="#overview" data-tab="overview">Overview</a>
       <a href="#industry" data-tab="industry">Industry Context</a>
@@ -229,25 +229,84 @@
 
 <!-- ================= 3. THEORY ================= -->
 <section id="tab-theory" class="tab" data-tab="theory" hidden>
-  <h2>Theory</h2>
-  <p class="lead">Level: Seader, Henley &amp; Roper, Ch. 17 (crystallization, evaporation) plus standard thermodynamics. Every equation shows its units and a one-line "how does that make sense?" interpretation. Live values for the current simulator state are on the <a href="#simulator">Simulator</a> tab.</p>
+  <div class="ov-intro th-intro">
+    <div class="ov-copy">
+      <p class="ov-pill">Theory</p>
+      <h2 class="ov-title">How a compressor replaces steam</h2>
+      <p class="ov-lead">Level: Seader, Henley &amp; Roper, Ch. 17 (crystallization, evaporation) plus standard thermodynamics. Every equation shows its units and a one-line "how does that make sense?" interpretation. Live values for the current simulator state are on the <a href="#simulator">Simulator</a> tab.</p>
+      <div class="ov-actions">
+        <a class="ov-cta" href="#simulator">Try it in the Simulator <span aria-hidden="true">→</span></a>
+        <button type="button" class="ov-link th-linkbtn" id="th-jump">Jump to the equations</button>
+      </div>
+    </div>
+    <aside class="th-glance" aria-label="At a glance (hand-calc case)">
+      <p class="th-glance-h">At a glance <span>hand-calc case, live from the model</span></p>
+      <dl>
+        <div><dt>Osmotic coefficient φ at 60 °C</dt><dd><span data-live="phi60"></span></dd></div>
+        <div><dt>Boiling-point elevation, real vs ideal</dt><dd><span data-live="bpeReal"></span> <small>vs</small> <span data-live="bpeIdeal"></span><small> K</small></dd></div>
+        <div><dt>Compressor lift (BPE + ΔT<sub>heater</sub>)</dt><dd><span data-live="lift"></span><small> K</small></dd></div>
+        <div><dt>Heat-pump COP (heat moved per unit work)</dt><dd><span data-live="cop"></span></dd></div>
+        <div><dt>LiOH solubility, 20 °C vs 100 °C</dt><dd><span data-live="s20"></span> <small>vs</small> <span data-live="s100"></span><small> g/100 g water</small></dd></div>
+      </dl>
+    </aside>
+  </div>
 
-  <h3>Evaporation is a single-stage VLE separation</h3>
-  <p>LiOH is non-volatile, so the vapor is pure water. The liquor boils at T<sub>b</sub>; the vapor leaves at pressure P and is superheated by BPE above its own condensation temperature T<sub>v</sub> = T<sub>sat</sub>(P). Removing water raises the LiOH concentration to saturation, and further evaporation produces crystals.</p>
-
-  <h3>Ideal vs real electrolyte BPE</h3>
-  <p>An ideal (colligative) estimate uses i = 2 ions per LiOH. Real concentrated LiOH(aq) is less "active" than ideal: Monnin &amp; Dubois (2005) give an osmotic coefficient φ ≈ <span data-live="phi60"></span> at saturation and 60 °C <span class="cite" data-src="monnin2005"></span>. With φ the hand-calc BPE is <strong><span data-live="bpeReal"></span> K</strong> instead of <strong><span data-live="bpeIdeal"></span> K</strong> (ideal). The simulator has a toggle for both.</p>
-
-  <div id="theory-equations"></div>
-
-  <h3>Steam economy and multiple effects</h3>
-  <p>In a single effect, 1 kg of steam boils roughly 1 kg of water (E2). Sending each effect's vapor to heat the next re-uses the latent heat N times (E3), but the total temperature difference between the steam and the last condenser is split among the effects, and each effect loses BPE from its driving force (E4). Concentrated brines with large BPE therefore support fewer effects.</p>
-
-  <h3>MVR as a heat pump; superheat, not wet vapor</h3>
-  <p>The compressor only has to raise the vapor's condensing temperature by the lift = BPE + ΔT<sub>heater</sub> (~10 K), not supply the latent heat (~2,360 kJ/kg). That is why COP ≈ 20+. Compression of steam <em>superheats</em> it (C7): the discharge is far above its condensing temperature. Liquid enters the compressor only as entrained mist or foam, or deliberately as a desuperheating condensate spray.</p>
-
-  <h3>Solubility, supersaturation, metastable zone, binodal vs spinodal</h3>
-  <p>The solubility curve c*(T) is the <strong>binodal</strong>: below it crystals dissolve. Above it the liquor is supersaturated (B4). Just above c* is the <strong>metastable zone</strong>, where existing crystals grow but new nuclei rarely form. Past the metastable limit, a nucleation shower makes many fines. The <strong>spinodal</strong> is the thermodynamic limit where the solution is unstable to any fluctuation (no nucleation barrier). The metastable width depends on kinetics (cooling or evaporation rate, agitation, seeds); the spinodal does not. The plot on the Simulator tab draws these bands <span class="flag">SCHEMATIC</span>; there are no LiOH data for their widths.</p>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The ideas</p>
+    <h3 class="ind-h">Seven ideas behind the design</h3>
+    <div class="th-cards">
+      <article class="th-card">
+        <span class="th-num">01</span>
+        <h4>Evaporation is a single-stage VLE separation</h4>
+        <p class="th-take">LiOH does not evaporate, so boiling off water is a one-stage separation: the liquor concentrates until it crystallizes.</p>
+        <div class="th-eq" data-eq="B2"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>LiOH is non-volatile, so the vapor is pure water. The liquor boils at T<sub>b</sub>; the vapor leaves at pressure P and is superheated by BPE above its own condensation temperature T<sub>v</sub> = T<sub>sat</sub>(P). Removing water raises the LiOH concentration to saturation, and further evaporation produces crystals.</p>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">02</span>
+        <h4>Ideal vs real electrolyte BPE</h4>
+        <p class="th-take">Real LiOH liquor boils <span data-live="bpeReal"></span> K above water at the same pressure, not the ideal <span data-live="bpeIdeal"></span> K.</p>
+        <div class="th-eq" data-eq="B1"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>An ideal (colligative) estimate uses i = 2 ions per LiOH. Real concentrated LiOH(aq) is less "active" than ideal: Monnin &amp; Dubois (2005) give an osmotic coefficient φ ≈ <span data-live="phi60"></span> at saturation and 60 °C <span class="cite" data-src="monnin2005"></span>. With φ the hand-calc BPE is <strong><span data-live="bpeReal"></span> K</strong> instead of <strong><span data-live="bpeIdeal"></span> K</strong> (ideal). The simulator has a toggle for both.</p>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">03</span>
+        <h4>Steam economy and multiple effects</h4>
+        <p class="th-take">Each extra effect re-uses the latent heat once more, but every effect loses BPE from its driving force.</p>
+        <div class="th-eq" data-eq="E3"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>In a single effect, 1 kg of steam boils roughly 1 kg of water (E2). Sending each effect's vapor to heat the next re-uses the latent heat N times (E3), but the total temperature difference between the steam and the last condenser is split among the effects, and each effect loses BPE from its driving force (E4). Concentrated brines with large BPE therefore support fewer effects.</p>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">04</span>
+        <h4>MVR as a heat pump; superheat, not wet vapor</h4>
+        <p class="th-take">The compressor only lifts the vapor’s condensing temperature by BPE + ΔT<sub>heater</sub>; it does not supply the latent heat.</p>
+        <div class="th-eq" data-eq="C2"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>The compressor only has to raise the vapor's condensing temperature by the lift = BPE + ΔT<sub>heater</sub> (~10 K), not supply the latent heat (~2,360 kJ/kg). That is why COP ≈ 20+. Compression of steam <em>superheats</em> it (C7): the discharge is far above its condensing temperature. Liquid enters the compressor only as entrained mist or foam, or deliberately as a desuperheating condensate spray.</p>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">05</span>
+        <h4>Solubility, supersaturation and the metastable zone</h4>
+        <p class="th-take">Crystals form only from supersaturated liquor; staying inside the metastable zone grows existing crystals instead of making new ones.</p>
+        <div class="th-eq" data-eq="B4"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>The solubility curve c*(T) is the <strong>binodal</strong>: below it crystals dissolve. Above it the liquor is supersaturated (B4). Just above c* is the <strong>metastable zone</strong>, where existing crystals grow but new nuclei rarely form. Past the metastable limit, a nucleation shower makes many fines. The <strong>spinodal</strong> is the thermodynamic limit where the solution is unstable to any fluctuation (no nucleation barrier). The metastable width depends on kinetics (cooling or evaporation rate, agitation, seeds); the spinodal does not. The plot on the Simulator tab draws these bands <span class="est-chip">schematic</span>; there are no LiOH data for their widths.</p>
   <p><strong>Seeding:</strong> adding seed crystals and operating inside the metastable zone makes the dissolved LiOH deposit on existing crystals instead of forming new nuclei, which controls crystal size.</p>
   <p><strong>Nucleation vs growth:</strong> nucleation creates new crystals; growth enlarges existing ones. High supersaturation favours nucleation (many small crystals); low supersaturation favours growth (fewer, larger crystals).</p>
 
@@ -255,22 +314,61 @@
     <h4>Why crystal size matters</h4>
     <p><strong>Too small:</strong> slow centrifuging and filtering, more mother liquor left on the crystals (larger ε) → more impurity in the product, and dust. <strong>Too large:</strong> liquid inclusions trapped inside crystals, breakage, longer residence time. Crystal size is a purity lever through ε (see M8 and the purge plot). <em>Qualitative only; no size data are used.</em></p>
   </div>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">06</span>
+        <h4>Impurity purge</h4>
+        <p class="th-take">The purge sets the trade-off: less purge means more lithium yield but more sodium in the liquor and on the crystals.</p>
+        <div class="th-eq" data-eq="M4"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>Sodium (as NaOH) does not crystallize with LiOH·H<sub>2</sub>O, so it builds up in the mother liquor until the purge removes it as fast as the feed brings it in (M3). A smaller purge raises lithium yield but concentrates sodium in the liquor (M4), and the liquor film on the crystals then carries more sodium into the product (M8).</p>
+          </div>
+        </details>
+      </article>
+      <article class="th-card">
+        <span class="th-num">07</span>
+        <h4>Why not cooling crystallization?</h4>
+        <p class="th-take">LiOH solubility barely changes with temperature, so cooling recovers little; water has to be evaporated.</p>
+        <div class="th-eq" data-eq="M9"></div>
+        <details class="th-more"><summary>Read more</summary>
+          <div class="th-body">
+            <p>LiOH solubility is nearly flat with temperature (<span data-live="s20"></span> g/100 g water at 20 °C vs <span data-live="s100"></span> at 100 °C <span class="cite" data-src="monnin2005"></span>), so cooling recovers only a small fraction (M9). Water must be removed instead.</p>
+          </div>
+        </details>
+      </article>
+    </div>
+  </div>
 
-  <h3>Impurity purge</h3>
-  <p>Sodium (as NaOH) does not crystallize with LiOH·H<sub>2</sub>O, so it builds up in the mother liquor until the purge removes it as fast as the feed brings it in (M3). A smaller purge raises lithium yield but concentrates sodium in the liquor (M4), and the liquor film on the crystals then carries more sodium into the product (M8).</p>
+  <div class="ind-sec" id="th-equations">
+    <div class="th-eqhead">
+      <div>
+        <p class="ind-eyebrow">The reference</p>
+        <h3 class="ind-h">Every equation</h3>
+      </div>
+      <button type="button" class="th-toggle" id="th-expand" aria-pressed="false">Expand all</button>
+    </div>
+    <div id="theory-equations"></div>
+  </div>
 
-  <h3>Why not cooling crystallization?</h3>
-  <p>LiOH solubility is nearly flat with temperature (<span data-live="s20"></span> g/100 g water at 20 °C vs <span data-live="s100"></span> at 100 °C <span class="cite" data-src="monnin2005"></span>), so cooling recovers only a small fraction (M9). Water must be removed instead.</p>
-
-  <h3>Simplifications (stated)</h3>
-  <ul>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The fine print</p>
+    <details class="th-acc">
+      <summary><span class="th-acc-t">Simplifications we made</span></summary>
+      <div class="th-acc-body">
+        <ul>
     <li>Impurities do not change LiOH solubility. Heat of crystallization neglected. Feed enters at T<sub>b</sub>.</li>
-    <li>Steam vapor is an ideal gas with γ = 1.33 <span class="flag">ESTIMATE</span>. Antoine P<sub>sat</sub> is within 0.38 % of NIST over 30–110 °C, and the error largely cancels in r.</li>
+    <li>Steam vapor is an ideal gas with γ = 1.33 <span class="est-chip">estimate</span>. Antoine P<sub>sat</sub> is within 0.38 % of NIST over 30–110 °C, and the error largely cancels in r.</li>
     <li>Multi-effect economy uses the ideal E<sub>N</sub> ≈ N·E<sub>1</sub> (upper bound). Operating cost only; capital cost is Phase 2.</li>
   </ul>
-
-  <h3>Glossary</h3>
-  <dl class="glossary">
+      </div>
+    </details>
+    <details class="th-acc">
+      <summary><span class="th-acc-t">Glossary</span><span class="th-acc-n">10 terms</span></summary>
+      <div class="th-acc-body">
+        <dl class="glossary">
     <dt>BPE</dt><dd>Boiling-point elevation: how much hotter a solution boils than pure water at the same pressure.</dd>
     <dt>Lift</dt><dd>Temperature rise the compressor must provide: T<sub>c</sub> − T<sub>v</sub> = BPE + ΔT<sub>heater</sub>.</dd>
     <dt>Steam economy E</dt><dd>kg water evaporated per kg of fresh steam.</dd>
@@ -282,6 +380,9 @@
     <dt>LCE</dt><dd>Lithium carbonate equivalent, the industry's unit for lithium quantities.</dd>
     <dt>Osmotic coefficient φ</dt><dd>Ratio of the real to the ideal colligative effect of the dissolved ions.</dd>
   </dl>
+      </div>
+    </details>
+  </div>
 </section>
 
 <!-- ================= 4. SIMULATOR ================= -->

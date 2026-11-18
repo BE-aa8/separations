@@ -434,3 +434,33 @@ It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now 
 - Full suite passes.
 
 **Shipped (2026-11-18):** main fast-forwarded to `5471470` (CI green, deployed by Andrew). The live suite passes (`docs/screenshots/verification/2026-11-18-live-motion/`); one transient 502 in the first light smoke run was clean on re-run. Afterwards `site/diag.html` was removed from the repo; it leaves the live site with the next deploy.
+
+## 2026-11-18 (cont.) — Theory tab cleanup
+
+**Prompt (verbatim):** "next I want to work on cleaning up the theory section. this has the same issues as the old overview where theres just too much going on. can you try and clean it up a little bit by adding dropdown menus or something similar to storage some of the text? try to implement this in a very similar way to the other 2 cleaned up sections, as I liked how those turned out"
+
+**Plan mode** (`docs/plan-theory-claude.md`), approved without changes.
+
+**Built:**
+- **Intro:** in the Overview style: pill, the headline "How a compressor replaces steam", the original lead, a Simulator CTA and a "Jump to the equations" button.
+- **"At a glance" card:** live hand-calc numbers only: φ, BPE real vs ideal, lift, COP and solubility at 20 vs 100 °C. Lift and COP come from `simulate()`.
+- **Seven concept cards:** each has a one-line takeaway, its key equation rendered from `content.js` (B2, B1, E3, C2, B4, M4, M9) with units, and a "Read more" dropdown holding the original paragraphs verbatim.
+- **Equation reference:** the 33 equations sit in 5 accordions (closed, with ID chips and counts) under Expand all / Collapse all.
+- **Fine print:** Simplifications and Glossary as dropdowns.
+- **Flags:** the red SCHEMATIC/ESTIMATE flags became grey chips.
+
+**Result at 1280 px:** 2,092 → 522 visible words; 6,323 → about 2,460 px tall.
+
+**Also fixed:** a regression from the motion toggle. At 375 px the theme button wrapped to a second header row. The header is now tighter on narrow phones, and the title truncates at 320 px.
+
+**New test:** `tests/browser-theory.mjs`, in CI for light and dark. It checks:
+- 7 cards with visible key equations; dropdowns closed;
+- far fewer visible words;
+- every original paragraph still on the page (23 opening phrases);
+- 33 equations present;
+- the live numbers equal the model;
+- Read more, Expand all / Collapse all and Jump work;
+- no red flags;
+- phone layout, including the header on one row.
+
+Full suite passes.
