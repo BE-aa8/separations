@@ -464,3 +464,5 @@ It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now 
 - phone layout, including the header on one row.
 
 Full suite passes.
+
+**Shipped (2026-11-18):** main fast-forwarded to `89c3e1d` after green CI; Andrew deployed. Every suite passes on the live site in light and dark, including the new Theory checks (`docs/screenshots/verification/2026-11-18-live-theory/`). The temporary diagnostics page is gone from the live site.
