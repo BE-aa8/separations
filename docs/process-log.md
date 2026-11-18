@@ -466,3 +466,37 @@ It also includes one cheap fix for a plausible WebKit cause: `flow-anim.js` now 
 Full suite passes.
 
 **Shipped (2026-11-18):** main fast-forwarded to `89c3e1d` after green CI; Andrew deployed. Every suite passes on the live site in light and dark, including the new Theory checks (`docs/screenshots/verification/2026-11-18-live-theory/`). The temporary diagnostics page is gone from the live site.
+
+## 2026-11-18 (cont.) — AI Workflow, Video & Transcript and References cleanup
+
+**Prompt (verbatim):** "let's finishing the clean up the AI Workflow, video, and references tabs next, just add similar details to the others; I think you get the gist now"
+
+**Plan mode** (`docs/plan-pages-claude.md`), approved.
+
+**AI Workflow:**
+- Intro: "One plan, two builders, one critic".
+- A Phase 1 at-a-glance card (tests, time, cost, code size, fix prompts), with figures taken from the existing results table.
+- The subtabs became a pill switch.
+- The workflow is a 4-step timeline and the 5 findings are cards; the screenshots are kept.
+- The results table (12 rows) and the critique decisions (10 rows) are now dropdowns.
+- **Process Log:** the placeholder was replaced by a 12-milestone timeline from topic to live site, taken from this log. It includes ChatGPT as the third model and the live-site bugs.
+
+**Video & Transcript:** intro, a 16:9 "Video coming by Dec 4" card, a transcript dropdown and a "What I learned" card, with grey chips instead of red placeholders. Setting `data-video-id` on `#vd-card` renders the youtube-nocookie player.
+
+**References:**
+- Intro: "Every number has a source", with live counts from `data.js`: 16 sources, 40 values, 22 estimates.
+- Sources are shown as numbered cards; the citation numbers are unchanged.
+- The value table is a dropdown, with grey estimate chips.
+- Contributions are cards. "(student)" was dropped, and ChatGPT was added as the redesign planner (it was missing).
+
+**New test:** `tests/browser-pages.mjs`, in CI for light and dark. It checks:
+- the intros, and that no red flags or placeholders remain;
+- nothing is lost: 12 and 10 table rows, 5 findings, 4 steps, both screenshots, and Gemini's false claim kept as evidence;
+- the subtabs and dropdowns work;
+- the counts equal `data.js`;
+- the video hook renders a player;
+- the phone layout fits.
+
+The test also confirmed a detail: 22 values are estimates, and one of them (`spec.naMax_ppm`) is also "source needed". Full suite passes.
+
+**Left as is (flagged to Andrew):** the two Phase 1 comparison screenshots still show the old course subtitle inside the images.

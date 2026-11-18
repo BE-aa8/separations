@@ -537,6 +537,15 @@ function renderIndustry(force) {
   }
 }
 
+// Video tab: set data-video-id on #vd-card (one line in index.html) and the player appears
+function initVideo() {
+  const card = document.getElementById('vd-card');
+  const id = card && card.dataset.videoId;
+  if (!id || !/^[\w-]{6,20}$/.test(id)) return;
+  card.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" title="Presentation video" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+  card.classList.add('has-video');
+}
+
 // Theory tab: expand/collapse all equation groups; jump to the reference (button, not a hash link)
 function initTheoryControls() {
   const btn = document.getElementById('th-expand');
@@ -601,10 +610,10 @@ function citeLabel(id) { const n = SOURCE_IDS.indexOf(id) + 1; return n ? `<a hr
 function renderReferences() {
   document.getElementById('source-list').innerHTML = SOURCE_IDS.map((id) => {
     const s = DATA.sources[id];
-    return `<li id="src-${id}">${esc(s.citation)}${s.url ? ` <a href="${esc(s.url)}" rel="noopener" target="_blank">${esc(s.url)}</a>` : ''}${s.accessed ? ` (accessed ${esc(s.accessed)})` : ''}${s.verify ? ` <span class="flag">TO VERIFY</span> ${esc(s.verify)}` : ''}</li>`;
+    return `<li id="src-${id}"><span class="ref-cite">${esc(s.citation)}</span>${s.url ? ` <a class="ref-url" href="${esc(s.url)}" rel="noopener" target="_blank">${esc(s.url)}</a>` : ''}${s.accessed ? ` <span class="ref-acc">accessed ${esc(s.accessed)}</span>` : ''}${s.verify ? ` <span class="est-chip">to verify</span> ${esc(s.verify)}` : ''}</li>`;
   }).join('');
   const rows = [];
-  const show = (v) => (v === null ? '<span class="flag">SOURCE NEEDED</span>' : Array.isArray(v) ? v.join('–') : esc(v));
+  const show = (v) => (v === null ? '<span class="est-chip">source needed</span>' : Array.isArray(v) ? v.join('–') : esc(v));
   (function walk(o, path) {
     if (!o || typeof o !== 'object' || Array.isArray(o)) return;
     if ('sourceId' in o) {
@@ -613,12 +622,16 @@ function renderReferences() {
       else if (o.rows) num = `table, ${o.rows.length} rows (${o.columns.join(', ')})`;
       else if (o.points) num = `table, ${o.points.length} points (${o.columns.join(', ')})`;
       else if ('A' in o) num = `A = ${o.A}, B = ${o.B}, C = ${o.C}`;
-      rows.push(`<tr><td><code>${esc(path)}</code></td><td>${num}${o.estimate ? ' <span class="flag">ESTIMATE</span>' : ''}</td><td>${esc(o.units || '')}</td><td>${citeLabel(o.sourceId)} ${esc(o.sourceId)}</td><td>${esc(o.note || o.form || '')}</td></tr>`);
+      rows.push(`<tr><td><code>${esc(path)}</code></td><td>${num}${o.estimate ? ' <span class="est-chip">estimate</span>' : ''}</td><td>${esc(o.units || '')}</td><td>${citeLabel(o.sourceId)} ${esc(o.sourceId)}</td><td>${esc(o.note || o.form || '')}</td></tr>`);
       return;
     }
     for (const [k, v] of Object.entries(o)) if (k !== 'sources' && k !== 'meta') walk(v, path ? `${path}.${k}` : k);
   })(DATA, '');
   document.querySelector('#value-table tbody').innerHTML = rows.join('');
+  // References at a glance (counted, not typed)
+  const nEst = rows.filter((r) => r.includes('est-chip">estimate')).length;
+  const put = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+  put('ref-n-src', String(SOURCE_IDS.length)); put('ref-n-val', String(rows.length)); put('ref-n-val2', String(rows.length)); put('ref-n-est', String(nEst));
   // inline citations and values elsewhere
   document.querySelectorAll('.cite[data-src]').forEach((el) => { el.innerHTML = citeLabel(el.dataset.src); });
   document.querySelectorAll('[data-value]').forEach((el) => {
@@ -696,6 +709,7 @@ function init() {
   renderIndustry();
   initSubtabs();
   initTheoryControls();
+  initVideo();
   buildSliders();
   buildCards();
   buildKPIs();

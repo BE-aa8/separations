@@ -459,23 +459,68 @@
 
 <!-- ================= 5. AI WORKFLOW ================= -->
 <section id="tab-ai-workflow" class="tab" data-tab="ai-workflow" hidden>
-  <h2>AI Workflow</h2>
-  <div class="subtabs" role="tablist">
-    <button type="button" class="subtab active" data-sub="comparison">Model Comparison</button>
-    <button type="button" class="subtab" data-sub="log">Process Log</button>
+  <div class="ov-intro th-intro">
+    <div class="ov-copy">
+      <p class="ov-pill">AI Workflow</p>
+      <h2 class="ov-title">One plan, two builders, one critic</h2>
+      <p class="ov-lead">Claude wrote the plan, Gemini critiqued it, Andrew decided every point, and both models built the same site from the same prompt. A third model, ChatGPT, later shaped the redesign.</p>
+      <div class="subtabs aw-switch" role="tablist">
+        <button type="button" class="subtab active" data-sub="comparison">Model Comparison</button>
+        <button type="button" class="subtab" data-sub="log">Process Log</button>
+      </div>
+    </div>
+    <aside class="th-glance" aria-label="Phase 1 at a glance">
+      <p class="th-glance-h">Phase 1 at a glance <span>Claude vs Gemini, same prompt</span></p>
+      <dl class="aw-vs">
+        <div><dt>Hand-calc tests, first run</dt><dd>9/9 <small>vs</small> 9/9</dd></div>
+        <div><dt>Build time</dt><dd>13:09 <small>vs</small> 12:23<small> min</small></dd></div>
+        <div><dt>Cost</dt><dd>$3.70 <small>vs</small> ≈ $2.85</dd></div>
+        <div><dt>Code size</dt><dd>1,360 <small>vs</small> 3,720<small> lines</small></dd></div>
+        <div><dt>Fix prompts needed</dt><dd>0 <small>vs</small> 0</dd></div>
+      </dl>
+    </aside>
   </div>
-  <div class="subpanel" data-sub="comparison">
-    <h3>Workflow</h3>
-    <ol>
-      <li>Plan v1 written by Claude.</li>
-      <li>Critiqued by Gemini; each point accepted or rejected with a reason, approved by Andrew.</li>
-      <li>Plan v2 (final) merged by Claude.</li>
-      <li>Phase 1 built twice from an identical prompt and identical files: Claude Code (this site) and Gemini (<a href="gemini/">/gemini/</a>).</li>
-    </ol>
-    <p>Both builds got the same prompt, plan and data file, in fresh sessions, and were graded by the same tests (written before either build and never shown to the builders). Full write-up with sources: <a href="https://github.com/be-aa8/seperations/blob/main/docs/comparison.md">docs/comparison.md</a>. Try the other build: <a href="gemini/">Gemini's site</a>.</p>
 
-    <h3>Results (Phase 1)</h3>
-    <div class="table-scroll"><table class="data-table">
+  <div class="subpanel" data-sub="comparison">
+    <div class="ind-sec">
+      <p class="ind-eyebrow">The workflow</p>
+      <h3 class="ind-h">How the two builds were made</h3>
+      <ol class="ind-steps aw-steps">
+        <li><span class="ind-step-n">01</span><strong>Plan v1</strong><span>Written by Claude.</span></li>
+        <li><span class="ind-step-n">02</span><strong>Critique</strong><span>By Gemini; each point accepted or rejected with a reason, approved by Andrew.</span></li>
+        <li><span class="ind-step-n">03</span><strong>Plan v2</strong><span>Final plan merged by Claude.</span></li>
+        <li class="is-modeled"><span class="ind-step-n">04</span><strong>Two builds</strong><span>Phase 1 built twice from an identical prompt and identical files: Claude Code (this site) and Gemini (<a href="gemini/">/gemini/</a>).</span></li>
+      </ol>
+      <p class="ind-p aw-note">Both builds got the same prompt, plan and data file, in fresh sessions, and were graded by the same tests (written before either build and never shown to the builders). Full write-up with sources: <a href="https://github.com/be-aa8/seperations/blob/main/docs/comparison.md">docs/comparison.md</a>. Try the other build: <a href="gemini/">Gemini's site</a>.</p>
+    </div>
+
+    <div class="ind-sec">
+      <p class="ind-eyebrow">The findings</p>
+      <h3 class="ind-h">What I found</h3>
+      <div class="aw-finds">
+        <article class="aw-find"><span class="th-num">01</span><h4>Both got the physics right the first time.</h4><p>A detailed plan, exact input names and an independent test made correctness the easy part.</p></article>
+        <article class="aw-find"><span class="th-num">02</span><h4>The differences were in presentation.</h4><p>Claude showed every equation with units and a one-line interpretation on the simulator. Gemini hid them behind buttons but wrote richer Theory and Industry pages.</p></article>
+        <article class="aw-find"><span class="th-num">03</span><h4>Data honesty needed enforcing for Gemini.</h4><p>Its plan proposed invented prices (caught at review), and its site has an uncited temperature and a hallucinated approval claim, left in place here as evidence.</p></article>
+        <article class="aw-find"><span class="th-num">04</span><h4>Instruction-following:</h4><p>on the free tier, told to only plan, Gemini wrote a full build anyway, then ran out of daily quota. That attempt is kept on its own branch.</p></article>
+        <article class="aw-find"><span class="th-num">05</span><h4>The critic needs checking too:</h4><p>Gemini's critique of my plan was right about compressor superheat but wrong on its one “critical” point (an arithmetic slip).</p></article>
+      </div>
+    </div>
+
+    <div class="ind-sec">
+      <p class="ind-eyebrow">Side by side</p>
+      <h3 class="ind-h">Simulator tab, Phase 1 (1280 px)</h3>
+      <div class="compare-shots">
+      <figure><img src="img/compare/claude-phase1-simulator.jpg" alt="Claude build simulator tab: sliders, process flow diagram, and result cards each showing an equation, value, units and interpretation" loading="lazy" width="800" height="1625"><figcaption>Claude (Opus 5.5)</figcaption></figure>
+      <figure><img src="img/compare/gemini-phase1-simulator.jpg" alt="Gemini build simulator tab: sliders, process flow diagram, grouped value cards with question-mark buttons, and plots" loading="lazy" width="800" height="1625"><figcaption>Gemini (3.5-flash)</figcaption></figure>
+    </div>
+    </div>
+
+    <div class="ind-sec">
+      <p class="ind-eyebrow">The details</p>
+      <details class="th-acc">
+        <summary><span class="th-acc-t">Full results table (Phase 1)</span><span class="th-acc-n">12</span></summary>
+        <div class="th-acc-body">
+          <div class="table-scroll"><table class="data-table">
       <thead><tr><th>Metric</th><th>Claude (Opus 5.5, Claude Code)</th><th>Gemini (3.5-flash → served as 3.8-flash, Gemini CLI on GitHub Actions)</th></tr></thead>
       <tbody>
         <tr><td>Hand-calc tests, first run</td><td>9/9 pass</td><td>9/9 pass</td></tr>
@@ -492,24 +537,12 @@
         <tr><td>Level (3rd-year ChemE)</td><td>Within level</td><td>Within level</td></tr>
       </tbody>
     </table></div>
-
-    <h3>What I found</h3>
-    <ol>
-      <li><strong>Both got the physics right the first time.</strong> A detailed plan, exact input names and an independent test made correctness the easy part.</li>
-      <li><strong>The differences were in presentation.</strong> Claude showed every equation with units and a one-line interpretation on the simulator. Gemini hid them behind buttons but wrote richer Theory and Industry pages.</li>
-      <li><strong>Data honesty needed enforcing for Gemini.</strong> Its plan proposed invented prices (caught at review), and its site has an uncited temperature and a hallucinated approval claim, left in place here as evidence.</li>
-      <li><strong>Instruction-following:</strong> on the free tier, told to only plan, Gemini wrote a full build anyway, then ran out of daily quota. That attempt is kept on its own branch.</li>
-      <li><strong>The critic needs checking too:</strong> Gemini's critique of my plan was right about compressor superheat but wrong on its one “critical” point (an arithmetic slip).</li>
-    </ol>
-
-    <h3>Side by side: Simulator tab (Phase 1, 1280 px)</h3>
-    <div class="compare-shots">
-      <figure><img src="img/compare/claude-phase1-simulator.jpg" alt="Claude build simulator tab: sliders, process flow diagram, and result cards each showing an equation, value, units and interpretation" loading="lazy" width="800" height="1625"><figcaption>Claude (Opus 5.5)</figcaption></figure>
-      <figure><img src="img/compare/gemini-phase1-simulator.jpg" alt="Gemini build simulator tab: sliders, process flow diagram, grouped value cards with question-mark buttons, and plots" loading="lazy" width="800" height="1625"><figcaption>Gemini (3.5-flash)</figcaption></figure>
-    </div>
-
-    <h3>Gemini's critique of plan v1: my decisions</h3>
-    <div class="table-scroll"><table class="data-table">
+        </div>
+      </details>
+      <details class="th-acc">
+        <summary><span class="th-acc-t">Gemini's critique of plan v1: my decisions</span><span class="th-acc-n">10</span></summary>
+        <div class="th-acc-body">
+          <div class="table-scroll"><table class="data-table">
       <thead><tr><th>#</th><th>Gemini suggested</th><th>Decision</th><th>Why</th></tr></thead>
       <tbody>
         <tr><td>1A</td><td>Use one P<sub>sat</sub> method (Antoine) in both builds</td><td>Accept fix, reject reasoning</td><td>The predicted test failure came from an arithmetic slip, but one method keeps the builds consistent</td></tr>
@@ -524,41 +557,105 @@
         <tr><td>9–10</td><td>Fairer comparison; fewer tabs</td><td>Accept</td><td>Same files and fresh sessions for both; 7 tabs</td></tr>
       </tbody>
     </table></div>
-    <p class="small">Full table with reasoning: <a href="https://github.com/be-aa8/seperations/blob/main/docs/critique-decisions.md">docs/critique-decisions.md</a>. Caveats: Claude wrote the plan and the tests; the harnesses differ (interactive Claude Code vs headless Gemini CLI); Opus is a top-tier model and Flash a fast-tier one; one build each, no repeats.</p>
+          <p class="small">Full table with reasoning: <a href="https://github.com/be-aa8/seperations/blob/main/docs/critique-decisions.md">docs/critique-decisions.md</a>. Caveats: Claude wrote the plan and the tests; the harnesses differ (interactive Claude Code vs headless Gemini CLI); Opus is a top-tier model and Flash a fast-tier one; one build each, no repeats.</p>
+        </div>
+      </details>
+    </div>
   </div>
+
   <div class="subpanel" data-sub="log" hidden>
-    <div class="placeholder">PLACEHOLDER: The process log (models, services, prompts, decisions, iterations) is kept in <a href="https://github.com/be-aa8/seperations/blob/main/docs/process-log.md">docs/process-log.md</a> and will be shown here.</div>
+    <div class="ind-sec">
+      <p class="ind-eyebrow">The process</p>
+      <h3 class="ind-h">From topic to live site</h3>
+      <ol class="aw-timeline">
+        <li><span class="aw-date">Oct 23</span><span class="aw-who">Claude (claude.ai)</span><p>Topic chosen: MVR evaporative crystallization of battery-grade LiOH·H<sub>2</sub>O, with Tesla's Robstown refinery as the industry anchor. Claude wrote the hand-off pack for the repo.</p></li>
+        <li><span class="aw-date">Nov 9</span><span class="aw-who">Claude Code</span><p>Implementation plan v1, scoped to the presentation date.</p></li>
+        <li><span class="aw-date">Nov 13</span><span class="aw-who">Gemini + Claude Code</span><p>Gemini critiqued plan v1 with 10 suggestions; Claude fact-checked them (Gemini's one "critical" point was an arithmetic slip). Andrew approved the decisions: "approve all, keep 7b".</p></li>
+        <li><span class="aw-date">Nov 13</span><span class="aw-who">Claude Code</span><p>Plan v2 and the build prompt; Phase 0 verified every data value and wrote the hand-calc tests before either build. Andrew kept the sourced $7.33/t fuel-only steam price.</p></li>
+        <li><span class="aw-date">Nov 13–15</span><span class="aw-who">Claude Code · Gemini CLI</span><p>Phase 1 built twice from the same prompt and files: Claude Code (this site) and Gemini 3.5-flash on GitHub Actions under a spending limit (<a href="gemini/">/gemini/</a>). Both passed 9/9 hand-calc tests first time.</p></li>
+        <li><span class="aw-date">Nov 15</span><span class="aw-who">Claude Code</span><p>Phase 2: capital cost from the public DOE/NETL report, cost-optimal heater ΔT, clickable process diagram, turndown.</p></li>
+        <li><span class="aw-date">Nov 15</span><span class="aw-who">Claude Code</span><p>Model comparison written up. Andrew's call: leave Gemini's false "approved by course instructor" claim in its code as evidence.</p></li>
+        <li><span class="aw-date">Nov 15</span><span class="aw-who">ChatGPT</span><p>A third model: Andrew worked out a 6-phase UX redesign plan with ChatGPT; Claude carried it out phase by phase with tests.</p></li>
+        <li><span class="aw-date">Nov 15</span><span class="aw-who">Claude Code</span><p>Redesign: design system, CRYSTALLIZE dot hero, live animated process diagram, dark/light mode.</p></li>
+        <li><span class="aw-date">Nov 16</span><span class="aw-who">Claude Code</span><p>Liquid Glass simulator: key-result tiles, Explain switch and a shared Help panel, grouped charts, phone Inputs sheet.</p></li>
+        <li><span class="aw-date">Nov 16–18</span><span class="aw-who">Claude Code</span><p>Overview, Industry Context (Tesla video) and Theory cleaned up; course references removed; red flags resolved with sourced data.</p></li>
+        <li><span class="aw-date">Nov 16–18</span><span class="aw-who">Claude Code</span><p>Live-site tests caught real bugs: Netlify's badge covering the phone Inputs button, and a diagnostics page that traced "no animation on iPhone" to Reduce Motion, which led to the motion toggle.</p></li>
+      </ol>
+      <p class="ind-p">Every prompt, decision, iteration and problem, in full: <a href="https://github.com/be-aa8/seperations/blob/main/docs/process-log.md">docs/process-log.md</a>.</p>
+    </div>
   </div>
 </section>
 
 <!-- ================= 6. VIDEO ================= -->
 <section id="tab-video" class="tab" data-tab="video" hidden>
-  <h2>Video &amp; Transcript</h2>
-  <div class="placeholder">PLACEHOLDER: The YouTube presentation (youtube-nocookie.com embed) will appear here once it is uploaded (by Fri Dec 4, 2026).</div>
-  <h3>Transcript (verbatim YouTube auto-transcript)</h3>
-  <div class="placeholder transcript">PLACEHOLDER: The verbatim auto-generated transcript will be pasted here after upload.</div>
-  <h3>What I learned / what I want to learn next</h3>
-  <div class="placeholder">PLACEHOLDER: Andrew writes this section after the build and presentation.</div>
+  <div class="ov-intro vd-intro">
+    <div class="ov-copy">
+      <p class="ov-pill">Video &amp; transcript</p>
+      <h2 class="ov-title">The presentation</h2>
+      <p class="ov-lead">The recorded presentation, its verbatim YouTube transcript, and what I learned along the way.</p>
+    </div>
+  </div>
+  <div class="ind-sec">
+    <div class="vd-card" id="vd-card" data-video-id="">
+      <div class="vd-empty"><span class="vd-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg></span><p class="vd-t">Video coming by Dec 4</p><p class="vd-s">The YouTube presentation (youtube-nocookie.com embed) will appear here once it is uploaded.</p></div>
+    </div>
+  </div>
+  <div class="ind-sec">
+    <details class="th-acc">
+      <summary><span class="th-acc-t">Transcript (verbatim YouTube auto-transcript)</span><span class="est-chip">to be added after upload</span></summary>
+      <div class="th-acc-body transcript" id="vd-transcript"><p>The verbatim auto-generated transcript will be pasted here after upload.</p></div>
+    </details>
+  </div>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">Reflection</p>
+    <h3 class="ind-h">What I learned / what I want to learn next</h3>
+    <div class="ind-card vd-learn"><span class="est-chip">to be written</span><p>Andrew writes this section after the build and presentation.</p></div>
+  </div>
 </section>
 
 <!-- ================= 7. REFERENCES ================= -->
 <section id="tab-references" class="tab" data-tab="references" hidden>
-  <h2>References &amp; Contributions</h2>
-  <h3>Sources</h3>
-  <ol id="source-list" class="sources"></ol>
-  <h3>Every value used, with its source</h3>
-  <p>Generated automatically from <code>js/data.js</code>. <span class="flag">ESTIMATE</span> marks values that are engineering estimates, not primary data.</p>
-  <div class="table-scroll"><table id="value-table" class="data-table"><thead><tr><th>Value</th><th>Number</th><th>Units</th><th>Source</th><th>Note</th></tr></thead><tbody></tbody></table></div>
-  <h3>Contributions</h3>
-  <div class="table-scroll"><table class="data-table">
-    <thead><tr><th>Who</th><th>Role</th></tr></thead>
-    <tbody>
-      <tr><td>Andrew (student)</td><td>Topic, guidance and decisions at every step, approval of critique decisions, data verification, presentation. <span class="flag">PLACEHOLDER</span> details to be added.</td></tr>
-      <tr><td>Claude (Anthropic), via Claude Code</td><td>Plan v1, plan v2 merge, Phase 0 data and test harness, this build (<code>site/</code>).</td></tr>
-      <tr><td>Gemini (Google)</td><td>Critique of plan v1; independent Phase 1 build (<code>site/gemini/</code>).</td></tr>
-      <tr><td>Other tools</td><td>Plotly 2.35.2 (charts), KaTeX 0.16.11 (equations), Netlify (hosting). <span class="flag">PLACEHOLDER</span></td></tr>
-    </tbody>
-  </table></div>
+  <div class="ov-intro th-intro">
+    <div class="ov-copy">
+      <p class="ov-pill">References</p>
+      <h2 class="ov-title">Every number has a source</h2>
+      <p class="ov-lead">Every property value, price and design number on this site is listed here with its source; engineering estimates are labeled as estimates. The value table is generated automatically from <code>js/data.js</code>.</p>
+    </div>
+    <aside class="th-glance" aria-label="References at a glance">
+      <p class="th-glance-h">At a glance <span>counted from js/data.js</span></p>
+      <dl>
+        <div><dt>Sources cited</dt><dd id="ref-n-src">—</dd></div>
+        <div><dt>Values tracked, each with its source</dt><dd id="ref-n-val">—</dd></div>
+        <div><dt>Of those, engineering estimates</dt><dd id="ref-n-est">—</dd></div>
+      </dl>
+    </aside>
+  </div>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The sources</p>
+    <h3 class="ind-h">Sources</h3>
+    <ol id="source-list" class="sources ref-list"></ol>
+  </div>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The data</p>
+    <details class="th-acc">
+      <summary><span class="th-acc-t">Every value used, with its source</span><span class="th-acc-n" id="ref-n-val2">—</span></summary>
+      <div class="th-acc-body">
+        <p>Generated automatically from <code>js/data.js</code>. <span class="est-chip">estimate</span> marks values that are engineering estimates, not primary data.</p>
+        <div class="table-scroll"><table id="value-table" class="data-table"><thead><tr><th>Value</th><th>Number</th><th>Units</th><th>Source</th><th>Note</th></tr></thead><tbody></tbody></table></div>
+      </div>
+    </details>
+  </div>
+  <div class="ind-sec">
+    <p class="ind-eyebrow">The team</p>
+    <h3 class="ind-h">Contributions</h3>
+    <div class="ref-people">
+      <article class="ind-card"><h4>Andrew</h4><p class="ref-role">Project lead</p><p>Topic, guidance and decisions at every step, approval of critique decisions, data verification, presentation. <span class="est-chip">details to be added</span></p></article>
+      <article class="ind-card"><h4>Claude (Anthropic), via Claude Code</h4><p class="ref-role">Planner and builder</p><p>Plan v1, plan v2 merge, Phase 0 data and test harness, this build (<code>site/</code>).</p></article>
+      <article class="ind-card"><h4>Gemini (Google)</h4><p class="ref-role">Critic and second builder</p><p>Critique of plan v1; independent Phase 1 build (<code>site/gemini/</code>).</p></article>
+      <article class="ind-card"><h4>ChatGPT (OpenAI)</h4><p class="ref-role">Redesign planner</p><p>The 6-phase UI/UX redesign plan that Andrew worked out with ChatGPT and Claude then carried out.</p></article>
+      <article class="ind-card"><h4>Other tools</h4><p class="ref-role">Libraries and hosting</p><p>Plotly 2.35.2 (charts), KaTeX 0.16.11 (equations), Netlify (hosting). <span class="est-chip">details to be added</span></p></article>
+    </div>
+  </div>
 </section>
 
 </main>
