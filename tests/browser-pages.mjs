@@ -121,10 +121,10 @@ const watch = (page, errors) => {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   await stub(ctx);
   const page = await ctx.newPage();
-  await page.route(/\/index\.html$|\/$/, async (r) => {
-    const res = await r.fetch();
-    const body = (await res.text()).replace('id="vd-card" data-video-id=""', 'id="vd-card" data-video-id="abcdefghijk"');
-    r.fulfill({ response: res, body });
+  // set the video ID as the page is parsed (inside the browser, so it also works against the live site)
+  await page.addInitScript(() => {
+    new MutationObserver((_, obs) => { const c = document.getElementById('vd-card'); if (c) { c.dataset.videoId = 'abcdefghijk'; obs.disconnect(); } })
+      .observe(document, { childList: true, subtree: true });
   });
   await page.goto(`${BASE}/#video`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(400);

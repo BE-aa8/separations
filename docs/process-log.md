@@ -500,3 +500,5 @@ Full suite passes.
 The test also confirmed a detail: 22 values are estimates, and one of them (`spec.naMax_ppm`) is also "source needed". Full suite passes.
 
 **Left as is (flagged to Andrew):** the two Phase 1 comparison screenshots still show the old course subtitle inside the images.
+
+**Shipped (2026-11-18):** main fast-forwarded to `1e6074c` after green CI; Andrew deployed it. Every suite passes on the live site (`docs/screenshots/verification/2026-11-18-live-pages/`). The pages test needed a harness fix for remote runs: its video-hook check no longer fetches from Node.
