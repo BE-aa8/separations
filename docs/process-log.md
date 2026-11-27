@@ -543,3 +543,14 @@ Verified as a fresh project: npm 4/4; smoke 7 tabs, 3 sliders, 0 failures in lig
 **Result:** 0 red flags or placeholders and no "to verify" left. The remaining grey chips are honest qualifiers: 39 estimates, 1 schematic, 1 market estimate, and the transcript pending upload. `browser-pages.mjs` now accepts at least 30 values (39 after the removal).
 
 **Tests:** full suite passes; the expected hand-calc values are unchanged.
+
+## 2026-11-27 (cont.) — Andrew's conclusions added
+
+**Prompt:** Andrew wrote his conclusions (which build he shipped and why, ChatGPT's strength at moodboards and UI/UX planning, GitHub Pages plus a Gemini API key for next time, about $5 spent across both projects) and what he learned and wants to learn next.
+
+**Done:**
+- Paragraph 1 is now a "My conclusions" quote on the AI Workflow → Model Comparison tab, and it replaces the placeholder in `docs/comparison.md` §6.
+- Paragraph 2 leads the "What I learned / what I want to learn next" section on the Video tab, above the three drafted cards.
+- Both appear verbatim except three small typo fixes, reported to Andrew: "uI" → "UI", "effects" → "affects", "project" → "projects".
+
+Full suite passes.

@@ -1187,3 +1187,8 @@ html[data-motion="off"] .th-more > summary::after, html[data-motion="off"] .th-a
 .vd-learned li { margin-bottom: 8px; }
 .vd-learned li strong { color: var(--text); }
 @media (max-width: 1000px) { .vd-learned { grid-template-columns: minmax(0, 1fr); } }
+/* Andrew's own words (conclusions, what I learned) */
+.my-words { margin: 0 0 var(--s4); padding: var(--s5) var(--s5) var(--s4); border-radius: 22px; background: var(--surface); border: 1px solid var(--border); border-left: 4px solid var(--lime); }
+.my-words p { margin: 0; font-size: 1.08rem; line-height: 1.7; color: var(--text); max-width: 85ch; }
+.my-words footer { margin-top: var(--s3); font: 600 var(--fs-xs)/1.4 var(--mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.my-words footer::before { content: "— "; }

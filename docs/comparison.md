@@ -62,11 +62,11 @@ Why Flash, not Pro: the API key's model list offered gemini-2.5-pro, gemini-3.5-
 - **A pre-run budget check can't cap one agentic run.** The $6 guard refused new runs, but a single build read 8 M tokens. Only the time limit bounds a run.
 - **Verify the critic too:** Gemini's critique had an arithmetic error in its "critical" point, and both models' claims were checked against primary data (NIST, Monnin & Dubois, EIA).
 
-## 6. My conclusions (Andrew, to edit)
-> _Draft by Claude for Andrew to rewrite in his own words before the presentation._
-> - Which build would I ship, and why?
-> - Which differences surprised me (e.g., Gemini's invented numbers, or its hidden equations vs its richer theory text)?
-> - What would I do differently next time (repeat runs, the same harness for both, a Pro-tier Gemini)?
+## 6. My conclusions (Andrew)
+
+After comparison, I chose to ship mostly Anthropic made content. I found that Claude had better design and overall building skills. Something that surprised me while making the website was how good ChatGPT is at making moodboards and planning for UI and UX implementations. I found it much better than Claude and Gemini. If I were to rebuild a website, I would use GitHub Pages with a Gemini API key implementation, similar to what I did in Process Dynamics and Controls. This does cost you (I spent around $5 for both Separations and PD&C), but it is definitely worth it for hands free integration!
+
+Something I learned about process control over these past few weeks has been how recycle affects processes. I liked working with AI and expanding my knowledge on building websites. In the future, I would like to further my understanding of LLMs and use GitHub Pages and Claude to build a homepage for all of my projects and endeavors.
 
 ## Screenshots
 Phase 1 Simulator tabs, same viewport (1280 px), top of page: `site/img/compare/claude-phase1-simulator.jpg`, `site/img/compare/gemini-phase1-simulator.jpg`. Full screenshot sets: `docs/screenshots/verification/`.
