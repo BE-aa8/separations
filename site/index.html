@@ -30,6 +30,7 @@
 <script type="module" src="js/ui.js"></script>
 <script type="module" src="js/hero.js"></script>
 <script type="module" src="js/industry-video.js"></script>
+<script type="module" src="js/deck.js"></script>
 </head>
 <body>
 <header class="site-header">
@@ -607,6 +608,19 @@
   <div class="ind-sec">
     <div class="vd-card" id="vd-card" data-video-id="">
       <div class="vd-empty"><span class="vd-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg></span><p class="vd-t">Video coming by Dec 4</p><p class="vd-s">The YouTube presentation (youtube-nocookie.com embed) will appear here once it is uploaded.</p></div>
+    </div>
+  </div>
+  <div class="ind-sec" id="deck">
+    <p class="ind-eyebrow">The slides</p>
+    <h3 class="ind-h">Presentation slides</h3>
+    <div class="deck" id="deck-viewer" tabindex="0" role="region" aria-roledescription="slide viewer" aria-label="Presentation slides; use the arrow keys to move between slides">
+      <div class="deck-stage"><img id="deck-img" alt="" width="1600" height="900" decoding="async"></div>
+      <div class="deck-bar">
+        <button type="button" class="deck-btn" id="deck-prev" aria-label="Previous slide">←</button>
+        <span class="deck-count" id="deck-count" aria-live="polite">1 / 21</span>
+        <button type="button" class="deck-btn" id="deck-next" aria-label="Next slide">→</button>
+        <span class="deck-dl"><a href="slides/mvr-presentation.pdf" download>Download PDF</a><a href="slides/mvr-presentation.pptx" download>Download PowerPoint</a></span>
+      </div>
     </div>
   </div>
   <div class="ind-sec">

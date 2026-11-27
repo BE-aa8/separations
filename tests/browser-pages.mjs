@@ -75,6 +75,32 @@ const watch = (page, errors) => {
   });
   if (vd.title !== 'The presentation' || !vd.card || !vd.learned || !vd.transcript) fail(`Video tab incomplete (${JSON.stringify(vd)})`);
   if (vd.red) fail(`Video tab: ${vd.red} red flag/placeholder left`);
+  // presentation slides under the video: navigation, keyboard, downloads
+  await page.waitForFunction(() => { const im = document.getElementById('deck-img'); return im && im.complete && im.naturalWidth > 0; }, null, { timeout: 15000 }).catch(() => {});
+  const dk = await page.evaluate(async () => {
+    const im = document.getElementById('deck-img');
+    const head = async (u) => (await fetch(u, { method: 'HEAD' })).status;
+    return { n: (window.__deck || {}).count, w: im.naturalWidth, alt: im.alt, count: document.getElementById('deck-count').textContent,
+      prevDisabled: document.getElementById('deck-prev').disabled, pdf: await head('slides/mvr-presentation.pdf'), pptx: await head('slides/mvr-presentation.pptx'),
+      below: document.getElementById('vd-card').compareDocumentPosition(document.getElementById('deck')) & Node.DOCUMENT_POSITION_FOLLOWING };
+  });
+  if (dk.n !== 21 || dk.w !== 1600 || !/Slide 1 of 21/.test(dk.alt) || dk.count !== '1 / 21' || !dk.prevDisabled) fail(`slide viewer did not start on slide 1 (${JSON.stringify(dk)})`);
+  if (dk.pdf !== 200 || dk.pptx !== 200) fail(`slide downloads missing (pdf ${dk.pdf}, pptx ${dk.pptx})`);
+  if (!dk.below) fail('slides should sit under the video card');
+  await page.click('#deck-next');
+  await page.click('#deck-next');
+  await page.waitForTimeout(300);
+  let st = await page.evaluate(() => ({ c: document.getElementById('deck-count').textContent, src: document.getElementById('deck-img').getAttribute('src') }));
+  if (st.c !== '3 / 21' || !/s-03\.jpg$/.test(st.src)) fail(`next button did not advance (${JSON.stringify(st)})`);
+  await page.focus('#deck-viewer');
+  await page.keyboard.press('End');
+  await page.keyboard.press('ArrowLeft');
+  await page.waitForTimeout(300);
+  st = await page.evaluate(() => ({ c: document.getElementById('deck-count').textContent, ok: document.getElementById('deck-img').complete && document.getElementById('deck-img').naturalWidth > 0 }));
+  if (st.c !== '20 / 21' || !st.ok) fail(`keyboard navigation failed (${JSON.stringify(st)})`);
+  await page.evaluate(() => document.getElementById('deck').scrollIntoView({ block: 'center' }));
+  await page.screenshot({ path: join(OUT, `slides-${SCHEME}.png`) });
+
   // the one-line video hook renders the player
   await page.evaluate(() => { const c = document.getElementById('vd-card'); c.dataset.videoId = 'abcdefghijk'; });
   await page.screenshot({ path: join(OUT, `video-${SCHEME}.png`) });

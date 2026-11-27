@@ -581,3 +581,26 @@ Full suite passes.
 **Cause:** the site never had a favicon. On Netlify the tab showed Netlify's own default icon (served at `/favicon.ico`); GitHub Pages has no default, so browsers showed a letter.
 
 **Fix:** a new crystal icon in the site's colors: a lime faceted prism on the dark rounded square. Files: `img/favicon.svg`, a 32 px PNG fallback and a 180 px apple-touch icon, linked from `index.html` with relative paths so they work under `/separations/`. Netlify's logo was not reused, since it is their brand. The Gemini build is untouched and has no icon. Smoke and UX tests pass under the `/separations/` path.
+
+## 2026-11-27 (cont.) — presentation review, fixes, slides on the site
+
+**Prompts (verbatim):** "take a look at these slides and see if there is anything that needs to be changed or any errors", then "make the changes to the slide and then embed it into the website under the video placement"
+
+**Review:** every number in the 21-slide deck was checked against the model, `data.js`, `docs/critique-decisions.md`, the process log and `context/professor-guidance.md`. Almost all were right.
+
+**Fixed in the .pptx** (text edits in the slide XML; design untouched; validated and re-rendered):
+1. Slide 9: "ΗIS" (a typed capital Eta) → "ηIS".
+2. Slide 19 and its notes: the live, mass-flow-driven diagram is on the Simulator, not the Overview.
+3. Slide 11: "Compressor cost" relabeled "at 6 K". The $1.72M is the base case, not the 3 K optimum.
+4. Slide 9 notes: the superheat point is no longer credited to Lecture 13. Lecture 13 discussed liquid in compressors; the superheat point came from Gemini's critique and Claude's check.
+5. Slide 7: "3.9 K" → "3.95 K".
+6. Slide 5: "Me → plan v2 + tests first".
+7. Slide 15: "fact-checked Gemini's numbers against steam tables".
+8. Slide 2: shortened the legend so it fits on one line.
+
+**On the site:** a slide viewer under the video card on the Video & Transcript tab (`js/deck.js`, `slides/`):
+- 21 slides rendered at 1600×900, each with its title as alt text;
+- buttons, arrow, Home and End keys, and swipe; images load lazily;
+- download links for the PDF and the .pptx (with speaker notes).
+
+`browser-pages.mjs` now checks the viewer: it starts on slide 1, the next button and keyboard navigation work, the images load, the downloads exist, and it sits under the video. Full suite passes, including under the `/separations/` path.
