@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Video script: MVR Crystallizer Explorer</title>
+<style>
+  /* Print-first, low ink: white page, black/grey text, thin rules, no filled boxes. */
+  @page { size: Letter; margin: 0.6in 0.65in 0.65in; }
+  * { box-sizing: border-box; }
+  html { -webkit-print-color-adjust: economy; print-color-adjust: economy; }
+  body { margin: 0; font: 10.6pt/1.45 "Liberation Serif", "Times New Roman", Georgia, serif; color: #111; background: #fff; }
+  h1 { font: 700 19pt/1.15 "Liberation Sans", Arial, sans-serif; margin: 0 0 4pt; }
+  h2 { font: 700 13.5pt/1.2 "Liberation Sans", Arial, sans-serif; margin: 16pt 0 6pt; padding-bottom: 3pt; border-bottom: 1px solid #111; break-after: avoid; }
+  h3 { font: 700 10.8pt/1.25 "Liberation Sans", Arial, sans-serif; margin: 0; break-after: avoid; }
+  p { margin: 0 0 5pt; }
+  .sub { font: 9.5pt/1.4 "Liberation Sans", Arial, sans-serif; color: #444; margin-bottom: 8pt; }
+  .meta { font: 8.6pt/1.3 "Liberation Mono", "Courier New", monospace; color: #444; }
+  .row { border-top: 0.6pt solid #999; padding: 6pt 0 5pt; break-inside: avoid; display: grid; grid-template-columns: 1.15in 1fr; column-gap: 12pt; }
+  .row .when { font: 8.6pt/1.35 "Liberation Mono", "Courier New", monospace; color: #333; }
+  .row .when b { display: block; font: 700 10pt/1.25 "Liberation Sans", Arial, sans-serif; color: #111; margin-bottom: 2pt; }
+  .do { font: italic 9.6pt/1.4 "Liberation Sans", Arial, sans-serif; color: #333; margin-bottom: 3pt; }
+  .say { margin: 0; }
+  .say::before { content: "SAY  "; font: 700 7.6pt/1 "Liberation Sans", Arial, sans-serif; letter-spacing: .08em; color: #555; }
+  .tip { font: 9.2pt/1.4 "Liberation Sans", Arial, sans-serif; color: #333; border-left: 1.2pt solid #111; padding-left: 7pt; margin: 4pt 0 0; }
+  .tip b { color: #111; }
+  ul { margin: 2pt 0 5pt 14pt; padding: 0; }
+  li { margin: 0 0 2pt; }
+  table { width: 100%; border-collapse: collapse; font: 9.3pt/1.35 "Liberation Sans", Arial, sans-serif; }
+  th, td { text-align: left; vertical-align: top; padding: 3.5pt 6pt 3.5pt 0; border-top: 0.6pt solid #aaa; }
+  th { font-weight: 700; border-top: 1px solid #111; }
+  td:first-child { font-weight: 700; width: 1.55in; }
+  .box { border: 0.8pt solid #111; padding: 7pt 9pt; margin: 8pt 0; break-inside: avoid; }
+  .two { columns: 2; column-gap: 18pt; }
+  .two p, .two li { break-inside: avoid; }
+  .pb { break-before: page; }
+  .check { font: 9.4pt/1.6 "Liberation Sans", Arial, sans-serif; }
+  .check span { display: inline-block; width: 9pt; height: 9pt; border: 0.8pt solid #111; margin-right: 6pt; vertical-align: -1pt; }
+  .num { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body>
+
+<h1>Video script: MVR Crystallizer Explorer</h1>
+<p class="sub">YouTube practice presentation · target ≈ 15–16 min · slides first, then the website, then back to slides to close (2 cuts).<br>
+Live site: be-aa8.github.io/separations · All numbers below are what the site shows for the "Hand-calc case" (60 °C liquor, 5 % purge, Texas prices).</p>
+
+<div class="box">
+<h3>Running order</h3>
+<table>
+<tr><th>Part</th><th>What is on screen</th><th>Time</th></tr>
+<tr><td>A · Slides 1–19</td><td>PowerPoint (or the site's slide viewer in Full screen). Significance → process → AI workflow → 6 lessons → recap → "Let's run it".</td><td class="num">≈ 8 min</td></tr>
+<tr><td>B · Website demo</td><td>Browser at the live site. Overview → Industry → Simulator (most of the time) → Theory → AI Workflow → References.</td><td class="num">≈ 6½ min</td></tr>
+<tr><td>C · Slides 20–21</td><td>Conclusions in your own words, then "Try it yourself" and thank-you.</td><td class="num">≈ 1½ min</td></tr>
+</table>
+</div>
+
+<div class="box">
+<h3>Before you hit record</h3>
+<p class="check"><span></span>Browser window about 1400 px wide, zoom 110–125 % so text is readable on YouTube; close other tabs and notifications.
+<br><span></span>Site in <b>light mode</b> (sun/moon button) — easier to read on video. Motion <b>on</b> (waves button lit lime).
+<br><span></span>On the Simulator, click <b>Hand-calc case</b> before you start so every number matches this script.
+<br><span></span>Explain is <b>off</b> (clean view). Turn it on only when the script says so.
+<br><span></span>Speak slower than feels natural; pause 1 s after each click so the viewer sees the change.</p>
+</div>
+
+<h2>Part A · Slides (≈ 8 min)</h2>
+
+<div class="row"><div class="when"><b>Slide 1</b>0:00 · 30 s</div><div>
+<p class="say">Hi, I'm Andrew. This is the MVR Crystallizer Explorer, an interactive simulator for how battery-grade lithium hydroxide is crystallized using a compressor instead of steam. Two threads run through it: the separations question, why a compressor beats steam and when it doesn't, and the AI question, because one model planned this, a second critiqued it, two different models built it, and I compared them.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 2</b>0:30 · 30 s</div><div>
+<p class="say">Three numbers frame the project. Fourteen: Gemini reviewed Claude's plan and I made a keep-or-change decision on every point, with a reason. Nine out of nine: both AI-built simulators matched my hand calculation on the first try. Thirty-five: every work session is logged, with my prompts and my reasoning, on the AI Workflow tab.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 3</b>1:00 · 40 s</div><div>
+<p class="say">Why it matters. Nickel-rich battery cathodes are made from lithium hydroxide monohydrate. Tesla's refinery in Robstown, Texas turns ore into it, about twenty thousand tonnes a year, enough for roughly thirty gigawatt-hours of batteries. The last step is crystallization: boil water off a purified brine until crystals form. Boiling is where the energy goes, and MVR is how industry makes it cheaper. The fifty-five to sixty percent market share is a market-research estimate, so I label it as one.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 4</b>1:40 · 60 s</div><div>
+<p class="do">Point along the loop as you talk: feed → crystallizer → vapor → compressor → heater → back.</p>
+<p class="say">Here's the loop. Ten thousand kilograms an hour of brine at six percent lithium hydroxide enters the crystallizer, which boils at sixty degrees under vacuum. The vapor goes to the compressor, which squeezes it from 16.5 to 26 kilopascals. At the higher pressure it condenses at sixty-six degrees, six degrees hotter than the liquor, so it can heat the liquor in the heater. That's the whole trick. Crystals come out the bottom, and a small purge bleeds off impurities. The punchline: boiling needs about 5,600 kilowatts of heat, but the compressor only spends about 250 kilowatts to recycle the vapor's own heat.</p>
+<p class="tip"><b>Plain words:</b> "latent heat" = the energy it takes to turn water into steam; you get it back when the steam condenses. MVR re-uses it instead of burning fuel for new steam.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 5</b>2:40 · 45 s</div><div>
+<p class="say">The AI workflow. I chose the topic with Claude from the course material. Claude Code wrote plan version one in plan mode. Gemini critiqued it, Claude fact-checked Gemini's numbers, and I approved fourteen decisions. Then the final plan and the tests were written before anything was built. Claude Code built one version, Gemini built a second from the same plan on GitHub Actions, ChatGPT planned the redesign, and now the site publishes itself to GitHub Pages only when every test passes.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 6</b>3:25 · 10 s</div><div>
+<p class="say">Building it taught me six lessons: four about separations, two about AI. Lesson one.</p>
+<p class="tip">The "6 lessons" divider slides (6, 8, 10, 12, 14, 16): click through in about 2 seconds each, just say the next lesson's title.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 7</b>3:35 · 55 s</div><div>
+<p class="say">Salt makes the compressor work harder. Dissolved lithium and hydroxide ions lower water's vapor pressure, so the liquor boils about four degrees hotter than pure water at the same pressure. That's the boiling-point elevation, or BPE. The vapor that comes off is pure water, so the compressor has to lift it from water's boiling point, not the liquor's. So BPE is pure penalty: about 4 of the 10 degrees the compressor has to lift. Ideal theory says 4.76 degrees; the real electrolyte gives 3.95, because concentrated lithium hydroxide behaves as if it had fewer free particles. Ideal theory would overestimate it by about 21 percent.</p>
+<p class="tip"><b>If asked "how does that make sense?":</b> BPE = φ · i · K<sub>b</sub> · m. i = 2 ions per LiOH, m ≈ 6 mol/kg (saturated), K<sub>b</sub> = 0.39 at 60 °C (smaller than the textbook 0.512 at 100 °C because K<sub>b</sub> scales with T²/h<sub>fg</sub>), φ = 0.83 is the osmotic coefficient.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 9</b>4:35 · 55 s</div><div>
+<p class="say">Lesson two: MVR only pays for the lift. The compressor doesn't supply the heat to boil water; that heat is already in the vapor. It only raises the vapor's condensing temperature by about ten degrees, from 56 to 66. So 99 kilojoules of work moves 2,367 kilojoules of heat: a coefficient of performance of about 24, which is 70 percent of the ideal Carnot limit. That's 29 kilowatt-hours per tonne of water, inside the 20-to-60 range vendors quote. And compression actually superheats the steam, to about 113 degrees; it doesn't make it wet.</p>
+<p class="tip"><b>COP</b> = heat moved ÷ work in. <b>Carnot COP</b> = the best any heat pump could do between those two temperatures. A heat pump moving heat "uphill" only 10 K is very efficient, which is why COP is so high.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 11</b>5:30 · 60 s</div><div>
+<p class="say">Lesson three surprised me: cheapest to run isn't always MVR. At Texas prices, about seven cents per kilowatt-hour for power and cheap natural gas, MVR costs $2.09 per tonne of water evaporated, but a five-effect evaporator costs $1.58. MVR only wins on energy below about 5.4 cents. But that steam price is fuel only; it leaves out the boiler and the extra evaporator bodies. So I added capital cost from a Department of Energy cost report, scaled to today's dollars. The total yearly cost bottoms out around a three-degree heater temperature difference: go smaller and the heater gets huge; go bigger and you pay for more compressor lift.</p>
+<p class="tip"><b>Multi-effect evaporator:</b> a chain of evaporators where each one's vapor heats the next, so 1 kg of steam boils about N kg of water. <b>CEPCI</b>: an index used to scale old equipment prices to today. These costs are order-of-magnitude and labeled that way.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 13</b>6:30 · 50 s</div><div>
+<p class="say">Lesson four: the purge is a dial between yield and purity. Sodium doesn't crystallize with the product, so it builds up in the liquid until the purge carries it out. With a five percent purge, sodium concentrates twenty times in the mother liquor, and about ten percent of the lithium leaves with the purge, so the yield is 89.6 percent. The crystals carry a thin film of that liquor, which is where the 583 parts-per-million impurity comes from. So there are two separate levers: purge for yield, washing for purity.</p>
+<p class="tip"><b>Mother liquor</b> = the saturated liquid the crystals grow in. <b>ε</b> = kg of that liquid stuck to each kg of crystals after the centrifuge.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 15</b>7:20 · 45 s</div><div>
+<p class="say">Lesson five is about AI: one model planned, another critiqued. Gemini returned ten points on Claude's plan, and Claude checked the numbers against steam tables before I decided. Nine accepted, four modified, one claim rejected. Gemini was right that compression superheats the vapor, and it caught an inconsistency in my purity model. But its one "critical" point was its own arithmetic slip. I kept its suggested fix and rejected the reasoning. The critic needs checking too.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 17</b>8:05 · 45 s</div><div>
+<p class="say">Lesson six: two builds, same tests. Both models got the same plan, prompt and data, and both passed all nine hand-calculation tests on the first run. They took about the same time and cost, around thirteen minutes and three dollars each, but Gemini wrote 2.7 times the code, hid every equation behind buttons, and wrote that the course instructor approved its critique, which never happened. Passing the tests isn't the same as being honest.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slides 18–19</b>8:50 · 20 s</div><div>
+<p class="say">(Slide 18) So: salt costs lift, MVR only pays for lift, cheap gas can beat it, purge trades yield for purity, check the critic, and tests aren't honesty. (Slide 19) Now let's run it.</p>
+<p class="tip"><b>CUT 1</b> → switch to the browser.</p>
+</div></div>
+
+<h2 class="pb">Part B · Website demo (≈ 6½ min)</h2>
+
+<div class="row"><div class="when"><b>Overview</b>9:10 · 30 s</div><div>
+<p class="do">Open the site on the Overview tab. Scroll slowly past the headline and diagram to the CRYSTALLIZE animation; move the mouse through it.</p>
+<p class="say">This is the site. The overview asks the same question as the talk, shows the loop as a moving diagram, and this is just for fun: you can stir the dots. There's a light and dark mode and a motion switch up here.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Industry Context</b>9:40 · 40 s</div><div>
+<p class="do">Click Industry Context. Let the Tesla video play behind the headline for a few seconds. Scroll to "How much product?"</p>
+<p class="say">Industry context, with Tesla's own refinery video playing in the background. Down here I turn Tesla's 20,000 tonnes a year into an hourly rate: about 2,500 kilograms of crystals per hour. My simulator's base case makes 942, so Tesla needs the capacity of about 2.7 of my crystallizers. That's a sanity check on scale.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Simulator: tour</b>10:20 · 50 s</div><div>
+<p class="do">Click Simulator, then "Hand-calc case". Point to: the six result tiles at top, the inputs on the left, the process diagram. Click the compressor on the diagram.</p>
+<p class="say">This is the simulator. Inputs on the left, the six key results up top: energy, cost, lithium yield, impurity, boiling-point elevation, and the cost-optimal heater difference. The diagram is live: flow speeds follow the actual mass flows. If I click a unit, like the compressor, it shows its equations with today's numbers plugged in.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>"How does that make sense?"</b>11:10 · 30 s</div><div>
+<p class="do">Click the "?" on the Lithium yield tile. Then turn on Explain in the toolbar for a few seconds, then off again.</p>
+<p class="say">Every number has a question-mark button. It shows the equation, the units, the numbers substituted in, and a one-line answer to "how does that make sense?" The Explain switch shows all of that inline at once, which is what I'd use for questions in class.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>What-if 1: purge</b>11:40 · 40 s</div><div>
+<p class="do">Drag "Purge ratio" from 0.050 to about 0.150. Watch the Yield and Impurity tiles; scroll to chart P7.</p>
+<p class="say">Lesson four, live. If I triple the purge from five to fifteen percent, impurity drops from 583 to about 194 ppm, but the yield falls from 89.6 to about 68 percent: I'm throwing lithium away. Chart P7 shows the whole trade-off curve.</p>
+<p class="tip">Then drag "Adhering liquor ε" from 0.030 down to 0.010: impurity ≈ 198 ppm and the yield doesn't change. <b>Say:</b> "Washing the crystals is the purity lever that doesn't cost lithium."</p>
+</div></div>
+
+<div class="row"><div class="when"><b>What-if 2: power price</b>12:20 · 40 s</div><div>
+<p class="do">Click "Hand-calc case". Drag "Electricity c_e" from 0.072 down to 0.040 $/kWh. Watch the cost tile; scroll to chart P5 and P6.</p>
+<p class="say">Lesson three, live. At today's Texas price MVR costs $2.09 a tonne and five effects cost $1.58. If power drops to four cents, MVR falls to about $1.16 and becomes the cheapest option. Chart P6 shows the crossover: above the line steam is expensive and MVR wins; below it, multiple effects win.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>What-if 3: heater ΔT</b>13:00 · 40 s</div><div>
+<p class="do">Click "Hand-calc case". Drag "Heater ΔT" from 6 K to 3 K. Watch kWh/t; scroll to chart P9.</p>
+<p class="say">The design knob. If I let the heater run on a three-degree difference instead of six, the compressor lift shrinks and energy drops from 29 to about 20 kilowatt-hours a tonne, which actually beats five effects. The catch is a bigger heater. Chart P9 adds that capital cost: the total yearly cost has a minimum right around three degrees.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>What-if 4: salt</b>13:40 · 25 s</div><div>
+<p class="do">Click the "High BPE" preset. Point to the BPE tile and chart P3.</p>
+<p class="say">And lesson one: this preset boils at 100 degrees and uses the ideal, saltier assumption, so the boiling-point elevation jumps from about 4 to about 9.6 degrees. The lift goes from 10 to about 15.6, and energy from 29 to about 41 kilowatt-hours a tonne. Chart P3 splits the lift into the salt part and the heater part.</p>
+<p class="tip">Click "Hand-calc case" again to reset.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Theory</b>14:05 · 30 s</div><div>
+<p class="do">Click Theory. Point to "At a glance", open one "Read more", then click "Expand all" on Every equation and scroll a little.</p>
+<p class="say">The theory tab has the seven ideas behind the design, each with its key equation, and all 33 equations underneath, each with units and a one-line interpretation, at a third-year level.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>AI Workflow</b>14:35 · 40 s</div><div>
+<p class="do">Click AI Workflow. Point to the Claude vs Gemini card; open "Gemini's critique: my decisions"; click "Process Log".</p>
+<p class="say">The AI workflow tab documents the process the assignment asks for: the side-by-side comparison, every critique point with my decision and the reason, and the process log, from picking the topic to the live site, with the prompts I used in the full log on GitHub.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>References</b>15:15 · 15 s</div><div>
+<p class="do">Click References; open "Every value used".</p>
+<p class="say">And every number on the site has a source here, with engineering estimates clearly labeled.</p>
+<p class="tip"><b>CUT 2</b> → back to slides, slide 20.</p>
+</div></div>
+
+<h2>Part C · Close (≈ 1½ min)</h2>
+
+<div class="row"><div class="when"><b>Slide 20</b>15:30 · 60 s</div><div>
+<p class="say">In my own words (don't read the slide): which build I shipped and why, what surprised me about ChatGPT for design planning, what I'd do next time with GitHub Pages and a Gemini API key, and what I want to learn next.</p>
+</div></div>
+
+<div class="row"><div class="when"><b>Slide 21</b>16:30 · 15 s</div><div>
+<p class="say">The site is live at be-aa8.github.io/separations. Every value is cited, and the slides are on the site too. Thanks for watching.</p>
+</div></div>
+
+<h2 class="pb">Glossary: terms in plain words</h2>
+<table>
+<tr><th>Term</th><th>What it means (and the one-line "why")</th></tr>
+<tr><td>MVR</td><td>Mechanical vapor recompression. A compressor squeezes the evaporator's own vapor so it condenses hotter and can heat the liquor again. It's a heat pump.</td></tr>
+<tr><td>Latent heat (h<sub>fg</sub>)</td><td>Energy to turn liquid water into vapor (~2,367 kJ/kg at 56 °C). Released again when the vapor condenses.</td></tr>
+<tr><td>BPE</td><td>Boiling-point elevation: dissolved ions make a solution boil hotter than pure water at the same pressure (3.95 K here).</td></tr>
+<tr><td>Molality m</td><td>mol of solute per kg of water (≈ 6.08 mol/kg for saturated LiOH at 60 °C).</td></tr>
+<tr><td>Osmotic coefficient φ</td><td>Correction for a real, concentrated solution (0.83): its ions act "less than ideal", so the real BPE is smaller than the ideal one.</td></tr>
+<tr><td>Lift</td><td>How much the compressor raises the condensing temperature: BPE + heater ΔT ≈ 10 K.</td></tr>
+<tr><td>Heater ΔT</td><td>Temperature difference that drives heat across the heater tubes (6 K base). Smaller ΔT → bigger, costlier heater; bigger ΔT → more lift and power.</td></tr>
+<tr><td>Pressure ratio r</td><td>Discharge ÷ suction pressure (26.1 / 16.5 kPa = 1.58).</td></tr>
+<tr><td>Isentropic efficiency η<sub>is</sub></td><td>How close the real compressor is to an ideal, loss-free one (0.75 assumed).</td></tr>
+<tr><td>Superheat</td><td>Compressing steam heats it above its condensing temperature (to ~113 °C); it gets drier, not wetter.</td></tr>
+<tr><td>COP / Carnot COP</td><td>Heat moved per unit of work (≈ 24) / the theoretical best for the same temperatures (≈ 34).</td></tr>
+<tr><td>kWh/t</td><td>Electricity per tonne of water evaporated (29 base). The plant-comparison number; vendors quote 20–60.</td></tr>
+<tr><td>Multi-effect (N effects)</td><td>Evaporators in series, each heated by the previous one's vapor. Steam economy ≈ N kg water per kg steam, but each effect loses driving force to BPE.</td></tr>
+<tr><td>Steam economy E</td><td>kg of water evaporated per kg of fresh steam.</td></tr>
+<tr><td>Crossover price c<sub>e</sub>*</td><td>The electricity price where MVR and an N-effect evaporator cost the same per tonne.</td></tr>
+<tr><td>CEPCI</td><td>Chemical Engineering Plant Cost Index: scales 1998 equipment prices to 2023 dollars (×797.9/389.5).</td></tr>
+<tr><td>TAC, CRF</td><td>Total annualized cost = capital spread over the equipment life (via the capital recovery factor) + yearly electricity.</td></tr>
+<tr><td>Turndown</td><td>Running below design feed. With the heater already built, less heat needs a smaller ΔT, so less lift (chart P10).</td></tr>
+<tr><td>Purge ratio p</td><td>Purge flow ÷ feed flow (0.05). Sets how much sodium leaves, and how much lithium leaves with it.</td></tr>
+<tr><td>Mother liquor</td><td>The saturated liquid the crystals grow in; impurities concentrate in it.</td></tr>
+<tr><td>ε (adhering liquor)</td><td>kg of mother liquor left on each kg of crystals after the centrifuge (0.03). Washing lowers it.</td></tr>
+<tr><td>Yield / ppm</td><td>% of fed lithium that ends up as crystals (89.6 %) / parts per million of impurity in the product (583).</td></tr>
+<tr><td>Supersaturation</td><td>Concentration above the solubility limit; the driving force for crystals to form and grow.</td></tr>
+<tr><td>Metastable zone</td><td>Just above solubility: existing crystals grow, but new ones rarely form. Operating here (with seed crystals) gives fewer, larger crystals.</td></tr>
+<tr><td>Binodal / spinodal</td><td>Binodal = the solubility curve; spinodal = the limit where the solution becomes unstable to any disturbance. The site draws these schematically.</td></tr>
+<tr><td>Antoine equation</td><td>Fit for water's vapor pressure vs temperature (checked within 0.38 % of NIST from 30–110 °C).</td></tr>
+</table>
+
+<h2>Chart cheat-sheet (Simulator tab)</h2>
+<table>
+<tr><th>Chart</th><th>What it shows · what to say</th></tr>
+<tr><td>P5 Energy comparison</td><td>Fuel energy and $/t for 1, 3, 5 effects and MVR. "MVR uses the least energy; 5 effects is cheapest at cheap gas."</td></tr>
+<tr><td>P6 Price crossover</td><td>Electricity price vs steam price. Above a line, MVR is cheaper than that many effects. Diamond = Texas today.</td></tr>
+<tr><td>P9 Heater ΔT optimum</td><td>Capital + electricity vs heater ΔT; the bottom of the total curve is the cost-optimal ΔT (≈ 3 K).</td></tr>
+<tr><td>P10 Turndown</td><td>kWh/t at part load with the heater fixed: energy per tonne drops at lower load.</td></tr>
+<tr><td>P11 Multi-effect feasibility</td><td>Temperature difference available per effect vs number of effects; where it drops below ΔT<sub>min</sub>, more effects aren't feasible (BPE eats the driving force).</td></tr>
+<tr><td>P2 BPE vs molality</td><td>BPE rises with concentration: ideal line, real (φ) point at saturation, and a shaded band for activity factors 0.75–1.20.</td></tr>
+<tr><td>P3 What the compressor lifts</td><td>The lift split into BPE (salt penalty) + heater ΔT.</td></tr>
+<tr><td>P4 Compressor vs BPE</td><td>kWh/t, pressure ratio and discharge temperature all rise with BPE; the shaded band is the 20–60 kWh/t vendor range.</td></tr>
+<tr><td>P7 Purge trade-off</td><td>Yield (top) and impurity (bottom) vs purge ratio, for three ε values.</td></tr>
+<tr><td>P8 Where the feed goes</td><td>Sankey: feed splits into vapor, crystals and purge.</td></tr>
+<tr><td>P1 Solubility &amp; cooling</td><td>LiOH solubility is nearly flat with temperature, so cooling recovers little; water must be evaporated.</td></tr>
+<tr><td>P1b Metastable zone</td><td>Schematic bands above the solubility curve (no LiOH data for widths; labeled schematic).</td></tr>
+</table>
+
+<h2>Likely questions (short answers)</h2>
+<div class="two">
+<p><b>Why does the compressor have to lift BPE?</b> The vapor is pure water, so it condenses at water's saturation temperature, BPE below the liquor. To heat the liquor it must condense above the liquor's temperature.</p>
+<p><b>Why is K<sub>b</sub> 0.39, not 0.512?</b> K<sub>b</sub> = R·T<sub>b</sub>²·M<sub>w</sub>/ΔH<sub>vap</sub>. At 60 °C, T² is smaller than at 100 °C, so K<sub>b</sub> is smaller.</p>
+<p><b>Why doesn't compression make the steam wet?</b> Compressing a vapor raises its temperature faster than its saturation temperature, so it leaves superheated (~113 °C vs 66 °C saturation). Liquid only comes from entrained mist or foam.</p>
+<p><b>Why not cooling crystallization?</b> LiOH solubility barely changes with temperature (13.4 vs 18.6 g/100 g water from 20 to 100 °C), so cooling recovers only a small fraction.</p>
+<p><b>Why is steam "fuel-only"?</b> It's the sourced fuel cost of making steam (EIA gas price). Boiler capital and labour aren't included, so it flatters multi-effect; I say so on the slide.</p>
+<p><b>How did you know the AI was right?</b> Tests were written from my hand calculation before either build; every data value has a source; Claude fact-checked Gemini's critique numbers against steam tables; I made every decision.</p>
+<p><b>Why does a smaller heater ΔT save energy?</b> Lift = BPE + ΔT. Less ΔT → less lift → less compressor work, but the heater area (A = Q/(U·ΔT)) grows.</p>
+<p><b>What sets the product purity?</b> The film of mother liquor on the crystals: impurity ≈ ε·z<sub>ML</sub>/(1+ε), and z<sub>ML</sub> = z<sub>F</sub>/p.</p>
+</div>
+
+</body>
+</html>

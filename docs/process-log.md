@@ -619,3 +619,18 @@ Full suite passes.
 Full screen uses the browser's own full screen. Where that isn't allowed (iPhone), it falls back to a full-window overlay; Esc closes it. Arrow keys, Space and F work while full screen.
 
 `browser-pages.mjs` now also checks: thumbnails stay in sync with the slide, clicking a thumbnail jumps to that slide, the title line, entering and leaving full screen, and arrow keys while full screen. Full suite passes, including under `/separations/`.
+
+## 2026-11-27 (cont.) — video script (printable)
+
+**Prompt (summary):** Andrew asked for a layout and script for the YouTube video, half over the slides and half over the website. Not everything needs mentioning, because the in-class Q&A covers the rest. Plain explanations of the graphs and terms. A printable PDF that uses little ink.
+
+**Produced:** `docs/video-script.pdf` (8 Letter pages; source `docs/video-script.html`).
+- **Order:** slides 1–19, then the website, then slides 20–21, so only 2 cuts.
+- **Content:** a timed script for every slide and demo step, with what to click and what to say.
+- **Demo:** four "what if" moves with the exact numbers the site shows, all computed from `simulate()`:
+  - purge 0.05 → 0.15 (yield 89.6 → 68.4 %, 583 → 194 ppm), and ε 0.03 → 0.01 (198 ppm);
+  - power 0.072 → 0.040 $/kWh (MVR $2.09 → $1.16, beats 5 effects at $1.58);
+  - heater ΔT 6 → 3 K (29.0 → 20.1 kWh/t);
+  - the High BPE preset (BPE 9.6 K, lift 15.6 K, 40.7 kWh/t).
+- **Reference pages:** a plain-language glossary, a cheat-sheet for all 12 charts (checked against `charts.js`), and short answers to likely questions.
+- **Print:** black on white, thin rules, no filled boxes.
