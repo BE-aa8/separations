@@ -34,7 +34,7 @@ const watch = (page, errors) => {
   const v = await page.evaluate(async () => {
     const tab = document.getElementById('tab-theory');
     const visible = (e) => e.getClientRects().length > 0;
-    const { simulate, DEFAULT_INPUTS } = await import('/js/model.js');
+    const { simulate, DEFAULT_INPUTS } = await import('./js/model.js');
     const hc = simulate({ ...DEFAULT_INPUTS });
     const norm = (t) => t.replace(/\s+/g, ' ');
     return {

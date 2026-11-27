@@ -69,7 +69,7 @@ const st = (page) => page.evaluate(() => ({ ...window.__indVideo, ds: document.g
   if (!a.calls.includes('play')) fail('background video was never told to play');
   // content
   const c = await page.evaluate(async () => {
-    const { simulate, DEFAULT_INPUTS } = await import('/js/model.js');
+    const { simulate, DEFAULT_INPUTS } = await import('./js/model.js');
     const C = simulate({ ...DEFAULT_INPUTS }).mass.C;
     return {
       flags: document.querySelectorAll('#tab-industry .flag').length,

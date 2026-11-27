@@ -554,3 +554,15 @@ Verified as a fresh project: npm 4/4; smoke 7 tabs, 3 sliders, 0 failures in lig
 - Both appear verbatim except three small typo fixes, reported to Andrew: "uI" → "UI", "effects" → "affects", "project" → "projects".
 
 Full suite passes.
+
+## 2026-11-27 (cont.) — hosting moved from Netlify to GitHub Pages
+
+**Prompt (verbatim):** "can you actually push the website to GitHub Pages instead of hosting in Netlify? I tried doing this with my other class project and it worked so much better an is nice how hands free it is"
+
+**Built:**
+- `.github/workflows/pages.yml` publishes `site/` to GitHub Pages automatically whenever the CI workflow succeeds on `main`. If any test fails, nothing is published. A manual run is also possible.
+- One-time setup by Andrew: Settings → Pages → Source: GitHub Actions.
+- The site uses only relative paths, so it works under `https://be-aa8.github.io/separations/`.
+- Three tests imported `/js/...` from the domain root; they now use `./js/...`.
+- Before shipping, the full suite was run against a local copy served from `/separations/`: all pass.
+- Contributions and `CLAUDE.md` now name GitHub Pages as the host (Netlify until today). No more zip uploads.

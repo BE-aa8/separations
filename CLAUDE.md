@@ -11,7 +11,7 @@ Interactive static website on **mechanical vapor recompression (MVR) evaporative
 - `docs/process-log.md` — what has been done so far; append to it after every work session
 
 ## Assignment requirements (summary; verbatim text in context/assignment.md)
-1. Publicly accessible website demo/documentation (deploying on Netlify)
+1. Publicly accessible website demo/documentation (GitHub Pages, deployed automatically by .github/workflows/pages.yml when CI passes on main; Netlify was used until 2026-11-27)
 2. YouTube video of the presentation, linked on the site
 3. Verbatim YouTube auto-generated transcript, viewable on the site
 4. Overview; demo; clearly an AI project exploring AI capabilities; process (models, services, prompts); planning and iteration with my guidance and reasoning; course-related technical details; what I learned and want to learn next; attribution

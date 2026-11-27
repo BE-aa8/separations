@@ -83,7 +83,7 @@ const watch = (page, errors) => {
   await page.evaluate(() => { location.hash = '#references'; });
   await page.waitForTimeout(400);
   const rf = await page.evaluate(async () => {
-    const { DATA } = await import('/js/data.js');
+    const { DATA } = await import('./js/data.js');
     const t = document.getElementById('tab-references');
     return {
       title: t.querySelector('.ov-title')?.textContent,
