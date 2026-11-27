@@ -544,6 +544,16 @@ function initVideo() {
   if (!id || !/^[\w-]{6,20}$/.test(id)) return;
   card.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" title="Presentation video" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;
   card.classList.add('has-video');
+  // transcript times: jump the embedded player instead of leaving the page (the link still works in a new tab with a modifier key)
+  document.getElementById('vd-transcript')?.addEventListener('click', (e) => {
+    const a = e.target.closest('a.tr-t');
+    if (!a || e.metaKey || e.ctrlKey || e.shiftKey || e.button !== 0) return;
+    const t = parseInt(a.dataset.t, 10);
+    if (!Number.isFinite(t)) return;
+    e.preventDefault();
+    card.querySelector('iframe').src = `https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1&start=${t}&autoplay=1`;
+    card.scrollIntoView({ behavior: document.documentElement.dataset.motion === 'off' ? 'auto' : 'smooth', block: 'center' });
+  });
 }
 
 // Theory tab: expand/collapse all equation groups; jump to the reference (button, not a hash link)

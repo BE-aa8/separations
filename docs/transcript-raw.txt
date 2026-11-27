@@ -1,0 +1,209 @@
+0:011 secondUh, hey everyone. It's uh, Andrew. Just give me one second here. Okay. Uh, here we have the MVR crystallizer explorer, which is my AI project for separations.
+0:1212 secondsUm, and this is just an overview of how battery gade lithium hydroxide um is crystized using a compressor um,
+0:2121 secondsrather than uh, steam which is usually used. Um two threads we'll run through this um presentation mainly which is the
+0:2929 secondsseparation question which is um why a compressor beats steam in this case um
+0:3636 secondsand when it when that uh pressure doesn't beat steam and then the AI part
+0:4343 secondsof the our presentation which is um how we used uh models to build everything.
+0:5252 secondsSo our three numbers uh we have here these frame our the project which is 14
+1:001 minutewhich is um the amount of times that I either accepted or rejected decisions
+1:081 minute, 8 secondsum made basically on every point of our project. And then uh our 9 out of nine which is our AI built um simulators
+1:171 minute, 17 secondsmatched my hand calculations or hand calculations um every time. So Claude did a really good job at getting those right on the first try. And then 35,
+1:271 minute, 27 secondswhich is every work session that I had logged um with my prompts and my reasoning. And we'll see that later in the AI uh workflow tab.
+1:381 minute, 38 secondsSo um we have batteries.
+1:421 minute, 42 secondsUh they need lithium hydroxide. and kind of why this matters. Um, so nickel-rich
+1:491 minute, 49 secondsbattery uh cathodes are made from lithium hydroxide um monohydrate which is exactly what this website is
+1:581 minute, 58 secondsgoing over um the modeling of the Texas refinery in Robtown, Texas.
+2:032 minutes, 3 secondsUm so what that refinery does is it turns uh the ore into the um lithium hydroxide monohydrate. It does about
+2:122 minutes, 12 seconds20,000 tons a year for roughly around 30 gawatt hours of um batteries per year or
+2:202 minutes, 20 secondsgigawatt hours for the batteries per year. And then the last step is crystallization um where you boil water
+2:272 minutes, 27 secondsoff a purified brine until your crystals form. Uh boiling is where your energy will go and your MVR is how your
+2:342 minutes, 34 secondsindustry makes it cheaper uh using again the pressure rather than your um
+2:412 minutes, 41 secondssteam. And the 55 to 60% you see here is um the market share which is a market
+2:502 minutes, 50 secondsestimate. So I just labeled it as one on here.
+2:572 minutes, 57 secondsSo here is our um loop or our process. Um you can see
+3:063 minutes, 6 seconds10,000 kg hours of brine as 6% lithium hydroxide enters your crystallizer which
+3:133 minutes, 13 secondswill boil at 60° C um under a vacuum as we said with the pressure.
+3:213 minutes, 21 secondsUm the vapor will go to your condenser which will speed um which will squeeze your uh kilowatt or sorry kilopascals
+3:293 minutes, 29 secondsfrom 16.5 to 26 and then at a higher pressure it will condense at uh 66° or 6°
+3:393 minutes, 39 secondshotter than your liquor. So it can heat the liquor in the heater. And that's the whole trick uh to the process here which
+3:463 minutes, 46 secondsthe crystals will come out at the bottom obviously and then a small purge will bleed off your impurities um with the 500 kwatt hours you see on the diagram.
+3:583 minutes, 58 secondsAnd you can see the punch line here is that your boiling needs around uh 5,600 kwatt hours or sorry kilowatts of heat,
+4:074 minutes, 7 secondsbut your compressor only spends about 250 kow to recycle your vapor's own heat. So kind of in plain terms, what
+4:174 minutes, 17 secondswe're seeing here is that our latent heat is um the energy that takes to turn water into steam and you'll get it back
+4:254 minutes, 25 secondswhen your steam condenses. So your MVR here reuses it instead of bringing that um new fuel to produce steam.
+4:354 minutes, 35 secondsOops, there we go. Okay, so uh the AI workflow that I chose um was Claude uh
+4:454 minutes, 45 secondsusing the course material. Uh Claude code here wrote the plan version of basically everything in plan mode. And
+4:524 minutes, 52 secondsthen I had Gemini critique and fact check Claude. Um, and then Claude did the exact same thing with
+5:005 minutesGemini and just fact checked its numbers again. And then I went through approved 14 decisions
+5:085 minutes, 8 secondsand then um the final plan and the tests were written before anything was built.
+5:145 minutes, 14 secondsSo Claude code built the first version and Gemini built a second version um using the same plan steps written by
+5:235 minutes, 23 secondsClaude um and those are both um under my GitHub actions and also under uh the GitHub that you can see now. So you can
+5:315 minutes, 31 secondspull up the Gemini uh workflow also on this website.
+5:375 minutes, 37 secondsUm, but I had a little bit later I had Chad GPT um, do a UXUI redesign of
+5:445 minutes, 44 secondseverything because I had troubles with Claude just putting out like a AI. It looked too um, AI
+5:545 minutes, 54 secondsproduced using uh, Claude. So I switched over to Chad GPT which gave me a better um, way better redesign look.
+6:036 minutes, 3 secondsSo um then I also used uh Gemini to auto um implement decisions using GitHub pages.
+6:156 minutes, 15 secondsAnd then uh let me go to the next slide.
+6:176 minutes, 17 secondsI keep forgetting to switch slides. So the six uh lessons that I taught were four about separations into main main about mainly about AI processes.
+6:286 minutes, 28 secondsUm so the first one was how salt will make your compressor work harder. Um dissolved lithium and hydroxide ions
+6:366 minutes, 36 secondswill lower your water's vapor pressure here. So the liquor will boil about 4° hotter than your pure water at the same pressure.
+6:476 minutes, 47 secondsThat um that's the your boiling point elevation or your um BPE.
+6:536 minutes, 53 secondsThe vapor that comes off is going to be pure water. So your compressor has to lift it from your water's boiling point um not your liquor's boiling point.
+7:037 minutes, 3 secondsSo um your BPE will be penalty or go against your numbers. So about four of
+7:117 minutes, 11 secondsthe 10° of the compressor has to increase or 3.95.
+7:177 minutes, 17 secondsUm the ideal theory that we saw here says um 4.76° but the actual electrolyte number was
+7:257 minutes, 25 seconds3.95 because of the um concentrated lithium hydroxide um behaves as had fewer free particles
+7:357 minutes, 35 secondsand then ideal theory uh overestimated by about 21%.
+7:447 minutes, 44 secondsSo, moving on to lesson two for separations.
+7:497 minutes, 49 secondsUm, the lesson two I have here is that our MVR only pays for the lift.
+7:567 minutes, 56 secondsSo, the compressor doesn't supply the heat to boil the water that um that heat is already in your vapor and it only
+8:038 minutes, 3 secondsraises your vapor's um condensing temperature by about 10° um or from 56 to 66°.
+8:118 minutes, 11 secondsSo the same steam can reheat your liquor. Um
+8:168 minutes, 16 seconds99 k of work moves 2367 kJ of heat. Uh a
+8:238 minutes, 23 secondscoefficient of performance about 24 uh versus caraut limit of 34.
+8:308 minutes, 30 secondsUh the 29 kwatt hours that you're seeing um are inside the 20 to 60 range vendors
+8:378 minutes, 37 secondsquoted. Um, and the compression actually superheats the steam to about 113°.
+8:458 minutes, 45 secondsUh, and it doesn't make it wet. Nice.
+8:518 minutes, 51 secondsOkay. So, moving on to lesson three of separations.
+8:578 minutes, 57 secondsUh, so lesson three surprised me that it's um cheapest to the MVR isn't always
+9:039 minutes, 3 secondsthe cheapest to run. So, at Texas prices or what I was modeling everything after um using the Robstown uh Tesla plant,
+9:139 minutes, 13 secondsabout 7 um per kilowatt hour for power and cheap natural gas. Uh your MVR will
+9:209 minutes, 20 secondscost around $29 per ton of water evaporated, but um a five effect
+9:279 minutes, 27 secondsevaporator cost $1.58. So MVR only wins on this
+9:339 minutes, 33 secondsenergy um below about 5.4 um cents, but that steam price is your uh fuel only.
+9:419 minutes, 41 secondsSo it leaves uh the boiler and extra evaporator bodies.
+9:479 minutes, 47 secondsAnd then I added um a capital cost from the DOE uh cost report that Claude found
+9:549 minutes, 54 secondsum and it scaled to today's dollars and the total yearly cost uh out of the bottoms
+10:0210 minutes, 2 secondsum sorry I just got a text daily. The total yearly cost out of the bottoms around a
+10:1010 minutes, 10 seconds3° heater temperature difference. uh you go smaller and the heater gets huge uh and you go bigger and you pay for your um compressor lift. So, it's kind of a
+10:1910 minutes, 19 secondsgive and a take there. Uh moving on to our final um separations lesson was that
+10:2610 minutes, 26 secondsthe purge is a dial between yield and purity. So, your sodium doesn't crystallize with the product. So, it
+10:3310 minutes, 33 secondswill build up in your liquid until the purge carries it out. um with a 5% purge sodium concentrate 20 times the mother
+10:4210 minutes, 42 secondsliquor and about 10% of the lithium leaves with the purge. So that's where I'm getting my 89.6% for the yield.
+10:5110 minutes, 51 secondsUm the crystals will carry a a thin film of the liquor which is where your 583
+10:5810 minutes, 58 secondsppm um impurity comes from. And then there are two separate uh levers, your purge free yield and your um washing for purity.
+11:1011 minutes, 10 secondsSo um now we're going to kind of go over the last two lessons I learned um in this project which have to do with the AI process of um building everything.
+11:2211 minutes, 22 secondsUh so the first lesson I learned was um one model planned everything and the
+11:2911 minutes, 29 secondsother model critiqued. So, Gemini returned 10 points on Claude's plan that it didn't necessarily like or sorry, 10 points in like the way it formatted it.
+11:4111 minutes, 41 secondsAnd uh Claude checked the numbers against the Steam tables of everything before I decided on what I wanted to choose. And I accepted nine of the
+11:4911 minutes, 49 secondsdecisions and I rejected one of them and then I um modified four of them.
+11:5711 minutes, 57 secondsI just found that Gemini was right um that compression superheats the vapor but I caught a consistency in the purity
+12:0412 minutes, 4 secondsmodel but it's one um critical point was on its own arithmetic slip. So that's what the one um rejection was.
+12:1312 minutes, 13 secondsUm I kept it suggested fix and then I um rejected the reasoning.
+12:2312 minutes, 23 secondsSo, the last um thing we have here is that the two builds had the same test.
+12:3012 minutes, 30 secondsBoth models got the same plan prompt and um data for everything and they all passed the nine um hand calc tests.
+12:4112 minutes, 41 secondsUh they took about the same time and about the same cost around 13 minutes and $3 each.
+12:4812 minutes, 48 secondsUm but Gemini wrote 2.7 times the code. um and hit every uh equation behind
+12:5512 minutes, 55 secondsbuttons, which I did not like. And also the more code might seem like a good thing, but it's really wasn't cuz it was
+13:0213 minutes, 2 secondsslowing everything down. Um, I wrote that the course uh instructor,
+13:0913 minutes, 9 secondswhich was me in this case, um, I approved its critique and then uh, passing the test isn't the same as being
+13:1613 minutes, 16 secondshonest, which was something I struggled with um, with Gemini and its integrity to be totally honest.
+13:2713 minutes, 27 secondsUm, is that the last slide?
+13:3113 minutes, 31 secondsNo. Okay. So, so basically salt cost the lift. Uh MVR
+13:4013 minutes, 40 secondsonly pays for your lift and then cheap gas can beat it though. So, it's kind of a give and a take. Um purge trade yield
+13:4713 minutes, 47 secondsfor purity. Um check your critic and then basically um
+13:5413 minutes, 54 secondsmake sure your AI agents are being honest.
+13:5813 minutes, 58 secondsUm, so now we can run our uh simulator. Uh, I'll be back with that
+14:0714 minutes, 7 secondspart. Okay guys, I'm back. Um, I do have some notes on like everything I want to show for the website
+14:1514 minutes, 15 secondspresentation. So, um, I if you see me looking over here to the left, um, that's just what I'm looking at.
+14:2314 minutes, 23 secondsSo, um, let me get my screen recording started real quick. Okay, there we go.
+14:3214 minutes, 32 secondsSo here when you first open the page um you will see this page which is but overview tab um just ask kind of like
+14:4114 minutes, 41 secondsthe same question. Um as the talk I was saying earlier. So it shows your loop moving through here on your right. Um
+14:5014 minutes, 50 secondsthis is kind of this whole page is kind of just for fun. Um you can stir like dots over here with the crystallize. Um,
+14:5714 minutes, 57 secondsthat's just something I saw on um, a website that I use for UIUX um,
+15:0515 minutes, 5 secondsthat I thought it really modeled the whole crystallization of everything of how it goes from liquid to um, firming up or crystallizing. So, I thought that
+15:1315 minutes, 13 secondskind of fit the vibrate. Um, if you go to uh the industry context page, which will be your next one. Um, the industry
+15:2215 minutes, 22 secondscontext that I used for, let me just refresh this quick. Sometimes this video doesn't load. I'll first rip. Okay. So,
+15:3015 minutes, 30 secondsum, the industry context with Tesla's own refinery here. Um, I have the video playing in the background. You can see.
+15:3715 minutes, 37 secondsAnd then down here, I turn Tesla's um 20k tons per year um into like an hourly
+15:4415 minutes, 44 secondsrate. And then um about 2,500 kg per hour of the crystals. You can see
+15:5115 minutes, 51 secondsum my simulator's base case takes the 942. So Tesla needs the capacity about 2.7 of the crystallizers in the simulator.
+16:0116 minutes, 1 secondUm and that's the sanity check kind of that's going on. You can see this kind of just models everything that's going
+16:0916 minutes, 9 secondson in the process and then as you scroll down you can just see more um specifications on everything.
+16:1816 minutes, 18 secondsUh so the simulator now the theory um tab I don't have it written down as something that I was going to showcase
+16:2416 minutes, 24 secondsbut if this is kind of just um all of the different theories that is going on.
+16:3116 minutes, 31 secondsSo you can uh press the drop down menus and you'll see all of the different um formulas and um balances that are going on for everything on the website.
+16:4216 minutes, 42 secondsSo moving on to the simulator tab. Um your inputs will be on the left. Uh the six key results are up top here which is
+16:5016 minutes, 50 secondsthe feeds basically liquor purge ratio and hearing liquor.
+16:5516 minutes, 55 secondsUm yeah um energy cost, lithium yield impurity, boiling point elevation. So
+17:0217 minutes, 2 secondsthe diagram is live. Um so if you mess with stuff, you'll see numbers changing.
+17:0817 minutes, 8 secondsYou'll see um the underlined ones that pop up with this like lime green kind of color that I chose to model everything off of.
+17:1717 minutes, 17 secondsThose are going to be your changing values.
+17:2117 minutes, 21 secondsAnd then if I click a unit like the compressor here, um it will show its equations with today's numbers plugged in or like the numbers that you choose.
+17:3017 minutes, 30 secondsSo if you train if you are changing um say stuff like your uh liquor, you will see the numbers changing live as well.
+17:3917 minutes, 39 secondsAnd then to get rid of that, you can just recclick or you can hit the X and both of them will work. So um every number has a question mark next to it.
+17:4917 minutes, 49 secondsUm, and that just shows your um, equation, your units, the numbers substituted in, and kind of just like a oneline answer of how that's making
+17:5717 minutes, 57 secondssense. And again, I'm pretty sure these see also change with uh, live change live. So, if you're ever confused about
+18:0518 minutes, 5 secondsa number, you can just come here and um, hit the question mark and see how that makes sense.
+18:1118 minutes, 11 secondsSo, I have a what if case scenario um, written down. So we can do a what if um one which is going to be if we take our
+18:2018 minutes, 20 secondspurge ratio. Let's uh reset everything back to the normal values quick. Cool.
+18:2718 minutes, 27 secondsSo um excuse me.
+18:3318 minutes, 33 secondsSo our what if one is if we drag our P ratio from 0.05 which is our starting value to about um 0.15 which I think is
+18:4118 minutes, 41 secondslike almost max. So we go to um 0.15 here
+18:4918 minutes, 49 secondsand then you can um so uh this is kind of like lesson four that I explained earlier but just like
+18:5618 minutes, 56 secondslive um if you triple your purge ratio like I just did um from 5 to 15% your impurity will drop from your five um 83
+19:0519 minutes, 5 secondsto about 194 ppm um but the yield will fall from 89.6 six
+19:1219 minutes, 12 secondsto your um 68.4 and then so you basically you're just throwing lithium away. So your chart um
+19:1919 minutes, 19 secondsdown here P7. So we're looking for chart P7. So nice.
+19:2719 minutes, 27 secondsHere we go. So our P7 here um just kind of shows that whole tradeoff um curve that's going on. So if
+19:3619 minutes, 36 secondsI change if I change this again, you'll see this these are also updating live.
+19:4019 minutes, 40 secondsSo, we went from even further away and then to our purge ratio that we are at now. And you can just see that um our
+19:4919 minutes, 49 secondspurge ratio um graph that here is also updating live. Oops, sorry.
+19:5619 minutes, 56 secondsUm I'm just going to check that I'm recording quick. Okay, we're still recording. All good. Um
+20:0420 minutes, 4 secondsso, we're going to do another what if and this one I have power price. So, I'm just going to Oops. Just going to refresh again.
+20:1220 minutes, 12 secondsThat's my GitHub. Refresh to um get our numbers back to normal.
+20:2020 minutes, 20 secondsSo, what we're going to do here is we're going to drag our electricity percentage, which is
+20:2920 minutes, 29 secondshere. We're going to drag this from 72 down to 0.04.
+20:3620 minutes, 36 secondsOkay, cool.
+20:3920 minutes, 39 secondsSo, this is just um lesson three that we did, but live again. So, at t at today's Texas price, our MVR cost around $29 to
+20:4820 minutes, 48 secondsum a ton and five effects cost um 1.58
+20:5520 minutes, 55 secondsuh if your power will drop um to 4 cents like we just modeled. I'm trying to find
+21:0121 minutes, 1 secondour here we go. Capital cost
+21:0921 minutes, 9 secondsOkay. So, if that drops to 4 cents, um your MVR will fall to from $1.16 to about $1.16
+21:1821 minutes, 18 secondsthat you can see um like right down here and it becomes the cheapest option. So, um chart P6.
+21:2821 minutes, 28 secondsSo, this chart right here, um shows that crossover and above the line of steam is expensive and your MDR wins. And then below it, um, multiple effects win. So
+21:3721 minutes, 37 secondsthat kind of just shows your trade-off of, um, electricity pricing. Okay. Um, we got two more what ifs. So another
+21:4421 minutes, 44 secondswhat if I have is, um, we're going to do a hand calc.
+21:5221 minutes, 52 secondsSo click hand calc. And then we're going to drag our heating. So our delta t from six to from six to three.
+22:0322 minutes, 3 secondssee stuff changing already. So, um if you if you let the heater run on a 3°ree difference instead of a sixderee
+22:1022 minutes, 10 secondsdifference, um your compressor lift will shrink and your energy drops from around uh 29 to 20 kilowatt hours a ton, which
+22:1922 minutes, 19 secondsactually beats five effects. So, the catch is the bigger heat uh the catch is a bigger heater in this case. Um chart
+22:2722 minutes, 27 secondsP9 down here, chart P9 here. um adds that capital cost into everything and your total yearly
+22:3522 minutes, 35 secondscost will um have a minimum right around your threede mark.
+22:4122 minutes, 41 secondsAnd then finally um if we do one more simulation um we're going to do our high BP
+22:5122 minutes, 51 secondsuh and then we're going to set our BP tile.
+22:5622 minutes, 56 secondsSo BP BP chart I mean sorry BP chart here. Um so this preset will boil at 100 degrees and uses ideal um saltier assumptions.
+23:0923 minutes, 9 secondsSo the boiling point elevation will jump from around 4 to 9.6° and your lift will go from about 10 to
+23:1823 minutes, 18 seconds15.6. Uh your energy will go from around 29 to 41 kwatt hours a ton. And your chart P3 will split uh the lift into
+23:2623 minutes, 26 secondsyour salt and your salt part and your um heater part.
+23:3123 minutes, 31 secondsUm, moving to the theory tab. Kind of went over this already.
+23:3623 minutes, 36 secondsJust has different designs. Um, going to AI workflow tab. Um, just kind of this tab just kind of documents process the
+23:4423 minutes, 44 secondsassignment asked for. Um, it has sideby-side comparisons of the Gemini versus the Claude. So, on the left here,
+23:5223 minutes, 52 secondsyou can see the Claude made one. This is kind of what everything looked like when we first started. Um, you can see a lot of stuff has changed since then.
+24:0024 minutesAnd then the right here is what um Gemini cooked up, which I mean is the same kind of thing but like a little
+24:0824 minutes, 8 secondsdifferent and I just didn't necessarily like it so I got rid of it. Um you can also I believe on this tab if you go to
+24:1624 minutes, 16 secondsyeah up here if you go to the um/Gemini slash and click that it will actually take you to what the Gemini website
+24:2524 minutes, 25 secondslooked like in the beginning. Um, is this I don't even know if the Oh, it still is live. So, if you want to mess
+24:3224 minutes, 32 secondsaround with it, feel free, but I I don't know why you would. It's not very good.
+24:3824 minutes, 38 secondsUm, finally, we have just a video which I'm recording now will be embedded here. If you want to see the slides that I presented earlier, they're here. If you
+24:4724 minutes, 47 secondswant to see u my reflection and stuff I learned and what I want to learn next, um, everything's here. Same with there
+24:5424 minutes, 54 secondsare some more things on this tab. Um, this just kind of has every number that a site source um that the site sources
+25:0425 minutes, 4 secondshere that you want to see. So, there's all these different sources you can go through if you want to go through them.
+25:1225 minutes, 12 secondsUm, basically, um, why did I ship what I shipped? Um, I kind of have it written down here, I think.
+25:2325 minutes, 23 secondsI know I have it somewhere on the Oh, it's in the Yeah, in this tab. Sorry.
+25:2725 minutes, 27 secondsSo, what I have here kind of I decided to go mainly claw driven code just cuz I found it was easier or it was well,
+25:3525 minutes, 35 secondsyeah, easier to work with and also way more reliable than anything that Chry GPT or Gemini was giving me. Um, it did have a lot better coding skills.
+25:4625 minutes, 46 secondsUm, I use JavaScript. I know that sometimes that can get bogged down. um compared to like Rust or Python, but
+25:5425 minutes, 54 secondsthat was what was working the best for me. So that's what I built everything in. Um something that did surprise me while building this website was how good
+26:0126 minutes, 1 secondChad GPT was at doing like design based work compared to Claude and Gemini. Um
+26:0926 minutes, 9 secondsso I used uh Chad GPT to implement UI and UX stuff. So everything you see from
+26:1526 minutes, 15 secondsthe overview tabs and on with all Chad GPT.
+26:2126 minutes, 21 secondsUm one main thing that if I were to um give advice to anyone making a website
+26:2826 minutes, 28 secondssimilar to this would be to um use GitHub pages with the Gemini API key implementation. um because it did
+26:3726 minutes, 37 secondscost around $5 to build um this website and also my website for process dynamics and controls, but it
+26:4626 minutes, 46 secondssaved me so much time. It was very hands-free. I could like text on my phone and it would like make it the website um live, which was crazy to me.
+26:5526 minutes, 55 secondsSo, it will cost you a little bit of money, but it's definitely worth the hands-free integration that I put here.
+27:0127 minutes, 1 secondAnd then um if you guys want to go to the website um you can go to
+27:1027 minutes, 10 secondsthe URL which oops which is I was going to just pull it up in the tab but here it is. Uh be- a.github.io/separations.
+27:2327 minutes, 23 secondsUm, every value is cited like I said and the slides are on the site too and you can download them by clicking one of these buttons if you want to take a
+27:3127 minutes, 31 secondscloser look at anything. So yeah, thanks for watching.

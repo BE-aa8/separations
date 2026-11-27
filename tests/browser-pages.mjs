@@ -119,8 +119,25 @@ const watch = (page, errors) => {
   await page.waitForTimeout(400);
   if (await page.evaluate(() => window.__deck.fullscreen())) fail('Exit full screen did not close it');
 
-  // the one-line video hook renders the player
-  await page.evaluate(() => { const c = document.getElementById('vd-card'); c.dataset.videoId = 'abcdefghijk'; });
+  // the recorded presentation is embedded and the verbatim transcript is filled in
+  const tr = await page.evaluate(() => {
+    const lines = [...document.querySelectorAll('#vd-transcript p a.tr-t')];
+    const body = document.getElementById('vd-transcript').textContent;
+    return { src: document.querySelector('#vd-card iframe')?.src || '', n: lines.length, first: lines[0]?.textContent, last: lines.at(-1)?.textContent,
+      firstText: lines[0]?.parentElement.textContent, lastText: lines.at(-1)?.parentElement.textContent,
+      ordered: lines.every((a, k) => k === 0 || +a.dataset.t > +lines[k - 1].dataset.t), placeholder: /after upload|will be pasted|coming by/i.test(document.getElementById('tab-video').textContent),
+      dupLabel: /\d+ (minutes?|seconds?)\b/.test([...document.querySelectorAll('#vd-transcript a.tr-t')].map((a) => a.textContent).join(' ')), len: body.length };
+  });
+  if (!/youtube-nocookie\.com\/embed\/BLQXmZmRMlQ/.test(tr.src)) fail(`presentation video not embedded (${tr.src})`);
+  if (tr.n < 200 || tr.first !== '0:01' || tr.last !== '27:31' || !tr.ordered) fail(`transcript incomplete (${JSON.stringify({ n: tr.n, first: tr.first, last: tr.last, ordered: tr.ordered })})`);
+  if (!/hey everyone/.test(tr.firstText) || !/thanks for watching/.test(tr.lastText)) fail('transcript first/last lines do not match the YouTube transcript');
+  if (tr.placeholder) fail('Video tab still shows a placeholder');
+  await page.click('#tab-video details.th-acc summary');
+  await page.waitForTimeout(150);
+  await page.click('#vd-transcript a.tr-t[data-t="1152"]');
+  await page.waitForTimeout(200);
+  const seek = await page.evaluate(() => document.querySelector('#vd-card iframe').src);
+  if (!/start=1152/.test(seek)) fail(`transcript time did not seek the player (${seek})`);
   await page.screenshot({ path: join(OUT, `video-${SCHEME}.png`) });
 
   // ---------- References ----------
@@ -160,20 +177,20 @@ const watch = (page, errors) => {
   await ctx.close();
 }
 
-// ---------- video hook renders a player when an ID is set before init ----------
+// ---------- video hook rejects a malformed ID ----------
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   await stub(ctx);
   const page = await ctx.newPage();
-  // set the video ID as the page is parsed (inside the browser, so it also works against the live site)
+  // a bad ID is ignored (the card keeps its fallback link), set inside the browser so it also works against the live site
   await page.addInitScript(() => {
-    new MutationObserver((_, obs) => { const c = document.getElementById('vd-card'); if (c) { c.dataset.videoId = 'abcdefghijk'; obs.disconnect(); } })
+    new MutationObserver((_, obs) => { const c = document.getElementById('vd-card'); if (c) { c.dataset.videoId = 'bad id"><x'; obs.disconnect(); } })
       .observe(document, { childList: true, subtree: true });
   });
   await page.goto(`${BASE}/#video`, { waitUntil: 'networkidle' });
   await page.waitForTimeout(400);
-  const src = await page.evaluate(() => document.querySelector('#vd-card iframe')?.src || '');
-  if (!/youtube-nocookie\.com\/embed\/abcdefghijk/.test(src)) fail(`video hook did not render the player (${src})`);
+  const bad = await page.evaluate(() => ({ iframe: !!document.querySelector('#vd-card iframe'), link: !!document.querySelector('#vd-card .vd-s a') }));
+  if (bad.iframe || !bad.link) fail(`invalid video ID should leave the fallback card (${JSON.stringify(bad)})`);
   await ctx.close();
 }
 

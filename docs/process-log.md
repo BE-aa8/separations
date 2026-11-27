@@ -634,3 +634,21 @@ Full screen uses the browser's own full screen. Where that isn't allowed (iPhone
   - the High BPE preset (BPE 9.6 K, lift 15.6 K, 40.7 kWh/t).
 - **Reference pages:** a plain-language glossary, a cheat-sheet for all 12 charts (checked against `charts.js`), and short answers to likely questions.
 - **Print:** black on white, thin rules, no filled boxes.
+
+## 2026-11-27 (cont.) — presentation video and transcript
+
+**Prompt:** "time to add the transcript and embed the yt video" with the YouTube link (BLQXmZmRMlQ) and the auto-generated transcript pasted from YouTube.
+
+**Done:**
+- **Video:** the Video tab now embeds the presentation (youtube-nocookie player, the existing `data-video-id` hook). The fallback card links to YouTube if the player can't load. The embed was confirmed allowed with YouTube's oEmbed check.
+- **Transcript:** the paste is saved unchanged as `docs/transcript-raw.txt`.
+  - It was split into 209 timed lines, 0:01 to 27:31. Only YouTube's duplicate screen-reader label (e.g. "1 minute, 8 seconds") was removed; the parser checked each label against its timestamp.
+  - The words are verbatim, recognition errors included ("Chad GPT", "caraut"). A note above the transcript says so.
+  - Clicking a time jumps the embedded player there. Ctrl- or Cmd-click opens YouTube at that time instead.
+  - The transcript box scrolls, so the page stays short.
+- **Tests (`browser-pages.mjs`):**
+  - the real video is embedded;
+  - ≥200 lines, first 0:01 "hey everyone", last 27:31 "thanks for watching";
+  - lines are in time order, with no leftover labels or placeholders;
+  - clicking a time seeks the player;
+  - a malformed ID leaves the fallback card.
