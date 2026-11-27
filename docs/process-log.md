@@ -652,3 +652,7 @@ Full screen uses the browser's own full screen. Where that isn't allowed (iPhone
   - lines are in time order, with no leftover labels or placeholders;
   - clicking a time seeks the player;
   - a malformed ID leaves the fallback card.
+
+**Problem:** CI passed, but the automatic Pages deploy failed twice, on the first run and on a re-run. Both times `upload-pages-artifact` uploaded the site, and `deploy-pages` then reported "No artifacts named github-pages were found". This is the first deploy since the repository was renamed (seperations → separations), and that may be the cause.
+
+**Fix:** a manual "Run workflow" (workflow_dispatch) on main deployed fine. The live site matches `site/` byte for byte, and the pages and smoke tests pass against it. If the automatic deploy keeps failing, use Actions → "Deploy to GitHub Pages" → Run workflow.
