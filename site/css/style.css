@@ -1180,3 +1180,10 @@ html[data-motion="off"] .th-more > summary::after, html[data-motion="off"] .th-a
   .ref-list li { padding-left: 52px; }
 }
 .ref-list { max-width: none; }
+/* Video tab: What I learned */
+.vd-learned { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s4); align-items: start; }
+.vd-learned h4 { margin: 0 0 var(--s2); font-size: 1.12rem; letter-spacing: -0.02em; }
+.vd-learned ul { margin: 0; padding-left: 1.1em; color: var(--muted); line-height: 1.6; }
+.vd-learned li { margin-bottom: 8px; }
+.vd-learned li strong { color: var(--text); }
+@media (max-width: 1000px) { .vd-learned { grid-template-columns: minmax(0, 1fr); } }

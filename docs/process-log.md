@@ -518,3 +518,28 @@ The test also confirmed a detail: 22 values are estimates, and one of them (`spe
 - a CI workflow.
 
 Verified as a fresh project: npm 4/4; smoke 7 tabs, 3 sliders, 0 failures in light and dark; basics pass. Zipped as `dist/starter-kit.zip`.
+
+## 2026-11-27 — finishing pass: every red tag and "to verify" resolved
+
+**Prompt (verbatim):** "okay now I want to completely finish the website. get rid of all of the to verify and red tags. ask me questions and we can clear things up and push"
+
+**Inventory:**
+- 16 red ESTIMATE flags on the Simulator;
+- one "to verify" (Antoine constants);
+- one "source needed" (battery-grade Na limit);
+- placeholders on the Video tab ("What I learned") and in Contributions;
+- the class name still visible inside the two comparison screenshots.
+
+**Andrew's decisions and what was done:**
+- **Simulator estimates:** now grey "estimate" chips (sliders, Help panel, P9 note); still clearly labeled.
+- **Antoine constants:** re-verified against the stored NIST table (25 points): max 0.383 % from 30 to 110 °C, mean −0.27 %, 0.56 % at 130 °C. Recorded in the citation; the "to verify" note is removed.
+- **Battery-grade Na limit (`spec.naMax_ppm`):** unused and unsourced, so removed from `tools/build_data.py` and `data.js`. Chart P7 no longer shows its "SOURCE NEEDED" note. The References table now lists 39 values.
+- **Video:** not uploaded yet, so the "coming by Dec 4" card and the transcript chip stay.
+- **What I learned / what I want to learn next:** drafted in Andrew's voice from this log (engineering lessons, AI-workflow lessons, next steps), for him to edit before presenting.
+- **Contributions:** Andrew's card and "Other tools" are filled in from the log and the repo.
+- **Comparison screenshots:** cropped above the tab row (Claude −40 px, Gemini −33 px) to remove the course and professor names. The simulator content is unchanged.
+- **Tesla figure:** kept as cited coverage of the 2025 Impact Report.
+
+**Result:** 0 red flags or placeholders and no "to verify" left. The remaining grey chips are honest qualifiers: 39 estimates, 1 schematic, 1 market estimate, and the transcript pending upload. `browser-pages.mjs` now accepts at least 30 values (39 after the removal).
+
+**Tests:** full suite passes; the expected hand-calc values are unchanged.

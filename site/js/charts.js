@@ -181,14 +181,13 @@ export function p7(out) {
   tr.push({ x: [inp.purgeRatio], y: [ok ? 100 * out.mass.liYield : null], mode: 'markers', marker: { size: 11, color: ok ? C.warn : C.grey, symbol: 'diamond' }, name: 'Current p', yaxis: 'y' });
   tr.push({ x: [inp.purgeRatio], y: [ok ? out.mass.productImpurity_ppm : null], mode: 'markers', marker: { size: 11, color: ok ? C.warn : C.grey, symbol: 'diamond' }, showlegend: false, yaxis: 'y2' });
   const shapes = [];
-  const spec = DATA.spec.naMax_ppm.value;
+  const spec = DATA.spec?.naMax_ppm?.value ?? null;   // optional battery-grade Na limit (draws a line only if sourced)
   if (spec != null) shapes.push({ type: 'line', xref: 'paper', yref: 'y2', x0: 0, x1: 1, y0: spec, y1: spec, line: { color: C.e5, dash: 'dash' } });
   draw('p7', tr, base({
     grid: { rows: 2, columns: 1, pattern: 'coupled' },
     xaxis: ax('Purge ratio p = P/F'),
     yaxis: ax('Li yield (%)', { domain: [0.56, 1] }), yaxis2: ax('Impurity (ppm, log)', { domain: [0, 0.44], type: 'log' }),
     shapes, legend: { orientation: 'h', y: -0.25, font: { size: 10 } },
-    annotations: spec == null ? [{ text: 'Battery-grade Na spec line hidden: SOURCE NEEDED', xref: 'paper', yref: 'paper', x: 0.99, y: 0.44, xanchor: 'right', yanchor: 'top', showarrow: false, font: { size: 10, color: C.muted } }] : [],
   }));
 }
 

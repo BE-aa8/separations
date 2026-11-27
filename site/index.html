@@ -432,7 +432,7 @@
       <div class="plots">
         <figure class="plot" id="fig-p5"><figcaption><span>P5 · Energy comparison: 1 / 3 / 5 effects vs MVR</span><button type="button" class="qhelp" data-help-chart="fig-p5" aria-label="About P5" aria-haspopup="dialog">?</button></figcaption><div id="p5" class="chart"></div><p class="whatif small" id="p5-note"></p><p class="whatif help-slot">What if? Which uses least fuel and least money per tonne of water?</p></figure>
         <figure class="plot" id="fig-p6"><figcaption><span>P6 · Electricity vs steam price crossover</span><button type="button" class="qhelp" data-help-chart="fig-p6" aria-label="About P6" aria-haspopup="dialog">?</button></figcaption><div id="p6" class="chart"></div><p class="whatif help-slot">What if electricity prices change? Above a line (expensive steam), MVR is cheaper; below it, that multi-effect train is cheaper.</p></figure>
-        <figure class="plot" id="fig-p9"><figcaption><span>P9 · Heater ΔT: capital vs energy (total annualized cost)</span><button type="button" class="qhelp" data-help-chart="fig-p9" aria-label="About P9" aria-haspopup="dialog">?</button></figcaption><div id="p9" class="chart"></div><p class="whatif small">Capital: DOE/NETL installed costs (1998) × CEPCI 797.9/389.5; compressor cost is a proxy (<span class="flag">ESTIMATE</span>, ±50 %).</p><p class="whatif help-slot">Why not just use a tiny ΔT? Try U, electricity price, and interest.</p></figure>
+        <figure class="plot" id="fig-p9"><figcaption><span>P9 · Heater ΔT: capital vs energy (total annualized cost)</span><button type="button" class="qhelp" data-help-chart="fig-p9" aria-label="About P9" aria-haspopup="dialog">?</button></figcaption><div id="p9" class="chart"></div><p class="whatif small">Capital: DOE/NETL installed costs (1998) × CEPCI 797.9/389.5; compressor cost is a proxy (<span class="est-chip">estimate</span>, ±50 %).</p><p class="whatif help-slot">Why not just use a tiny ΔT? Try U, electricity price, and interest.</p></figure>
         <figure class="plot" id="fig-p10"><figcaption><span>P10 · Turndown at fixed heater area</span><button type="button" class="qhelp" data-help-chart="fig-p10" aria-label="About P10" aria-haspopup="dialog">?</button></figcaption><div id="p10" class="chart"></div><p class="whatif help-slot">Does the unit still work at part load? With the heater already built, less heat needs less ΔT, so less lift. (No compressor surge map: beyond course level.)</p></figure>
         <figure class="plot" id="fig-p11"><figcaption><span>P11 · Multi-effect feasibility</span><button type="button" class="qhelp" data-help-chart="fig-p11" aria-label="About P11" aria-haspopup="dialog">?</button></figcaption><div id="p11" class="chart"></div><p class="whatif help-slot">How many effects can this brine support?</p></figure>
       </div></section>
@@ -510,8 +510,8 @@
       <p class="ind-eyebrow">Side by side</p>
       <h3 class="ind-h">Simulator tab, Phase 1 (1280 px)</h3>
       <div class="compare-shots">
-      <figure><img src="img/compare/claude-phase1-simulator.jpg" alt="Claude build simulator tab: sliders, process flow diagram, and result cards each showing an equation, value, units and interpretation" loading="lazy" width="800" height="1625"><figcaption>Claude (Opus 5.5)</figcaption></figure>
-      <figure><img src="img/compare/gemini-phase1-simulator.jpg" alt="Gemini build simulator tab: sliders, process flow diagram, grouped value cards with question-mark buttons, and plots" loading="lazy" width="800" height="1625"><figcaption>Gemini (3.5-flash)</figcaption></figure>
+      <figure><img src="img/compare/claude-phase1-simulator.jpg" alt="Claude build simulator tab: sliders, process flow diagram, and result cards each showing an equation, value, units and interpretation" loading="lazy" width="800" height="1585"><figcaption>Claude (Opus 5.5)</figcaption></figure>
+      <figure><img src="img/compare/gemini-phase1-simulator.jpg" alt="Gemini build simulator tab: sliders, process flow diagram, grouped value cards with question-mark buttons, and plots" loading="lazy" width="800" height="1592"><figcaption>Gemini (3.5-flash)</figcaption></figure>
     </div>
     </div>
 
@@ -609,7 +609,34 @@
   <div class="ind-sec">
     <p class="ind-eyebrow">Reflection</p>
     <h3 class="ind-h">What I learned / what I want to learn next</h3>
-    <div class="ind-card vd-learn"><span class="est-chip">to be written</span><p>Andrew writes this section after the build and presentation.</p></div>
+    <div class="vd-learned">
+      <article class="ind-card">
+        <h4>What I learned: the engineering</h4>
+        <ul>
+          <li><strong>MVR only pays for the lift.</strong> The compressor raises the vapor's condensing temperature by BPE + ΔT<sub>heater</sub> (about 10 K), instead of supplying the latent heat, which is why its COP is around 24.</li>
+          <li><strong>Real electrolytes matter.</strong> Concentrated LiOH is less "active" than ideal (φ ≈ 0.83), so the real BPE is 3.95 K, not 4.76 K, and every kelvin of BPE is lift the compressor has to pay for.</li>
+          <li><strong>Cheapest to run is not always MVR.</strong> With today's cheap Texas natural gas, five evaporator effects beat MVR on energy cost alone; capital cost and the heater ΔT trade-off (optimum about 3 K) tell the rest of the story.</li>
+          <li><strong>The purge is a dial between yield and purity.</strong> Less purge keeps more lithium, but sodium builds up in the mother liquor and rides out on the crystals.</li>
+        </ul>
+      </article>
+      <article class="ind-card">
+        <h4>What I learned: working with AI</h4>
+        <ul>
+          <li><strong>A detailed plan and tests written first made correctness the easy part.</strong> Both Claude and Gemini got the physics right on the first try; they differed in presentation and honesty.</li>
+          <li><strong>The critic needs checking too.</strong> Gemini's critique was right about compressor superheat but wrong on its one "critical" point, and its build invented an approval that never happened.</li>
+          <li><strong>Every number needs a source.</strong> Estimates are labeled, and anything unsourced stays out until it is sourced.</li>
+          <li><strong>Test where people actually look.</strong> Live-site tests found a badge covering a phone button, and a diagnostics page showed "no animation on iPhone" was the Reduce Motion setting, not a bug.</li>
+        </ul>
+      </article>
+      <article class="ind-card">
+        <h4>What I want to learn next</h4>
+        <ul>
+          <li><strong>Process dynamics and control</strong> of the crystallizer: start-up, level and temperature loops, and anti-surge control of the MVR compressor.</li>
+          <li><strong>Crystal size distribution</strong> with population balances, which this site keeps qualitative.</li>
+          <li><strong>Checking the model against real plant or vendor data</strong>, and better capital-cost sources than a 1998 index escalation.</li>
+        </ul>
+      </article>
+    </div>
   </div>
 </section>
 
@@ -649,11 +676,11 @@
     <p class="ind-eyebrow">The team</p>
     <h3 class="ind-h">Contributions</h3>
     <div class="ref-people">
-      <article class="ind-card"><h4>Andrew</h4><p class="ref-role">Project lead</p><p>Topic, guidance and decisions at every step, approval of critique decisions, data verification, presentation. <span class="est-chip">details to be added</span></p></article>
+      <article class="ind-card"><h4>Andrew</h4><p class="ref-role">Project lead</p><p>Chose the topic and the Tesla industry angle; approved or rejected every critique point with a reason; chose the models, the API budgets and the steam-price basis; directed every redesign and clean-up; tested the site on real devices; deployed every release; presentation and video.</p></article>
       <article class="ind-card"><h4>Claude (Anthropic), via Claude Code</h4><p class="ref-role">Planner and builder</p><p>Plan v1, plan v2 merge, Phase 0 data and test harness, this build (<code>site/</code>).</p></article>
       <article class="ind-card"><h4>Gemini (Google)</h4><p class="ref-role">Critic and second builder</p><p>Critique of plan v1; independent Phase 1 build (<code>site/gemini/</code>).</p></article>
       <article class="ind-card"><h4>ChatGPT (OpenAI)</h4><p class="ref-role">Redesign planner</p><p>The 6-phase UI/UX redesign plan that Andrew worked out with ChatGPT and Claude then carried out.</p></article>
-      <article class="ind-card"><h4>Other tools</h4><p class="ref-role">Libraries and hosting</p><p>Plotly 2.35.2 (charts), KaTeX 0.16.11 (equations), Netlify (hosting). <span class="est-chip">details to be added</span></p></article>
+      <article class="ind-card"><h4>Other tools</h4><p class="ref-role">Libraries, testing and hosting</p><p>GitHub (version control) and GitHub Actions (CI, and the Gemini CLI runs); Playwright with Chromium (browser tests); Plotly 2.35.2 (charts); KaTeX 0.16.11 (equations); YouTube's privacy-enhanced embed (Tesla video); Netlify (hosting).</p></article>
     </div>
   </div>
 </section>

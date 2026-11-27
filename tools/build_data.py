@@ -23,10 +23,9 @@ SOURCES = {
         "accessed": ACCESSED,
     },
     "antoine-lange": {
-        "citation": "Antoine constants for water (log10 P[mmHg] = A - B/(C + T[C])), A = 8.07131, B = 1730.63, C = 233.426, as tabulated in Lange's Handbook of Chemistry (via the Wikipedia 'Antoine equation' table). Checked by Claude against the NIST WebBook table: within 0.38 % from 30 to 110 C and 0.56 % at 130 C.",
+        "citation": "Antoine constants for water (log10 P[mmHg] = A - B/(C + T[C])), A = 8.07131, B = 1730.63, C = 233.426, as tabulated in Lange's Handbook of Chemistry (via the Wikipedia 'Antoine equation' table). Verified against the NIST WebBook saturation table (nist-water, 25 points, 30-150 C): within 0.38 % from 30 to 110 C (max 0.383 %, mean -0.27 %) and 0.56 % at 130 C; re-checked 2026-11-27.",
         "url": "https://en.wikipedia.org/wiki/Antoine_equation",
         "accessed": ACCESSED,
-        "verify": "Andrew: confirm the constants in a print copy of Lange's Handbook or Felder & Rousseau Table B.4.",
     },
     "monnin2005": {
         "citation": "Monnin, C.; Dubois, M. Thermodynamics of the LiOH + H2O system. J. Chem. Eng. Data 2005, 50 (4), 1109-1113. doi:10.1021/je0495482. Solubility fit: Eq 1 and Table 1 (LiOH.H2O, 255-373 K, 18 points from Pickering, Donk, Van Moeurs, Stephan & Miller, Ennan & Lapshin). Osmotic coefficient: Pitzer model Eqs 3-6, 8, Tables 3-4.",
@@ -305,9 +304,6 @@ def build():
             "cepciNow": val(797.9, "-", "ce-econ-ind-2024", False, "CEPCI 2023 annual average, latest annual value available without a subscription."),
             "interest": val(0.10, "1/yr", "estimate", True, "Interest (discount) rate for annualizing capital; slider 0.05-0.15."),
             "life_yr": val(10, "yr", "estimate", True, "Equipment life for annualizing capital; slider 5-20."),
-        },
-        "spec": {
-            "naMax_ppm": val(None, "ppm Na", "estimate", True, "SOURCE NEEDED: GB/T 26008-2020 Table 1 or a producer data sheet. Spec line hidden until sourced."),
         },
     }
     return data

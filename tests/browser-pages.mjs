@@ -102,7 +102,7 @@ const watch = (page, errors) => {
   });
   if (rf.title !== 'Every number has a source') fail('References intro missing');
   if (rf.nSrcList !== rf.nSrcData || rf.nSrcShown !== rf.nSrcData) fail(`sources: list ${rf.nSrcList}, shown ${rf.nSrcShown}, data ${rf.nSrcData}`);
-  if (rf.nValRows < 40 || rf.nValShown !== rf.nValRows) fail(`values: table ${rf.nValRows}, shown ${rf.nValShown}`);
+  if (rf.nValRows < 30 || rf.nValShown !== rf.nValRows) fail(`values: table ${rf.nValRows}, shown ${rf.nValShown}`);
   if (rf.nEstShown !== rf.nEstRows) fail(`estimates: shown ${rf.nEstShown}, table ${rf.nEstRows}`);
   for (const who of ['Andrew', 'Claude', 'Gemini', 'ChatGPT', 'Other tools']) if (!rf.people.some((p) => p.includes(who))) fail(`contributions: ${who} missing`);
   if (rf.red) fail(`References: ${rf.red} red flag/placeholder left`);

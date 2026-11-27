@@ -67,7 +67,7 @@ function buildSliders() {
     if (s.fixed) { html += `<p class="slider hint">${s.fixed}</p>`; continue; }
     if (s.toggle) { html += `<label class="toggle"><input type="checkbox" id="in-${s.toggle}"> ${s.label}</label>`; continue; }
     const [min, max] = RANGES[s.key];
-    html += `<label class="slider" id="wrap-${s.key}"><span class="row"><span>${s.label}${s.estimate ? ' <span class="flag">ESTIMATE</span>' : ''}</span><output id="out-${s.key}"></output></span>
+    html += `<label class="slider" id="wrap-${s.key}"><span class="row"><span>${s.label}${s.estimate ? ' <span class="est-chip">estimate</span>' : ''}</span><output id="out-${s.key}"></output></span>
       <input type="range" id="in-${s.key}" min="${min}" max="${max}" step="${s.step}" aria-label="${esc(s.label)}">
       ${s.note ? `<span class="hint help-slot">${s.note}</span>` : ''}</label>`;
   }
@@ -351,7 +351,7 @@ function helpGroup(name) {
     if (s.fixed) return `<li>${s.fixed}</li>`;
     if (s.toggle) return `<li>${s.label}</li>`;
     const [lo, hi] = RANGES[s.key];
-    return `<li><strong>${s.label}</strong>${s.estimate ? ' <span class="flag">ESTIMATE</span>' : ''}<br><span class="hp-units">range ${fmt(lo, s.d)}–${fmt(hi, s.d)} ${s.units}</span>${s.note ? `<br>${s.note}` : ''}</li>`;
+    return `<li><strong>${s.label}</strong>${s.estimate ? ' <span class="est-chip">estimate</span>' : ''}<br><span class="hp-units">range ${fmt(lo, s.d)}–${fmt(hi, s.d)} ${s.units}</span>${s.note ? `<br>${s.note}` : ''}</li>`;
   }).join('');
   return { eyebrow: 'Inputs', title: name.charAt(0) + name.slice(1).toLowerCase(), body: `<ul class="hp-list">${rows}</ul><p class="hp-units">ESTIMATE = engineering estimate, not primary data (see References).</p>` };
 }
