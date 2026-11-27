@@ -573,3 +573,11 @@ Full suite passes.
 - All 22 files on https://be-aa8.github.io/separations/ match `site/` exactly.
 - Every suite passes live in light and dark (`docs/screenshots/verification/2026-11-27-live-ghpages/`).
 - From now on, every green CI run on `main` republishes the site; no zips.
+
+## 2026-11-27 (cont.) — browser-tab icon
+
+**Prompt (verbatim):** "can you add the crystal graphic back to the crystals like how it was before on the browser tab"
+
+**Cause:** the site never had a favicon. On Netlify the tab showed Netlify's own default icon (served at `/favicon.ico`); GitHub Pages has no default, so browsers showed a letter.
+
+**Fix:** a new crystal icon in the site's colors: a lime faceted prism on the dark rounded square. Files: `img/favicon.svg`, a 32 px PNG fallback and a 180 px apple-touch icon, linked from `index.html` with relative paths so they work under `/separations/`. Netlify's logo was not reused, since it is their brand. The Gemini build is untouched and has no icon. Smoke and UX tests pass under the `/separations/` path.
