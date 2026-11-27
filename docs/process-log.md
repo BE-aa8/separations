@@ -566,3 +566,10 @@ Full suite passes.
 - Three tests imported `/js/...` from the domain root; they now use `./js/...`.
 - Before shipping, the full suite was run against a local copy served from `/separations/`: all pass.
 - Contributions and `CLAUDE.md` now name GitHub Pages as the host (Netlify until today). No more zip uploads.
+
+**Live on GitHub Pages (2026-11-27):**
+- The first automatic deploy failed only because Pages was not enabled. Andrew set Settings → Pages → Source: GitHub Actions, and the re-run succeeded.
+- `be-aa8.github.io` was added to the environment's network allowlist so the live tests could run.
+- All 22 files on https://be-aa8.github.io/separations/ match `site/` exactly.
+- Every suite passes live in light and dark (`docs/screenshots/verification/2026-11-27-live-ghpages/`).
+- From now on, every green CI run on `main` republishes the site; no zips.
