@@ -616,11 +616,14 @@
     <div class="deck" id="deck-viewer" tabindex="0" role="region" aria-roledescription="slide viewer" aria-label="Presentation slides; use the arrow keys to move between slides">
       <div class="deck-stage"><img id="deck-img" alt="" width="1600" height="900" decoding="async"></div>
       <div class="deck-bar">
-        <button type="button" class="deck-btn" id="deck-prev" aria-label="Previous slide">←</button>
+        <button type="button" class="deck-pill" id="deck-prev" aria-label="Previous slide">← Prev</button>
         <span class="deck-count" id="deck-count" aria-live="polite">1 / 21</span>
-        <button type="button" class="deck-btn" id="deck-next" aria-label="Next slide">→</button>
-        <span class="deck-dl"><a href="slides/mvr-presentation.pdf" download>Download PDF</a><a href="slides/mvr-presentation.pptx" download>Download PowerPoint</a></span>
+        <button type="button" class="deck-pill" id="deck-next" aria-label="Next slide">Next →</button>
+        <button type="button" class="deck-pill" id="deck-fs" aria-pressed="false">Full screen</button>
+        <span class="deck-dl"><a href="slides/mvr-presentation.pdf" download>Download PDF</a><span aria-hidden="true">·</span><a href="slides/mvr-presentation.pptx" download>PowerPoint (.pptx)</a></span>
       </div>
+      <p class="deck-title" id="deck-title"></p>
+      <div class="deck-thumbs" id="deck-thumbs" aria-label="All slides"></div>
     </div>
   </div>
   <div class="ind-sec">

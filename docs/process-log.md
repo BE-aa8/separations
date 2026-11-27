@@ -604,3 +604,18 @@ Full suite passes.
 - download links for the PDF and the .pptx (with speaker notes).
 
 `browser-pages.mjs` now checks the viewer: it starts on slide 1, the next button and keyboard navigation work, the images load, the downloads exist, and it sits under the video. Full suite passes, including under the `/separations/` path.
+
+## 2026-11-27 (cont.) — slide viewer: control bar, title line, thumbnails, full screen
+
+**Prompt (verbatim):** "nice looks good, can you add the little addition bar and full screen like the other project, see photo" (with a screenshot of the PD&C site's slide viewer).
+
+**Built:** the viewer now matches that layout:
+- labelled "← Prev" and "Next →" pill buttons with the counter between them;
+- a "Full screen" button;
+- "Download PDF · PowerPoint (.pptx)" links on the right;
+- a "Title: …" line under the bar;
+- a scrollable strip of 21 numbered thumbnails (320×180, about 150 KB in total, lazy-loaded), with the current slide outlined in lime.
+
+Full screen uses the browser's own full screen. Where that isn't allowed (iPhone), it falls back to a full-window overlay; Esc closes it. Arrow keys, Space and F work while full screen.
+
+`browser-pages.mjs` now also checks: thumbnails stay in sync with the slide, clicking a thumbnail jumps to that slide, the title line, entering and leaving full screen, and arrow keys while full screen. Full suite passes, including under `/separations/`.

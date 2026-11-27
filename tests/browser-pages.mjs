@@ -98,8 +98,26 @@ const watch = (page, errors) => {
   await page.waitForTimeout(300);
   st = await page.evaluate(() => ({ c: document.getElementById('deck-count').textContent, ok: document.getElementById('deck-img').complete && document.getElementById('deck-img').naturalWidth > 0 }));
   if (st.c !== '20 / 21' || !st.ok) fail(`keyboard navigation failed (${JSON.stringify(st)})`);
+  // thumbnails, title line, full screen
+  const th = await page.evaluate(() => ({ n: document.querySelectorAll('#deck-thumbs .deck-thumb').length, on: [...document.querySelectorAll('#deck-thumbs .deck-thumb')].findIndex((b) => b.classList.contains('is-on')), title: document.getElementById('deck-title').textContent }));
+  if (th.n !== 21 || th.on !== 19 || !/^Title: Conclusions$/.test(th.title)) fail(`thumbnails/title out of sync (${JSON.stringify(th)})`);
+  await page.click('#deck-thumbs .deck-thumb:nth-child(5)');
+  await page.waitForTimeout(300);
+  st = await page.evaluate(() => ({ c: document.getElementById('deck-count').textContent, t: document.getElementById('deck-title').textContent, thumbOk: [...document.querySelectorAll('#deck-thumbs img')].slice(0, 5).every((im) => im.complete && im.naturalWidth === 320) }));
+  if (st.c !== '5 / 21' || !/Three models/.test(st.t) || !st.thumbOk) fail(`thumbnail click failed (${JSON.stringify(st)})`);
   await page.evaluate(() => document.getElementById('deck').scrollIntoView({ block: 'center' }));
   await page.screenshot({ path: join(OUT, `slides-${SCHEME}.png`) });
+  await page.click('#deck-fs');
+  await page.waitForTimeout(500);
+  const fs = await page.evaluate(() => { const r = document.getElementById('deck-img').getBoundingClientRect(); return { on: window.__deck.fullscreen(), label: document.getElementById('deck-fs').textContent, w: Math.round(r.width), vw: innerWidth }; });
+  if (!fs.on || fs.label !== 'Exit full screen' || fs.w < fs.vw * 0.6) fail(`full screen did not open (${JSON.stringify(fs)})`);
+  await page.screenshot({ path: join(OUT, `slides-fullscreen-${SCHEME}.png`) });
+  await page.keyboard.press('ArrowRight');
+  await page.waitForTimeout(200);
+  if (await page.evaluate(() => document.getElementById('deck-count').textContent) !== '6 / 21') fail('arrow keys should work in full screen');
+  await page.click('#deck-fs');
+  await page.waitForTimeout(400);
+  if (await page.evaluate(() => window.__deck.fullscreen())) fail('Exit full screen did not close it');
 
   // the one-line video hook renders the player
   await page.evaluate(() => { const c = document.getElementById('vd-card'); c.dataset.videoId = 'abcdefghijk'; });
