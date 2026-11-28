@@ -26,7 +26,7 @@ An interactive website on **mechanical vapor recompression (MVR) evaporative cry
 4. Both Claude Code and Gemini built Phase 1 from the same prompt: Claude's build is `site/`, Gemini's is `site/gemini/` (live at `/gemini/`).
 5. Comparison: `docs/comparison.md`. ChatGPT later planned the UI/UX redesign (`docs/ux-brief-for-chatgpt.md`).
 
-Every prompt, decision, iteration and problem: **`docs/process-log.md`**.
+Every prompt, decision, iteration and problem: **`docs/process-log.md`**. My prompts to Claude Code, verbatim: `docs/chat-history-claude-code.md`.
 
 ## Run and test locally
 
@@ -51,4 +51,3 @@ npm test
 | `tools/build_data.py` | Rebuilds `data.js` from its sources |
 | `context/` | Assignment (verbatim), syllabus notes, lecture guidance |
 | `starter-kit/` | Reusable template for a future project |
-| `dist/`, `netlify.toml` | Leftovers from the Netlify hosting used until Nov 27, 2026 (not used by GitHub Pages) |

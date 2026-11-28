@@ -13,23 +13,28 @@ Each requirement from `context/assignment.md`, checked against the live site at 
 | 4d | Process: models, services, prompts | Complete | AI Workflow tab; `docs/process-log.md` (prompts); `docs/PLAN_PROMPT.md`, `docs/build-prompt.md` |
 | 4e | Planning and iteration with my guidance and reasoning | Complete | `docs/critique-decisions.md`; AI Workflow timeline; process log |
 | 4f | Course-related technical details | Complete | Theory tab (VLE/BPE, evaporation, crystallization, supersaturation, seeding, crystal size, compression) |
-| 4g | What I learned / want to learn next | Needs Andrew | Video tab. Andrew's paragraph talks about process control and recycle (see note below) |
+| 4g | What I learned / want to learn next | Complete | Video tab |
 | 4h | Attribution / references | Complete | References tab: 16 sources, 39 values, 21 labelled estimates |
 | 5a | Plan from one model, critique by another | Complete | `docs/plan-v1-claude.md`, `docs/critique-v1-gemini.md` |
 | 5b | Justify accept/reject | Complete | `docs/critique-decisions.md`; AI Workflow tab table |
 | 5c | Implemented with at least 2 models and compared | Complete | `site/` (Claude) and `site/gemini/` (Gemini); `docs/comparison.md` |
 | 6 | Attribution and member contributions | Complete | References tab, Contributions (individual project) |
 | Rubric | PowerPoint artifact | Complete | `site/slides/mvr-presentation.pptx` and `.pdf`, slide viewer on the Video tab |
-| Syllabus | Chat history/prompts | Complete, see note | Prompts and decisions are in `docs/process-log.md`; full chat exports are not in the repo |
+| Syllabus | Chat history/prompts | Complete | `docs/chat-history-claude-code.md` (every prompt to Claude Code, verbatim); `docs/process-log.md`; Gemini's critique verbatim in `docs/critique-v1-gemini.md` |
 
-## Needs Andrew
+## Resolved with Andrew (2026-11-28)
 
-1. **"What I learned" paragraph (Video tab).** It says "Something I learned about process control … how recycle affects processes." This project is about separations and MVR, so the paragraph may belong to another course's site. Confirm it, or replace it.
-2. **Course name in your conclusions (AI Workflow tab).** "similar to what I did in Process Dynamics and Controls" names a course. You asked for no class names on the site. This is your own wording, so it was left as is.
-3. **Slides.** The deck shows your full name and "Separation Processes · An AI project · Fall 2026", and the downloadable `.pptx` includes speaker notes. The site and repo are public.
-4. **Chat history.** The syllabus says chat history and prompts are required. The process log records the prompts and decisions. If full chat exports are expected, they would have to come from your accounts (claude.ai, Gemini, ChatGPT).
-5. **Submission.** Submit the site link (and the video link, if asked) wherever the course collects them.
-6. **Q&A prep.** A few things said in the video differ from the site's numbers (list in the final audit report). Know the correct values for the live Q&A.
+- "What I learned" paragraph: the process-control sentence replaced with Andrew's separations sentence.
+- Course name in Andrew's conclusions: kept, his choice.
+- Slides: speaker notes stripped from the public `.pptx` (slide content unchanged). The name and course line on the slides stay.
+- Chat history: exported as `docs/chat-history-claude-code.md`.
+- `netlify.toml` and the local `dist/` folder (Netlify leftovers) deleted.
+
+## Still for Andrew
+
+1. Submit the site link (and the video link, if asked) wherever the course collects them.
+2. Q&A prep: a few numbers said in the video differ from the site (MVR is $2.09/t, not "$29 per ton"; $2.09 → $1.16 at 4 ¢/kWh; the compressor, not the condenser, raises 16.5 → 26 kPa; ChatGPT planned the redesign, Claude built it).
+3. Click the four citation links listed below once, and look at the site on a phone.
 
 ## Not verifiable from the build environment
 

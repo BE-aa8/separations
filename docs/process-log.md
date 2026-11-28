@@ -702,3 +702,17 @@ Also re-derived by hand:
 **Audit results:**
 - **Crawl:** 7 tabs × 3 widths (1440, 820, 375) × light/dark, with every dropdown opened. No page-level horizontal scroll, broken images, KaTeX errors, empty charts, console errors or placeholders. The remaining "overflow" hits were all inside intended scroll boxes (wide tables, the phone key-result strip, the clipped video poster).
 - **Links:** 226 links checked. All local files are 200. The YouTube and GitHub links redirect normally. Four citation hosts are blocked by this environment's network, so they could not be checked here.
+
+## 2026-11-28 (cont.) — Andrew's answers to the audit
+
+**Prompt:** "just change the process control to: something I learned in separations that surprised me is that MVR isn't always the cheapest option. 2 is fine. strip speaker notes. for 4, don't you have them already? 5-7 okay. 8 delete them."
+
+**Done:**
+- **"What I learned":** the first sentence of Andrew's paragraph now reads "Something I learned in separations that surprised me is that MVR isn't always the cheapest option." The rest is unchanged.
+- **Course name:** "Process Dynamics and Controls" stays in Andrew's conclusions, his choice.
+- **Speaker notes:** removed from `site/slides/mvr-presentation.pptx` (all 21 notes slides dropped). The slide text is identical, and the file still converts to 21 pages in LibreOffice. The PDF never had notes.
+- **Chat history:** `docs/chat-history-claude-code.md` lists all 74 of Andrew's messages and question answers in this Claude Code session (Nov 9–28), verbatim, exported from the session log.
+  - The Gemini critique and the YouTube transcript are long pastes, so they point to their verbatim copies in `docs/`.
+  - Automated task notifications are left out.
+  - The claude.ai, Gemini and ChatGPT chats are not in this log; their outputs are in `docs/`.
+- **Deleted:** `netlify.toml` from the repo, and the local `dist/` folder (old Netlify-era zips; it was git-ignored, so it was never in the repo). Nothing in CI or the site referenced either.
