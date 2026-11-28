@@ -1,16 +1,54 @@
-# seperations
-separations with PROFESSOR Co
+# MVR Crystallizer Explorer
 
-## AI Project: MVR Crystallizer Explorer
+An interactive website on **mechanical vapor recompression (MVR) evaporative crystallization** of battery-grade lithium hydroxide monohydrate (LiOH·H2O), with Tesla's Robstown, TX refinery as the industry example. AI project for Separation Processes (CHE 4061, Fall 2026, University of Cincinnati).
 
-Interactive website on **mechanical vapor recompression (MVR) evaporative crystallization** for producing battery-grade lithium hydroxide, built as the AI project for Separation Processes (CHE 4061, Fall 2026, University of Cincinnati).
+- **Live site:** https://be-aa8.github.io/separations/
+- **Presentation video:** https://www.youtube.com/watch?v=BLQXmZmRMlQ (embedded, with its verbatim transcript, on the site's Video & Transcript tab)
+- **Slides:** `site/slides/mvr-presentation.pdf` and `.pptx`, also viewable on the site
 
-| Folder / file | What's in it |
+## What is in the site (7 tabs)
+
+| Tab | Content |
 |---|---|
-| `CLAUDE.md` | Project rules and requirements, loaded automatically by Claude Code |
-| `docs/HANDOFF.md` | Full project background: concept, industry context, workflow, sources |
-| `docs/PLAN_PROMPT.md` | Opening prompt for Claude Code plan mode |
-| `docs/process-log.md` | Running log of prompts, decisions, and iterations (required for grading) |
-| `context/assignment.md` | AI project assignment and rubric (verbatim) |
-| `context/syllabus-notes.md` | Course details relevant to the project |
-| `context/professor-guidance.md` | Timestamped notes on what Prof. Co said about AI projects in lecture |
+| Overview | The question the project answers, and the animated process loop |
+| Industry Context | Tesla's refinery, the product-rate arithmetic, vendors, operating problems |
+| Theory | Seven ideas behind the design, then every equation with units and a "how does that make sense?" line |
+| Simulator | Sliders, live process diagram, key results, 12 charts (P1–P11): BPE, compressor work, 1/3/5 effects vs MVR, cost crossover, purge trade-off, capital cost and optimum ΔT, turndown |
+| AI Workflow | Plan → critique → decisions → two builds compared; timeline of the whole process |
+| Video & Transcript | YouTube embed, slide viewer, verbatim auto-transcript, what I learned |
+| References | Every source, every value used (generated from `site/js/data.js`), contributions |
+
+## AI workflow (assignment requirement 5)
+
+1. Claude wrote plan v1 (`docs/plan-v1-claude.md`).
+2. Gemini critiqued it (`docs/critique-v1-gemini.md`); every point accepted, modified or rejected with a reason (`docs/critique-decisions.md`).
+3. Claude merged plan v2 (`docs/plan-v2-final.md`); the hand-calc tests were written before either build (`docs/handcalc.md`, `tests/`).
+4. Both Claude Code and Gemini built Phase 1 from the same prompt: Claude's build is `site/`, Gemini's is `site/gemini/` (live at `/gemini/`).
+5. Comparison: `docs/comparison.md`. ChatGPT later planned the UI/UX redesign (`docs/ux-brief-for-chatgpt.md`).
+
+Every prompt, decision, iteration and problem: **`docs/process-log.md`**.
+
+## Run and test locally
+
+```bash
+python3 -m http.server 8000 -d site
+```
+
+```bash
+npm test
+```
+
+`npm test` checks the model against the independent hand calculation (`tests/handcalc-expected.json`, from `tests/reference/handcalc_reference.py`). The browser suites (`tests/browser-*.mjs`, Playwright + Chromium) run in CI in light and dark mode; see `.github/workflows/ci.yml`. GitHub Pages deploys `site/` only after CI passes on `main` (`.github/workflows/pages.yml`).
+
+## Folder map
+
+| Path | What's in it |
+|---|---|
+| `site/` | The website (plain HTML/CSS/JS, Plotly, KaTeX); `site/gemini/` is the Gemini build |
+| `site/js/model.js` | All calculations; `site/js/data.js` holds every property value and price with its source |
+| `docs/` | Plans, critique, decisions, comparison, hand calculation, process log, video script, raw transcript |
+| `tests/` | Hand-calc and browser tests |
+| `tools/build_data.py` | Rebuilds `data.js` from its sources |
+| `context/` | Assignment (verbatim), syllabus notes, lecture guidance |
+| `starter-kit/` | Reusable template for a future project |
+| `dist/`, `netlify.toml` | Leftovers from the Netlify hosting used until Nov 27, 2026 (not used by GitHub Pages) |

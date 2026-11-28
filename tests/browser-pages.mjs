@@ -177,6 +177,42 @@ const watch = (page, errors) => {
   await ctx.close();
 }
 
+// ---------- two-value result cards: each number carries its own units (regression: units were swapped) ----------
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await stub(ctx);
+  const page = await ctx.newPage();
+  await page.goto(`${BASE}/#simulator`, { waitUntil: 'networkidle' });
+  await page.waitForTimeout(600);
+  const cards = await page.evaluate(() => Object.fromEntries(['w', 'S1', 'EN', 'opt', 'td', 'P12', 'ann'].map((id) => [id, [...(document.querySelector(`#card-${id} .val`)?.children || [])].map((e) => e.textContent).join(' ').replace(/\s+/g, ' ').trim()])));
+  const want = {
+    w: /^99\.25 kJ\/kg · 248\.35 kW$/,
+    S1: /^9,200 kg\/h · 0\.930 kg\/kg$/,
+    EN: /^2\.79 kg\/kg · 3,067 kg\/h$/,
+    opt: /^3\.0 K · 444,103 \$\/yr$/,
+    td: /^6\.00 K · 29\.02 kWh\/t$/,
+    P12: /^16\.51 kPa · 26\.08 kPa$/,
+    ann: /^143,251 \$\/yr · 179,821 \$\/yr$/,
+  };
+  for (const [id, re] of Object.entries(want)) if (!re.test(cards[id] || '')) fail(`card ${id} shows "${cards[id]}"`);
+  // every preset changes the key results to the model's values
+  const kpi = () => page.evaluate(() => Object.fromEntries(['kwh', 'cMVR', 'BPE', 'yield'].map((id) => [id, document.querySelector(`#kpi-${id} .kpi-num`)?.textContent.trim()])));
+  const steps = [
+    ['expensive', (k) => k.cMVR === '7.26'],                          // 0.25 $/kWh x 29.02 kWh/t
+    ['cheap', (k) => k.cMVR === '2.09'],                              // 0.0721 x 29.02
+    ['highbpe', (k) => k.kwh === '40.7' && k.BPE === '9.58'],          // 100 C, ideal x 1.2
+    ['handcalc', (k) => k.kwh === '29.0' && k.BPE === '3.95' && k.yield === '89.6'],
+  ];
+  for (const [name, ok] of steps) {
+    await page.click(`[data-preset="${name}"]`);
+    await page.waitForTimeout(300);
+    const k = await kpi();
+    if (!ok(k)) fail(`preset ${name}: ${JSON.stringify(k)}`);
+  }
+  if (await page.$$eval('[data-preset]', (bs) => bs.some((b) => !b.title))) fail('every preset button should say what it sets');
+  await ctx.close();
+}
+
 // ---------- video hook rejects a malformed ID ----------
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });

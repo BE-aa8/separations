@@ -656,3 +656,49 @@ Full screen uses the browser's own full screen. Where that isn't allowed (iPhone
 **Problem:** CI passed, but the automatic Pages deploy failed twice, on the first run and on a re-run. Both times `upload-pages-artifact` uploaded the site, and `deploy-pages` then reported "No artifacts named github-pages were found". This is the first deploy since the repository was renamed (seperations → separations), and that may be the cause.
 
 **Fix:** a manual "Run workflow" (workflow_dispatch) on main deployed fine. The live site matches `site/` byte for byte, and the pages and smoke tests pass against it. If the automatic deploy keeps failing, use Actions → "Deploy to GitHub Pages" → Run workflow.
+
+## 2026-11-28 — final audit and quality control
+
+**Prompt (summary):** Andrew asked for a full audit to make the project submission-ready, covering functionality, engineering correctness, content, design, code, tests and requirements. Fix what can be fixed; flag what needs him.
+
+**Engineering, checked independently** (IAPWS-97 via `iapws`, and CoolProp; a different method from the site's Antoine + NIST table + ideal-gas compressor):
+
+| Quantity | Site | Independent | Agreement |
+|---|---|---|---|
+| P_sat(56.05 °C) | 16.51 kPa | 16.58 kPa | Antoine is 0.4 % low, as the site states |
+| Pressure ratio r | 1.5797 | 1.5796 | 0.01 % (the error cancels) |
+| h_fg at 60 °C / at T_v / at 120 °C | 2357.65 / 2367.26 / 2202.12 kJ/kg | 2357.69 / 2367.31 / 2202.15 | < 0.01 % |
+| K_b, BPE | 0.3914 K·kg/mol, 3.945 K | 0.3914, 3.945 K | match |
+| Actual work, real steam, suction at T_b | 99.25 kJ/kg | 98.71 kJ/kg | 0.5 % |
+| Specific energy | 29.02 kWh/t | 28.86 kWh/t | 0.6 % |
+| Discharge T₂ | 113.4 °C | 111.9 °C | 1.5 K: ideal-gas γ = 1.33 vs real steam |
+| C8 heater surplus | ≈ 2440 kJ/kg (~3 %) | 2433 kJ/kg (2.8 %) | ok |
+| Neglected vapor superheat | ~0.4 % | 0.33 % | ok |
+
+Also re-derived by hand:
+- the mass balance (closure 0);
+- the steam price ($7.33/t from $2.98/Mcf);
+- the crossover prices;
+- the CRF;
+- the heater area;
+- the Industry tab arithmetic (2,500 kg/h and 2.7 units).
+
+**Found and fixed:**
+- **Simulator result cards (real bug).** On the five two-value cards, the units were swapped:
+  - "Actual work w and electric power" showed "99.25 kW · 248.35 kJ/kg";
+  - single-effect steam economy showed "1" instead of 0.930;
+  - the cost-optimal ΔT, N-effect and turndown cards were affected the same way.
+
+  The cause: `.val .u:last-child` also matched the inner unit span. Fixed with `.val > .u`, and per-card decimals added. A regression test now checks all seven paired cards; it fails on the old code.
+- **YouTube link.** The video tab now has a permanent "Watch on YouTube" link under the player (assignment item 2 asks for a link).
+- **Old repository links.** The links to the process log, comparison and critique pointed at the pre-rename repo (`be-aa8/seperations`); they now point at `BE-aa8/separations`.
+- **Leftover internal wording.** "capital cost is Phase 2" (Theory) and "(Phase 2)" (Simulator input group) are gone.
+- **AI Workflow timeline.** It now includes the Nov 27 milestones: hosting move, slide review, video and transcript.
+- **Preset buttons.** Each now says what it sets. "High BPE" is flagged as a deliberately salty what-if (ideal × 1.2), not LiOH data. New test: every preset changes the key results to the model's values.
+- **Console and accessibility.** Removed the redundant `allowfullscreen` attribute (console warning), and labelled the cooling-temperature slider (its `<label>` was naming the `<output>`).
+- **README.** Rewritten: live site, video, tabs, AI workflow files, how to run and test.
+- **Checklist.** `docs/submission-checklist.md`: requirement-by-requirement status and what Andrew still has to do.
+
+**Audit results:**
+- **Crawl:** 7 tabs × 3 widths (1440, 820, 375) × light/dark, with every dropdown opened. No page-level horizontal scroll, broken images, KaTeX errors, empty charts, console errors or placeholders. The remaining "overflow" hits were all inside intended scroll boxes (wide tables, the phone key-result strip, the clipped video poster).
+- **Links:** 226 links checked. All local files are 200. The YouTube and GitHub links redirect normally. Four citation hosts are blocked by this environment's network, so they could not be checked here.

@@ -46,7 +46,7 @@ const SLIDERS = [
   { key: 'ce', label: 'Electricity c_e', units: '$/kWh', step: 0.001, d: 3, note: 'EIA Texas industrial Aug 2026 = 0.0721' },
   { key: 'cs', label: 'Steam c_s', units: '$/t', step: 0.05, d: 2, estimate: est(DATA.prices.steam), note: 'fuel-only ESTIMATE = 7.33' },
   { key: 'hours', label: 'Operating hours', units: 'h/yr', step: 10, d: 0 },
-  { group: 'Capital cost and turndown (Phase 2)' },
+  { group: 'Capital cost and turndown' },
   { key: 'U', label: 'Heater U', units: 'W/(m²·K)', step: 50, d: 0, estimate: est(DATA.evaporator.U) },
   { key: 'interest', label: 'Interest rate i', units: '1/yr', step: 0.005, d: 3, estimate: est(DATA.capital.interest) },
   { key: 'life_yr', label: 'Equipment life n', units: 'yr', step: 1, d: 0, estimate: est(DATA.capital.life_yr) },
@@ -172,7 +172,7 @@ const CARDS = [
       say: (o) => `${fmt(o.mvr?.T2_C - o.mvr?.Tc_C, 0)} K superheated above T_c: compression makes steam superheated, not wet.` },
   ] },
   { group: 'Multi-effect evaporator (same feed)', items: [
-    { id: 'S1', eq: 'E2', name: 'Single effect: steam S and economy', units: 'kg/h', d: 0, v: (o) => o.effects[1]?.S, v2: (o) => o.effects[1]?.economy, units2: 'kg/kg',
+    { id: 'S1', eq: 'E2', name: 'Single effect: steam S and economy', units: 'kg/h', d: 0, v: (o) => o.effects[1]?.S, v2: (o) => o.effects[1]?.economy, units2: 'kg/kg', d2: 3,
       say: (o) => `1 kg steam boils ${fmt(o.effects[1]?.economy, 3)} kg water (h_fg is smaller at 120 °C than at T_v).` },
     { id: 'EN', eq: 'E3', name: 'N effects: economy E_N and steam', units: 'kg/kg', d: 2, v: (o) => o.effects[o.inputs.N]?.economy, v2: (o) => o.effects[o.inputs.N]?.S, units2: 'kg/h',
       say: (o) => `With N = ${o.inputs.N}, the latent heat is reused ${o.inputs.N} times (ideal upper bound).` },
@@ -242,7 +242,7 @@ function updateCards(o) {
     try {
       const v = c.v(o);
       txt = fmt(v, c.d);
-      if (c.v2) txt += ` <span class="u">${c.units}</span> · ${fmt(c.v2(o), c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d)}`;
+      if (c.v2) txt += ` <span class="u">${c.units}</span> · ${fmt(c.v2(o), c.d2 ?? (c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d))}`;
     } catch { txt = '—'; }
     const num = card.querySelector('.num');
     if (num.dataset.prev !== undefined && num.dataset.prev !== txt) {   // cause -> effect flash (CSS)
@@ -250,7 +250,7 @@ function updateCards(o) {
     }
     num.dataset.prev = txt;
     num.innerHTML = txt;
-    card.querySelector('.val .u:last-child').textContent = c.v2 ? (c.units2 || c.units) : c.units;
+    card.querySelector('.val > .u').textContent = c.v2 ? (c.units2 || c.units) : c.units;
     let say = '';
     try { say = c.say ? c.say(o) : ''; } catch { say = ''; }
     card.querySelector('.short').textContent = say.replace(/NaN/g, '—');
@@ -329,7 +329,7 @@ function helpCard(o, id) {
   const e = c.eq ? EQ[c.eq] : null;
   const group = CARDS.find((g) => g.items.includes(c))?.group || '';
   let val = '—', say = '', sub = '';
-  try { val = fmt(c.v(o), c.d) + ` ${c.units}`; if (c.v2) val += ` · ${fmt(c.v2(o), c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d)} ${c.units2 || c.units}`; } catch { val = '—'; }
+  try { val = fmt(c.v(o), c.d) + ` ${c.units}`; if (c.v2) val += ` · ${fmt(c.v2(o), c.d2 ?? (c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d))} ${c.units2 || c.units}`; } catch { val = '—'; }
   try { say = c.say ? c.say(o) : ''; } catch { say = ''; }
   try { sub = c.sub ? c.sub(o) : ''; } catch { sub = ''; }
   return {
@@ -466,7 +466,7 @@ function renderPanel(o) {
   const rows = u.ids.map((id) => CARD_BY_ID[id]).filter(Boolean).map((c) => {
     const e = c.eq ? EQ[c.eq] : null;
     let val = '—', say = '';
-    try { val = fmt(c.v(o), c.d); if (c.v2) val += ` ${c.units} · ${fmt(c.v2(o), c.units2 === '$/yr' ? 0 : c.d)} ${c.units2 || ''}`; else val += ` ${c.units}`; } catch { val = '—'; }
+    try { val = fmt(c.v(o), c.d); if (c.v2) val += ` ${c.units} · ${fmt(c.v2(o), c.d2 ?? (c.units2 === '$/yr' || c.units2 === 'kg/h' ? 0 : c.d))} ${c.units2 || c.units}`; else val += ` ${c.units}`; } catch { val = '—'; }
     try { say = c.say ? c.say(o) : ''; } catch { say = ''; }
     return `<div class="prow"><div class="pname">${c.eq ? `<span class="tag">${c.eq}</span>` : ''}${c.name}</div>
       <div class="pval">${val.replace(/NaN|undefined/g, '—')}</div>
@@ -542,7 +542,7 @@ function initVideo() {
   const card = document.getElementById('vd-card');
   const id = card && card.dataset.videoId;
   if (!id || !/^[\w-]{6,20}$/.test(id)) return;
-  card.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" title="Presentation video" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen loading="lazy"></iframe>`;
+  card.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${id}?rel=0&playsinline=1" title="Presentation video" allow="encrypted-media; picture-in-picture; fullscreen" loading="lazy"></iframe>`;
   card.classList.add('has-video');
   // transcript times: jump the embedded player instead of leaving the page (the link still works in a new tab with a modifier key)
   document.getElementById('vd-transcript')?.addEventListener('click', (e) => {

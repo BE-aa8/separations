@@ -365,7 +365,7 @@
         <ul>
     <li>Impurities do not change LiOH solubility. Heat of crystallization neglected. Feed enters at T<sub>b</sub>.</li>
     <li>Steam vapor is an ideal gas with γ = 1.33 <span class="est-chip">estimate</span>. Antoine P<sub>sat</sub> is within 0.38 % of NIST over 30–110 °C, and the error largely cancels in r.</li>
-    <li>Multi-effect economy uses the ideal E<sub>N</sub> ≈ N·E<sub>1</sub> (upper bound). Operating cost only; capital cost is Phase 2.</li>
+    <li>Multi-effect economy uses the ideal E<sub>N</sub> ≈ N·E<sub>1</sub> (upper bound). The capital-cost side (heater and compressor) is on the Simulator tab, chart P9.</li>
   </ul>
       </div>
     </details>
@@ -395,11 +395,11 @@
   <div class="sim-toolbar glass" role="toolbar" aria-label="Simulator tools">
     <div class="seg" role="group" aria-label="Presets">
       <span class="seg-label">Presets</span>
-      <button type="button" data-preset="handcalc">Hand-calc case</button>
-      <button type="button" data-preset="highbpe">High BPE</button>
-      <button type="button" data-preset="cheap">Cheap electricity (Texas)</button>
-      <button type="button" data-preset="expensive">Expensive electricity</button>
-      <button type="button" data-preset="infeasible">Infeasible purge</button>
+      <button type="button" data-preset="handcalc" title="Reset every input to the verified hand-calculation case">Hand-calc case</button>
+      <button type="button" data-preset="highbpe" title="What-if: boil at 100 °C with the ideal BPE × 1.2, a deliberately salty liquor (not LiOH data). BPE ≈ 9.6 K.">High BPE</button>
+      <button type="button" data-preset="cheap" title="Electricity at the Texas industrial price, $0.0721/kWh (EIA, Aug 2026); other inputs unchanged">Cheap electricity (Texas)</button>
+      <button type="button" data-preset="expensive" title="Electricity at the top of the slider range, $0.25/kWh; other inputs unchanged">Expensive electricity</button>
+      <button type="button" data-preset="infeasible" title="Dilute feed (2 % LiOH) with a 20 % purge: the purge carries away more LiOH than the feed brings, so no crystals form">Infeasible purge</button>
     </div>
     <button type="button" class="explain-toggle" id="explain-toggle" aria-pressed="false" title="Show every equation, interpretation and note inline">
       <span class="q" aria-hidden="true">?</span> Explain
@@ -454,7 +454,7 @@
       <section class="chart-sec" id="cs-xtal" aria-labelledby="cs-xtal-t"><h4 class="chart-sec-title" id="cs-xtal-t">Crystallization <span class="cg-count">2</span></h4>
       <div class="plots">
         <figure class="plot" id="fig-p1"><figcaption><span>P1 · LiOH solubility and cooling yield</span><button type="button" class="qhelp" data-help-chart="fig-p1" aria-label="About P1" aria-haspopup="dialog">?</button></figcaption><div id="p1" class="chart"></div>
-          <label class="inline-slider">Cooling to T<sub>cold</sub> = <output id="tcold-out">20</output> °C <input id="tcold" type="range" min="0" max="95" step="1" value="20"></label><p class="whatif result-note"><span id="cool-yield"></span></p><p class="whatif help-slot">Cool instead of evaporate?</p></figure>
+          <label class="inline-slider">Cooling to T<sub>cold</sub> = <output id="tcold-out">20</output> °C <input id="tcold" type="range" aria-label="Cooling temperature T cold, °C" min="0" max="95" step="1" value="20"></label><p class="whatif result-note"><span id="cool-yield"></span></p><p class="whatif help-slot">Cool instead of evaporate?</p></figure>
         <figure class="plot" id="fig-p1b"><figcaption><span>P1b · Metastable zone (SCHEMATIC)</span><button type="button" class="qhelp" data-help-chart="fig-p1b" aria-label="About P1b" aria-haspopup="dialog">?</button></figcaption><div id="p1b" class="chart"></div><p class="whatif help-slot">Where should the liquor operate? Inside the metastable zone, with seeds.</p></figure>
       </div></section>
     </div>
@@ -495,7 +495,7 @@
         <li><span class="ind-step-n">03</span><strong>Plan v2</strong><span>Final plan merged by Claude.</span></li>
         <li class="is-modeled"><span class="ind-step-n">04</span><strong>Two builds</strong><span>Phase 1 built twice from an identical prompt and identical files: Claude Code (this site) and Gemini (<a href="gemini/">/gemini/</a>).</span></li>
       </ol>
-      <p class="ind-p aw-note">Both builds got the same prompt, plan and data file, in fresh sessions, and were graded by the same tests (written before either build and never shown to the builders). Full write-up with sources: <a href="https://github.com/be-aa8/seperations/blob/main/docs/comparison.md">docs/comparison.md</a>. Try the other build: <a href="gemini/">Gemini's site</a>.</p>
+      <p class="ind-p aw-note">Both builds got the same prompt, plan and data file, in fresh sessions, and were graded by the same tests (written before either build and never shown to the builders). Full write-up with sources: <a href="https://github.com/BE-aa8/separations/blob/main/docs/comparison.md">docs/comparison.md</a>. Try the other build: <a href="gemini/">Gemini's site</a>.</p>
     </div>
 
     <div class="ind-sec">
@@ -567,7 +567,7 @@
         <tr><td>9–10</td><td>Fairer comparison; fewer tabs</td><td>Accept</td><td>Same files and fresh sessions for both; 7 tabs</td></tr>
       </tbody>
     </table></div>
-          <p class="small">Full table with reasoning: <a href="https://github.com/be-aa8/seperations/blob/main/docs/critique-decisions.md">docs/critique-decisions.md</a>. Caveats: Claude wrote the plan and the tests; the harnesses differ (interactive Claude Code vs headless Gemini CLI); Opus is a top-tier model and Flash a fast-tier one; one build each, no repeats.</p>
+          <p class="small">Full table with reasoning: <a href="https://github.com/BE-aa8/separations/blob/main/docs/critique-decisions.md">docs/critique-decisions.md</a>. Caveats: Claude wrote the plan and the tests; the harnesses differ (interactive Claude Code vs headless Gemini CLI); Opus is a top-tier model and Flash a fast-tier one; one build each, no repeats.</p>
         </div>
       </details>
     </div>
@@ -590,8 +590,10 @@
         <li><span class="aw-date">Nov 16</span><span class="aw-who">Claude Code</span><p>Liquid Glass simulator: key-result tiles, Explain switch and a shared Help panel, grouped charts, phone Inputs sheet.</p></li>
         <li><span class="aw-date">Nov 16–18</span><span class="aw-who">Claude Code</span><p>Overview, Industry Context (Tesla video) and Theory cleaned up; course references removed; red flags resolved with sourced data.</p></li>
         <li><span class="aw-date">Nov 16–18</span><span class="aw-who">Claude Code</span><p>Live-site tests caught real bugs: Netlify's badge covering the phone Inputs button, and a diagnostics page that traced "no animation on iPhone" to Reduce Motion, which led to the motion toggle.</p></li>
+        <li><span class="aw-date">Nov 27</span><span class="aw-who">Claude Code</span><p>Finishing pass: every "to verify" and red tag resolved with a source or labelled as an estimate. Hosting moved from Netlify to GitHub Pages, deployed automatically only when every test passes.</p></li>
+        <li><span class="aw-date">Nov 27</span><span class="aw-who">Claude Code</span><p>Claude reviewed Andrew's slide deck and found errors to fix (a wrong symbol, a mislabelled cost, a rounding mismatch); the corrected slides went onto the Video tab. Andrew recorded the presentation, and its verbatim YouTube transcript was added.</p></li>
       </ol>
-      <p class="ind-p">Every prompt, decision, iteration and problem, in full: <a href="https://github.com/be-aa8/seperations/blob/main/docs/process-log.md">docs/process-log.md</a>.</p>
+      <p class="ind-p">Every prompt, decision, iteration and problem, in full: <a href="https://github.com/BE-aa8/separations/blob/main/docs/process-log.md">docs/process-log.md</a>.</p>
     </div>
   </div>
 </section>
@@ -609,6 +611,7 @@
     <div class="vd-card" id="vd-card" data-video-id="BLQXmZmRMlQ">
       <div class="vd-empty"><span class="vd-play" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="currentColor"><path d="M7 4.5v15l12-7.5z"/></svg></span><p class="vd-t">The presentation (27:31)</p><p class="vd-s"><a href="https://www.youtube.com/watch?v=BLQXmZmRMlQ" target="_blank" rel="noopener">Watch on YouTube</a></p></div>
     </div>
+    <p class="vd-link"><a href="https://www.youtube.com/watch?v=BLQXmZmRMlQ" target="_blank" rel="noopener">Watch on YouTube ↗</a> · 27 min 31 s · the transcript is below the slides</p>
   </div>
   <div class="ind-sec" id="deck">
     <p class="ind-eyebrow">The slides</p>

@@ -1238,3 +1238,4 @@ html.deck-fs-open, html.deck-fs-open body { overflow: hidden; }
 .deck.in-fs .deck-title { color: #9AA59F; margin: 8px 0 0; }
 .deck.in-fs .deck-thumbs { display: none; }
 
+.vd-link { margin: var(--s3) 0 0; color: var(--muted); font-size: var(--fs-sm, 0.92rem); }

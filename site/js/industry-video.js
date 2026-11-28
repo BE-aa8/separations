@@ -134,7 +134,7 @@ function sync() {
 function openDialog() {
   if (!dialog || !frame) return;
   lastFocus = document.activeElement;
-  frame.innerHTML = `<iframe src="${NOCOOKIE}/embed/${VIDEO_ID}?autoplay=1&rel=0&playsinline=1" title="Tesla Lithium Refinery (video)" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>`;
+  frame.innerHTML = `<iframe src="${NOCOOKIE}/embed/${VIDEO_ID}?autoplay=1&rel=0&playsinline=1" title="Tesla Lithium Refinery (video)" allow="autoplay; encrypted-media; picture-in-picture; fullscreen"></iframe>`;
   if (typeof dialog.showModal === 'function') dialog.showModal(); else dialog.setAttribute('open', '');
   sync();
   if (closeBtn) closeBtn.focus();
